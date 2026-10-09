@@ -1,0 +1,6 @@
+{
+  "name": "BCA Buddy - Logic & C Programming Solver",
+  "description": "Comprehensive Logic, Number System and C Programming solver with step-by-step Hinglish explanations for BCA students.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
