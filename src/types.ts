@@ -85,7 +85,7 @@ export interface CProgram {
 
 export interface BookmarkItem {
   id: string;
-  type: 'logic' | 'c-program';
+  type: 'logic' | 'c-program' | 'fundamentals';
   title: string;
   subtitle: string;
   data: any;
@@ -95,9 +95,29 @@ export interface BookmarkItem {
 export interface RecentSearchItem {
   id: string;
   query: string;
-  type: 'logic' | 'c-program';
+  type: 'logic' | 'c-program' | 'fundamentals';
   targetId?: string;
   timestamp: number;
+}
+
+export interface FundamentalTopic {
+  id: string;
+  title: string;
+  unit: string;
+  unitNumber: number;
+  summary: string;
+  hinglishOverview: string;
+  keyPoints: string[];
+  detailedContent: string[];
+  comparisonTable?: {
+    headers: string[];
+    rows: string[][];
+  };
+  examVivaQuestions?: {
+    question: string;
+    answer: string;
+  }[];
+  importantTags: string[];
 }
 
 // --- CalcVault Types ---

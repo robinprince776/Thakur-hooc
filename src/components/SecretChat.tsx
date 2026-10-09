@@ -41,7 +41,7 @@ interface SecretChatProps {
   onBackToCalculator: () => void;
   onBackToBca?: () => void;
   onOpenSettings: () => void;
-  onOpenInstall: () => void;
+  onOpenInstall?: () => void;
   onChangeWallpaper: (wallpaper: NatureWallpaper) => void;
 }
 

@@ -3,14 +3,14 @@ import { ActiveTab, Navbar } from './components/Navbar';
 import { HomePage } from './components/HomePage';
 import { LogicSolver } from './components/LogicSolver';
 import { CProgramGenerator } from './components/CProgramGenerator';
+import { ComputerFundamentals } from './components/ComputerFundamentals';
 import { FormulaSheet } from './components/FormulaSheet';
 import { BookmarksView } from './components/BookmarksView';
 import { SearchModal } from './components/SearchModal';
 import { Calculator } from './components/Calculator';
 import { SecretChat } from './components/SecretChat';
 import { SettingsModal } from './components/SettingsModal';
-import { InstallModal } from './components/InstallModal';
-import { AndroidInstallModal } from './components/AndroidInstallModal';
+import { SplashScreen } from './components/SplashScreen';
 import { useDirectChat } from './hooks/useDirectChat';
 import { playUnlockSound, playLockSound, triggerHaptic } from './utils/sound';
 import {
@@ -21,7 +21,7 @@ import {
   UserSettings,
   NatureWallpaper,
 } from './types';
-import { Calculator as CalcIcon, Smartphone } from 'lucide-react';
+import { Calculator as CalcIcon, Layers, Heart, Sparkles } from 'lucide-react';
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
   secretPin: '1307',
@@ -42,10 +42,13 @@ function getOrCreatePeerId(): string {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [isDark, setIsDark] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('bca_buddy_theme') === 'dark';
+      const saved = localStorage.getItem('bca_buddy_theme');
+      if (saved) return saved === 'dark';
+      return typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
     } catch {
       return false; // Default light theme
     }
@@ -77,32 +80,7 @@ export default function App() {
     return DEFAULT_VAULT_SETTINGS;
   });
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
   const [burnToast, setBurnToast] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [isAndroidModalOpen, setIsAndroidModalOpen] = useState(false);
-
-  // Capture native Android PWA install prompt
-  useEffect(() => {
-    const handleBeforeInstall = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-    };
-    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
-    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
-  }, []);
-
-  const triggerNativeInstall = () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult: any) => {
-        if (choiceResult.outcome === 'accepted') {
-          showBcaToast('App phone me install ho rahi hai!');
-        }
-        setDeferredPrompt(null);
-      });
-    }
-  };
 
   // Sync URL hash with vault mode
   useEffect(() => {
@@ -207,13 +185,15 @@ export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Sync dark class on document element
+  // Sync dark class on document element and body
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
       localStorage.setItem('bca_buddy_theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
       localStorage.setItem('bca_buddy_theme', 'light');
     }
   }, [isDark]);
@@ -272,7 +252,7 @@ export default function App() {
     return bookmarks.some((b) => b.id === id || b.title === id || b.data?.id === id);
   };
 
-  const handleAddRecentSearch = (query: string, type: 'logic' | 'c-program', targetId?: string) => {
+  const handleAddRecentSearch = (query: string, type: 'logic' | 'c-program' | 'fundamentals', targetId?: string) => {
     const filtered = recentSearches.filter((s) => s.query.toLowerCase() !== query.toLowerCase());
     const newItem: RecentSearchItem = {
       id: `rs_${Date.now()}`,
@@ -307,7 +287,6 @@ export default function App() {
           <Calculator
             secretPin={vaultSettings.secretPin}
             onUnlockVault={handleUnlockVault}
-            onOpenInstall={() => setIsInstallModalOpen(true)}
             onBackToBca={handleCloseVault}
             soundEnabled={vaultSettings.soundEnabled}
             hapticsEnabled={vaultSettings.hapticsEnabled}
@@ -330,7 +309,6 @@ export default function App() {
             onBackToCalculator={handleBackToCalculator}
             onBackToBca={handleCloseVault}
             onOpenSettings={() => setIsSettingsModalOpen(true)}
-            onOpenInstall={() => setIsInstallModalOpen(true)}
             onChangeWallpaper={handleChangeWallpaper}
           />
         )}
@@ -351,11 +329,6 @@ export default function App() {
             onClose={() => setIsSettingsModalOpen(false)}
           />
         )}
-
-        {/* Install Modal */}
-        {isInstallModalOpen && (
-          <InstallModal onClose={() => setIsInstallModalOpen(false)} />
-        )}
       </main>
     );
   }
@@ -363,6 +336,9 @@ export default function App() {
   // --- RENDER 2: BCA Verse Portal ---
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
+      {/* App Launch Splash Screen: "Made by Prince Thakur" */}
+      {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
+
       {/* Top Navigation */}
       <Navbar
         activeTab={activeTab}
@@ -374,7 +350,6 @@ export default function App() {
           setIsVaultOpen(true);
           window.location.hash = 'calc';
         }}
-        onOpenAndroidModal={() => setIsAndroidModalOpen(true)}
         bookmarkCount={bookmarks.length}
       />
 
@@ -396,6 +371,13 @@ export default function App() {
         {activeTab === 'c-generator' && (
           <CProgramGenerator
             initialProgramId={prefillCProgramId}
+            onSaveBookmark={handleSaveBookmark}
+            isBookmarked={isBookmarked}
+          />
+        )}
+
+        {activeTab === 'fundamentals' && (
+          <ComputerFundamentals
             onSaveBookmark={handleSaveBookmark}
             isBookmarked={isBookmarked}
           />
@@ -438,29 +420,41 @@ export default function App() {
               BCA Verse
             </span>
             <span className="hidden sm:inline text-slate-300">·</span>
-            <span>Logic & C Programming Solver</span>
+            <span>3 Core Subjects Academic Suite</span>
             <span className="hidden sm:inline text-slate-300">·</span>
-            <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-              Made by Prince Thakur
-            </span>
+            <button
+              onClick={() => setShowSplash(true)}
+              className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1 cursor-pointer"
+              title="View credits & splash screen"
+            >
+              <Heart className="w-3 h-3 text-pink-500 fill-pink-500" />
+              <span>Made by Prince Thakur</span>
+            </button>
           </div>
 
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs">
             <button
               onClick={() => handleNavigate('logic-solver')}
-              className="hover:text-indigo-600 transition-colors"
+              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
             >
               Number Solver
             </button>
             <button
               onClick={() => handleNavigate('c-generator')}
-              className="hover:text-indigo-600 transition-colors"
+              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
             >
               C Programs
             </button>
             <button
+              onClick={() => handleNavigate('fundamentals')}
+              className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>Fundamental Notes</span>
+            </button>
+            <button
               onClick={() => handleNavigate('formula-sheet')}
-              className="hover:text-indigo-600 transition-colors"
+              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
             >
               Formulas
             </button>
@@ -469,19 +463,11 @@ export default function App() {
                 setIsVaultOpen(true);
                 window.location.hash = 'calc';
               }}
-              className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-semibold hover:underline"
+              className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-semibold hover:underline cursor-pointer"
               title="Open Secret Calculator"
             >
               <CalcIcon className="w-3.5 h-3.5" />
               <span>Calc Vault (#calc)</span>
-            </button>
-            <button
-              onClick={() => setIsAndroidModalOpen(true)}
-              className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold hover:underline cursor-pointer"
-              title="Install Android App (.apk)"
-            >
-              <Smartphone className="w-3.5 h-3.5 text-emerald-500" />
-              <span>Android App (.apk)</span>
             </button>
             <span className="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold text-[11px] border border-emerald-200 dark:border-emerald-800">
               100% Offline in Browser
@@ -489,14 +475,6 @@ export default function App() {
           </div>
         </div>
       </footer>
-
-      {/* Android Installation Modal */}
-      <AndroidInstallModal
-        isOpen={isAndroidModalOpen}
-        onClose={() => setIsAndroidModalOpen(false)}
-        deferredPrompt={deferredPrompt}
-        onTriggerInstall={triggerNativeInstall}
-      />
     </div>
   );
 }

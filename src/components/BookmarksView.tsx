@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BookmarkItem } from '../types';
-import { Bookmark, Cpu, Terminal, Trash2, ArrowRight, BookOpen, Clock } from 'lucide-react';
+import { Bookmark, Cpu, Terminal, Trash2, ArrowRight, BookOpen, Clock, Layers } from 'lucide-react';
 import { ActiveTab } from './Navbar';
 
 interface BookmarksViewProps {
@@ -16,7 +16,7 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
   onClearAll,
   onNavigate
 }) => {
-  const [filterType, setFilterType] = useState<'all' | 'logic' | 'c-program'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'logic' | 'c-program' | 'fundamentals'>('all');
 
   const filtered = bookmarks.filter((b) => {
     if (filterType === 'all') return true;
@@ -29,10 +29,10 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-            Saved Bookmarks & Favorites
+            Saved Bookmarks &amp; Favorites
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            Quickly revisit your saved number system questions and favorite C programs.
+            Quickly revisit your saved number system questions, favorite C programs, and fundamental notes.
           </p>
         </div>
 
@@ -48,10 +48,10 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         <button
           onClick={() => setFilterType('all')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
             filterType === 'all'
               ? 'bg-indigo-600 text-white'
               : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
@@ -61,7 +61,7 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
         </button>
         <button
           onClick={() => setFilterType('logic')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
             filterType === 'logic'
               ? 'bg-indigo-600 text-white'
               : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
@@ -71,13 +71,23 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
         </button>
         <button
           onClick={() => setFilterType('c-program')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
             filterType === 'c-program'
               ? 'bg-indigo-600 text-white'
               : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
           }`}
         >
           C Programs ({bookmarks.filter((b) => b.type === 'c-program').length})
+        </button>
+        <button
+          onClick={() => setFilterType('fundamentals')}
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
+            filterType === 'fundamentals'
+              ? 'bg-indigo-600 text-white'
+              : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+          }`}
+        >
+          Fundamentals ({bookmarks.filter((b) => b.type === 'fundamentals').length})
         </button>
       </div>
 
@@ -89,13 +99,14 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
             Koi bookmark save nahi kiya gaya
           </h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Jab aap number solver ya C program solve karein, bookmark icon par click karke use yahan save kar sakte hain!
+            Jab aap number solver, C program, ya fundamental notes padhein, bookmark icon par click karke use yahan save kar sakte hain!
           </p>
         </div>
       ) : (
         <div className="space-y-3">
           {filtered.map((item) => {
             const isLogic = item.type === 'logic';
+            const isFundamental = item.type === 'fundamentals';
             return (
               <div
                 key={item.id}
@@ -106,10 +117,18 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
                     className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                       isLogic
                         ? 'bg-indigo-50 dark:bg-indigo-950 text-indigo-600'
+                        : isFundamental
+                        ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-600'
                         : 'bg-purple-50 dark:bg-purple-950 text-purple-600'
                     }`}
                   >
-                    {isLogic ? <Cpu className="w-5 h-5" /> : <Terminal className="w-5 h-5" />}
+                    {isLogic ? (
+                      <Cpu className="w-5 h-5" />
+                    ) : isFundamental ? (
+                      <Layers className="w-5 h-5" />
+                    ) : (
+                      <Terminal className="w-5 h-5" />
+                    )}
                   </div>
 
                   <div>
@@ -134,13 +153,15 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
                           type: item.data?.type,
                           input: item.data?.input1
                         });
+                      } else if (isFundamental) {
+                        onNavigate('fundamentals');
                       } else {
                         onNavigate('c-generator', {
                           cProgramId: item.data?.id
                         });
                       }
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950 hover:bg-indigo-100 text-indigo-700 dark:text-indigo-300 text-xs font-semibold transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950 hover:bg-indigo-100 text-indigo-700 dark:text-indigo-300 text-xs font-semibold transition-colors cursor-pointer"
                   >
                     <span>Open</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -148,7 +169,7 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
 
                   <button
                     onClick={() => onRemoveBookmark(item.id)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                     title="Delete bookmark"
                   >
                     <Trash2 className="w-4 h-4" />

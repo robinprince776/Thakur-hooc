@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Cpu, Terminal, BookOpen, Bookmark, Sun, Moon, Search, Menu, X, Home, Calculator, Smartphone } from 'lucide-react';
+import { Cpu, Terminal, BookOpen, Bookmark, Sun, Moon, Search, Menu, X, Home, Calculator, Layers } from 'lucide-react';
 
-export type ActiveTab = 'home' | 'logic-solver' | 'c-generator' | 'formula-sheet' | 'bookmarks';
+export type ActiveTab = 'home' | 'logic-solver' | 'c-generator' | 'fundamentals' | 'formula-sheet' | 'bookmarks';
 
 interface NavbarProps {
   activeTab: ActiveTab;
@@ -10,7 +10,6 @@ interface NavbarProps {
   toggleTheme: () => void;
   onOpenSearch: () => void;
   onOpenCalculatorVault?: () => void;
-  onOpenAndroidModal?: () => void;
   bookmarkCount: number;
 }
 
@@ -21,7 +20,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   toggleTheme,
   onOpenSearch,
   onOpenCalculatorVault,
-  onOpenAndroidModal,
   bookmarkCount
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -30,6 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'home' as ActiveTab, label: 'Home', icon: Home },
     { id: 'logic-solver' as ActiveTab, label: 'Logic & Numbers', icon: Cpu },
     { id: 'c-generator' as ActiveTab, label: 'C Programs', icon: Terminal },
+    { id: 'fundamentals' as ActiveTab, label: 'Comp Fundamentals', icon: Layers },
     { id: 'formula-sheet' as ActiveTab, label: 'Formula Sheet', icon: BookOpen },
     { id: 'bookmarks' as ActiveTab, label: 'Saved', icon: Bookmark, badge: bookmarkCount }
   ];
@@ -121,18 +120,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
-            {/* Android App Button */}
-            {onOpenAndroidModal && (
-              <button
-                onClick={onOpenAndroidModal}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
-                title="Install Android App"
-              >
-                <Smartphone className="w-3.5 h-3.5 text-emerald-500" />
-                <span className="hidden sm:inline">Android App</span>
-              </button>
-            )}
-
             {/* Dark / Light Toggle */}
             <button
               onClick={toggleTheme}
@@ -192,28 +179,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             );
           })}
 
-          {onOpenAndroidModal && (
-            <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenAndroidModal();
-                }}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <Smartphone className="w-4 h-4 text-emerald-500" />
-                  <span>Install Android App (.apk)</span>
-                </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-300">
-                  Android
-                </span>
-              </button>
-            </div>
-          )}
-
           {onOpenCalculatorVault && (
-            <div className="pt-1.5">
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, Terminal, ArrowRight, Zap, CheckCircle2, BookOpen, Sparkles, Binary, Code2, HelpCircle } from 'lucide-react';
+import { Cpu, Terminal, ArrowRight, Zap, CheckCircle2, BookOpen, Sparkles, Layers, GraduationCap } from 'lucide-react';
 import { ActiveTab } from './Navbar';
 
 interface HomePageProps {
@@ -29,6 +29,13 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
     { title: 'Matrix Multiplication', id: 'matrix-multiplication' }
   ];
 
+  const quickFundamentals = [
+    { label: 'Von Neumann Architecture', id: 'intro-and-characteristics' },
+    { label: 'Computer Generations (1st-5th)', id: 'generations-of-computers' },
+    { label: 'RAM vs ROM Differences', id: 'classification-of-computers' },
+    { label: 'OSI 7 Layers Mnemonic', id: 'cyber-security-and-data' }
+  ];
+
   return (
     <div className="space-y-10 py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Hero Header */}
@@ -43,103 +50,106 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-            Crack Logic Systems & C Programming{' '}
+            Master 3 Core BCA Subjects{' '}
             <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
               Step-by-Step in Hinglish
             </span>
           </h1>
 
           <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl font-normal leading-relaxed">
-            Stop struggling with base conversions, division remainders, and tricky C logic!
-            BCA Verse breaks down every conversion with division tables, point/fractional calculations, and delivers tested,
-            ready-to-compile C programs with line-by-line Hinglish logic.
+            Logic System conversions with remainder tables, 45+ ready-to-run C Programs with line-by-line logic,
+            aur Fundamental of Computer BCA 1st Semester ke Unit 1 se 8 tak ke sabhi exam notes &amp; viva questions!
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <button
               onClick={() => onNavigate('logic-solver')}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-semibold text-sm shadow-md shadow-indigo-600/20 transition-all hover:gap-3 cursor-pointer"
+              className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-semibold text-xs sm:text-sm shadow-md shadow-indigo-600/20 transition-all hover:gap-3 cursor-pointer"
             >
               <Cpu className="w-4 h-4" />
-              <span>Solve Number System</span>
+              <span>Logic &amp; Numbers</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
             <button
               onClick={() => onNavigate('c-generator')}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold text-sm shadow-xs transition-all hover:gap-3 cursor-pointer"
+              className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold text-xs sm:text-sm shadow-xs transition-all hover:gap-3 cursor-pointer"
             >
               <Terminal className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-              <span>Browse 45+ C Programs</span>
+              <span>45+ C Programs</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={() => onNavigate('fundamentals')}
+              className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition-all hover:gap-3 cursor-pointer"
+            >
+              <Layers className="w-4 h-4" />
+              <span>Fundamental Notes (3rd Subject)</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
       </section>
 
-      {/* 2 BIG CARDS — Main Navigation Centers */}
+      {/* 3 CORE SUBJECT CARDS */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
-              Choose What You Want To Solve
+              3 Core Subjects &amp; Engines
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Select one of the two core engines below
+              Select any subject to start studying immediately
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* CARD 1: Logic & Number System Solver */}
           <div
             onClick={() => onNavigate('logic-solver')}
-            className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white dark:bg-slate-800/90 p-7 shadow-md hover:shadow-xl border border-slate-200/80 dark:border-slate-700 transition-all duration-300 hover:-translate-y-1"
+            className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white dark:bg-slate-800/90 p-6 shadow-md hover:shadow-xl border border-slate-200/80 dark:border-slate-700 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />
+            <div className="absolute top-0 right-0 w-28 h-28 bg-indigo-500/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />
 
-            <div className="flex items-center justify-between mb-5">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-inner group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
-                <Cpu className="w-7 h-7" />
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-inner group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
+                  <Cpu className="w-6 h-6" />
+                </div>
+                <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900">
+                  Subject 1 · 15 Modes
+                </span>
               </div>
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900">
-                15 Solver Modes
-              </span>
+
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                Logic &amp; Number Systems
+              </h3>
+
+              <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                Base conversions with division remainder tables, fractional/point math, 1's &amp; 2's complement, logic gates &amp; K-Map.
+              </p>
+
+              <ul className="mt-4 space-y-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>Decimal ↔ Binary, Octal, Hexadecimal</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>Binary Add, Sub, Mul &amp; Div</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>Logic Gates &amp; 2-3 Var K-Maps</span>
+                </li>
+              </ul>
             </div>
 
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-              Logic & Number System Solver
-            </h3>
-
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              Step-by-step conversions with division tables, positional weights, and clear Hinglish notes so you understand every single remainder!
-            </p>
-
-            {/* Feature highlights */}
-            <ul className="mt-5 space-y-2 text-xs font-medium text-slate-600 dark:text-slate-300">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>Decimal ↔ Binary, Octal, Hexadecimal conversions</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>Binary Addition, Subtraction & 1's / 2's Complement</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>Logic Gates Truth Tables (AND, OR, NOT, NAND, NOR, XOR)</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>2-Variable & 3-Variable K-Map minterm simplification</span>
-              </li>
-            </ul>
-
-            <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">
-                Instant calculations · Zero lag
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform">
+            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-400">Step-by-step Hinglish</span>
+              <span className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform">
                 Open Solver ➔
               </span>
             </div>
@@ -148,58 +158,99 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           {/* CARD 2: C Programming Code Generator */}
           <div
             onClick={() => onNavigate('c-generator')}
-            className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white dark:bg-slate-800/90 p-7 shadow-md hover:shadow-xl border border-slate-200/80 dark:border-slate-700 transition-all duration-300 hover:-translate-y-1"
+            className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white dark:bg-slate-800/90 p-6 shadow-md hover:shadow-xl border border-slate-200/80 dark:border-slate-700 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />
+            <div className="absolute top-0 right-0 w-28 h-28 bg-purple-500/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />
 
-            <div className="flex items-center justify-between mb-5">
-              <div className="w-14 h-14 rounded-2xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-inner group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
-                <Terminal className="w-7 h-7" />
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-inner group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
+                  <Terminal className="w-6 h-6" />
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300">
+                    Subject 2 · 45+
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300">
-                  Custom Statement AI
-                </span>
-                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
-                  45+ Programs
-                </span>
-              </div>
+
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                C Programming Generator
+              </h3>
+
+              <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                45+ Ready BCA C programs plus custom statement generator that converts any question into clean GCC code &amp; Hinglish logic.
+              </p>
+
+              <ul className="mt-4 space-y-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>Custom Statement AI Generator</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>1-Click Copy &amp; Download .c File</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>Variables &amp; Loop Flow Analysis</span>
+                </li>
+              </ul>
             </div>
 
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-              C Programming Code Generator
-            </h3>
-
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              Apna koi bhi custom statement ya question likhein (jaise "Automorphic number", "Electricity bill", "Remove duplicates") aur yeh automatically pura C code + Hinglish explanation bana dega!
-            </p>
-
-            {/* Feature highlights */}
-            <ul className="mt-5 space-y-2 text-xs font-medium text-slate-600 dark:text-slate-300">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>Custom Statement se instant C code generator</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>1-Click Copy Code & Download ready-to-run .c file</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>Clean Hinglish explanation of loop flow & variables</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>45+ Ready BCA Programs library with instant search</span>
-              </li>
-            </ul>
-
-            <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">
-                Tested GCC compatible code
+            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-400">Tested GCC code</span>
+              <span className="inline-flex items-center gap-1 text-xs font-bold text-purple-600 dark:text-purple-400 group-hover:translate-x-1 transition-transform">
+                Browse C Code ➔
               </span>
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-purple-600 dark:text-purple-400 group-hover:translate-x-1 transition-transform">
-                Browse Programs ➔
+            </div>
+          </div>
+
+          {/* CARD 3: Fundamental of Computer (3rd Subject) */}
+          <div
+            onClick={() => onNavigate('fundamentals')}
+            className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white dark:bg-slate-800/90 p-6 shadow-md hover:shadow-xl border border-emerald-200/80 dark:border-emerald-800/60 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+          >
+            <div className="absolute top-0 right-0 w-28 h-28 bg-emerald-500/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />
+
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-inner group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300">
+                  <Layers className="w-6 h-6" />
+                </div>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300">
+                  Subject 3 · 8 Units
+                </span>
+              </div>
+
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                Fundamental of Computer
+              </h3>
+
+              <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                BCA 1st Semester complete notes, Von Neumann model, CPU Registers, Memory hierarchy, Operating Systems &amp; Viva Q&amp;A.
+              </p>
+
+              <ul className="mt-4 space-y-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>Units 1 to 8 Exam Notes in Hinglish</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>RAM/ROM &amp; Generations Tables</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>Exam Viva Questions &amp; Answers</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">Complete Syllabus</span>
+              <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition-transform">
+                Read Notes ➔
               </span>
             </div>
           </div>
@@ -253,6 +304,23 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             ))}
           </div>
         </div>
+
+        <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-700">
+          <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+            Fundamental of Computer Key Topics:
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {quickFundamentals.map((item, idx) => (
+              <button
+                key={idx}
+                onClick={() => onNavigate('fundamentals')}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-50/50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 transition-colors"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Extra Feature Quick Access: Formula Sheet */}
@@ -263,7 +331,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           </div>
           <div>
             <h4 className="text-base font-bold text-slate-900 dark:text-white">
-              BCA Quick Formula & Syntax Sheet
+              BCA Quick Formula &amp; Syntax Sheet
             </h4>
             <p className="text-xs text-slate-600 dark:text-slate-300">
               Powers of 2, Radix table, C Operator Precedence, Format Specifiers, and De Morgan's laws.
@@ -272,7 +340,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         </div>
         <button
           onClick={() => onNavigate('formula-sheet')}
-          className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition-colors shrink-0"
+          className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition-colors shrink-0 cursor-pointer"
         >
           View Formulas ➔
         </button>

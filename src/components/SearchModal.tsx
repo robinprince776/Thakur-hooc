@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, X, Cpu, Terminal, Clock, ArrowRight } from 'lucide-react';
+import { Search, X, Cpu, Terminal, Clock, ArrowRight, Layers } from 'lucide-react';
 import { C_PROGRAMS } from '../data/cPrograms';
+import { FUNDAMENTAL_TOPICS } from '../data/computerFundamentals';
 import { ActiveTab } from './Navbar';
 import { RecentSearchItem } from '../types';
 
@@ -9,7 +10,7 @@ interface SearchModalProps {
   onClose: () => void;
   onNavigate: (tab: ActiveTab, prefill?: any) => void;
   recentSearches: RecentSearchItem[];
-  onAddRecentSearch: (query: string, type: 'logic' | 'c-program', targetId?: string) => void;
+  onAddRecentSearch: (query: string, type: 'logic' | 'c-program' | 'fundamentals', targetId?: string) => void;
   onClearRecentSearches: () => void;
 }
 
@@ -76,6 +77,14 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       p.tags.some((t) => t.toLowerCase().includes(q)) ||
       p.category.toLowerCase().includes(q)
   ).slice(0, 8);
+
+  const matchingFundamentals = FUNDAMENTAL_TOPICS.filter(
+    (f) =>
+      !q ||
+      f.title.toLowerCase().includes(q) ||
+      f.summary.toLowerCase().includes(q) ||
+      f.importantTags.some((t) => t.toLowerCase().includes(q))
+  ).slice(0, 6);
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
@@ -204,7 +213,40 @@ export const SearchModal: React.FC<SearchModalProps> = ({
             </div>
           )}
 
-          {matchingLogic.length === 0 && matchingPrograms.length === 0 && (
+          {/* Fundamental of Computer Category */}
+          {matchingFundamentals.length > 0 && (
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Fundamental Notes ({matchingFundamentals.length})</span>
+              </div>
+              <div className="space-y-1">
+                {matchingFundamentals.map((f) => (
+                  <button
+                    key={f.id}
+                    onClick={() => {
+                      onAddRecentSearch(f.title, 'fundamentals', f.id);
+                      onNavigate('fundamentals');
+                      onClose();
+                    }}
+                    className="w-full flex items-center justify-between p-2.5 rounded-xl text-left hover:bg-emerald-50/70 dark:hover:bg-emerald-950/40 transition-colors group"
+                  >
+                    <div>
+                      <div className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                        {f.title}
+                      </div>
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                        {f.unit}
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-emerald-500 transition-colors shrink-0" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {matchingLogic.length === 0 && matchingPrograms.length === 0 && matchingFundamentals.length === 0 && (
             <div className="p-8 text-center text-slate-500 text-xs">
               No results found for "{query}".
             </div>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { playKeySound, playUnlockSound, triggerHaptic } from '../utils/sound';
-import { Delete, Smartphone, ArrowLeft, GraduationCap } from 'lucide-react';
+import { Delete, ArrowLeft, GraduationCap } from 'lucide-react';
 
 interface CalculatorProps {
   secretPin: string;
   onUnlockVault: () => void;
-  onOpenInstall: () => void;
+  onOpenInstall?: () => void;
   onBackToBca?: () => void;
   soundEnabled: boolean;
   hapticsEnabled: boolean;
@@ -14,7 +14,6 @@ interface CalculatorProps {
 export const Calculator: React.FC<CalculatorProps> = ({
   secretPin,
   onUnlockVault,
-  onOpenInstall,
   onBackToBca,
   soundEnabled,
   hapticsEnabled,
@@ -299,15 +298,10 @@ export const Calculator: React.FC<CalculatorProps> = ({
         )}
 
         <div className="flex items-center gap-1.5">
-          {/* Install on phone APK/PWA button */}
-          <button
-            onClick={onOpenInstall}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white text-[11px] transition-colors cursor-pointer"
-            title="Install App"
-          >
-            <Smartphone size={12} className="text-zinc-400" />
-            <span>Install</span>
-          </button>
+          {/* Stealth subtle mode indicator */}
+          <span className="text-[10px] font-mono text-zinc-600 px-2 py-0.5 rounded bg-zinc-900">
+            RAD
+          </span>
         </div>
       </div>
 
