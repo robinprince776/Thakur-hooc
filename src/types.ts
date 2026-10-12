@@ -156,3 +156,19 @@ export interface PeerPresence {
 
 export type CalcVaultView = 'calculator' | 'chat';
 
+// --- Offline Notes & Scratchpad Types ---
+export type NoteCategory = 'BCA Notes' | 'C Code' | 'Quick Memo' | 'Important' | 'Personal';
+export type NoteColor = 'indigo' | 'emerald' | 'amber' | 'rose' | 'cyan' | 'purple';
+
+export interface OfflineNote {
+  id: string;
+  title: string;
+  content: string;
+  category: NoteCategory;
+  color: NoteColor;
+  isPinned: boolean;
+  isLocked: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+

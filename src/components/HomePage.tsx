@@ -1,5 +1,6 @@
 import React from 'react';
-import { Cpu, Terminal, ArrowRight, Zap, CheckCircle2, BookOpen, Sparkles, Layers, GraduationCap } from 'lucide-react';
+import { Cpu, Terminal, ArrowRight, Zap, CheckCircle2, BookOpen, Sparkles, Layers, GraduationCap, FileText, Calculator as CalcIcon } from 'lucide-react';
+import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 import { ActiveTab } from './Navbar';
 
 interface HomePageProps {
@@ -319,6 +320,119 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 {item.label}
               </button>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* NEW: 2 Integrated Offline Apps Suite (Calculator & Notes Pad) */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+              <span>Integrated Offline Mini-Apps</span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                100% Offline
+              </span>
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Browser &amp; mobile me bina internet ke fast chalne wale do integrated tools
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* OFFLINE APP 1: Scientific Calculator Vault */}
+          <div
+            onClick={() => {
+              window.location.hash = 'calc';
+            }}
+            className="group cursor-pointer rounded-2xl bg-gradient-to-br from-amber-500/5 via-slate-50 to-amber-500/10 dark:from-amber-950/20 dark:via-slate-900/80 dark:to-amber-950/10 p-5 border border-amber-300/40 dark:border-amber-700/40 shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30 group-hover:scale-105 transition-transform">
+                <CalcIcon className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-1">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                    CalcVault
+                  </h3>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold shrink-0">
+                    #calc
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                  Calculator with sounds, haptics, and stealth PIN vault.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-amber-600 dark:text-amber-400">
+              <span>Open Calculator</span>
+              <span className="group-hover:translate-x-1 transition-transform">➔</span>
+            </div>
+          </div>
+
+          {/* OFFLINE APP 2: Offline Notes & Code Scratchpad */}
+          <div
+            onClick={() => onNavigate('notes')}
+            className="group cursor-pointer rounded-2xl bg-gradient-to-br from-emerald-500/5 via-slate-50 to-emerald-500/10 dark:from-emerald-950/20 dark:via-slate-900/80 dark:to-emerald-950/10 p-5 border border-emerald-300/40 dark:border-emerald-700/40 shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/30 group-hover:scale-105 transition-transform">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-1">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                    Notes Pad
+                  </h3>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-bold shrink-0">
+                    #notes
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                  Personal notes, C snippets, PIN lock &amp; JS playground.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+              <span>Open Notes Pad</span>
+              <span className="group-hover:translate-x-1 transition-transform">➔</span>
+            </div>
+          </div>
+
+          {/* OFFLINE APP 3: SUKHAN Literary Lounge */}
+          <div
+            onClick={() => {
+              window.location.hash = 'sukhan';
+            }}
+            className="group cursor-pointer rounded-2xl bg-gradient-to-br from-[#59263C]/10 via-slate-50 to-[#C6A66B]/10 dark:from-[#59263C]/30 dark:via-slate-900/80 dark:to-[#0B0B0F] p-5 border border-[#C6A66B]/50 shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#59263C]/30 text-[#C6A66B] flex items-center justify-center shrink-0 border border-[#C6A66B]/40 group-hover:scale-105 transition-transform">
+                <SukhanPenIcon size={20} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-1">
+                  <h3 className="text-sm font-serif font-bold text-slate-900 dark:text-white group-hover:text-[#C6A66B] transition-colors">
+                    SUKHAN
+                  </h3>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#C6A66B]/20 text-[#C6A66B] font-bold shrink-0">
+                    #sukhan
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                  Poetry writing studio, 12 master poets, mood explorer &amp; card designer.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-[#C6A66B]">
+              <span>Launch SUKHAN</span>
+              <span className="group-hover:translate-x-1 transition-transform">➔</span>
+            </div>
           </div>
         </div>
       </section>

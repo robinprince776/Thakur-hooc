@@ -1,5 +1,5 @@
 // BCA Verse Service Worker (PWA & Offline compliant)
-const CACHE_NAME = 'bca-verse-v2';
+const CACHE_NAME = 'bca-verse-v5-prince';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
@@ -11,6 +11,12 @@ const PRECACHE_ASSETS = [
   '/apple-touch-icon.png',
   '/icon.svg'
 ];
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
 // Precache essential assets on install for offline use and PWABuilder verification
 self.addEventListener('install', (event) => {
@@ -50,7 +56,11 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+        if (
+          networkResponse &&
+          networkResponse.status === 200 &&
+          (networkResponse.type === 'basic' || networkResponse.type === 'cors')
+        ) {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseToCache);

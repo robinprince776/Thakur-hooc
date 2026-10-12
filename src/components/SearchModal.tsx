@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, X, Cpu, Terminal, Clock, ArrowRight, Layers } from 'lucide-react';
+import { Search, X, Cpu, Terminal, Clock, ArrowRight, Layers, FileText } from 'lucide-react';
 import { C_PROGRAMS } from '../data/cPrograms';
 import { FUNDAMENTAL_TOPICS } from '../data/computerFundamentals';
 import { ActiveTab } from './Navbar';

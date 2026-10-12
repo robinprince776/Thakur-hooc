@@ -11,6 +11,10 @@ import { Calculator } from './components/Calculator';
 import { SecretChat } from './components/SecretChat';
 import { SettingsModal } from './components/SettingsModal';
 import { SplashScreen } from './components/SplashScreen';
+import { OfflineNotesPad } from './components/OfflineNotesPad';
+import { SukhanApp } from './sukhan/components/SukhanApp';
+import { SukhanPenIcon } from './sukhan/components/SukhanPenIcon';
+import { AppSwitcherModal, CurrentAppType } from './components/AppSwitcherModal';
 import { useDirectChat } from './hooks/useDirectChat';
 import { playUnlockSound, playLockSound, triggerHaptic } from './utils/sound';
 import {
@@ -21,7 +25,7 @@ import {
   UserSettings,
   NatureWallpaper,
 } from './types';
-import { Calculator as CalcIcon, Layers, Heart, Sparkles } from 'lucide-react';
+import { Calculator as CalcIcon, Layers, Heart, Sparkles, FileText, RotateCw, Zap, Grid } from 'lucide-react';
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
   secretPin: '1307',
@@ -44,6 +48,7 @@ function getOrCreatePeerId(): string {
 export default function App() {
   const [showSplash, setShowSplash] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
+  const [updateAvailable, setUpdateAvailable] = useState<boolean>(false);
   const [isDark, setIsDark] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem('bca_buddy_theme');
@@ -82,18 +87,80 @@ export default function App() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [burnToast, setBurnToast] = useState(false);
 
-  // Sync URL hash with vault mode
+  // --- SUKHAN Literary Lounge State ---
+  const [isSukhanOpen, setIsSukhanOpen] = useState<boolean>(() => {
+    try {
+      const h = window.location.hash.toLowerCase();
+      return h === '#sukhan' || h === '#shayar' || h === '#poetry';
+    } catch {
+      return false;
+    }
+  });
+  const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState<boolean>(false);
+
+  // Sync URL hash with vault, sukhan & offline notes mode
   useEffect(() => {
     const handleHash = () => {
       const h = window.location.hash.toLowerCase();
-      if (h === '#calc' || h === '#vault' || h === '#chat') {
+      if (h === '#sukhan' || h === '#shayar' || h === '#poetry') {
+        setIsSukhanOpen(true);
+        setIsVaultOpen(false);
+      } else if (h === '#calc' || h === '#vault' || h === '#chat') {
         setIsVaultOpen(true);
+        setIsSukhanOpen(false);
+      } else if (h === '#notes' || h === '#pad') {
+        setIsVaultOpen(false);
+        setIsSukhanOpen(false);
+        setActiveTab('notes');
+      } else if (h === '#bca' || h === '#home' || h === '') {
+        setIsSukhanOpen(false);
+        setIsVaultOpen(false);
       }
     };
     handleHash();
     window.addEventListener('hashchange', handleHash);
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
+
+  // Listen for Service Worker updates to show instant update button
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistration().then((reg) => {
+        if (reg) {
+          reg.addEventListener('updatefound', () => {
+            const installing = reg.installing;
+            if (installing) {
+              installing.addEventListener('statechange', () => {
+                if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+                  setUpdateAvailable(true);
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
+  const handleForceUpdateApp = async () => {
+    try {
+      // Clear CacheStorage
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((k) => caches.delete(k)));
+      }
+      // Unregister service worker so next reload gets fresh SW & assets
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        for (const reg of regs) {
+          await reg.unregister();
+        }
+      }
+    } catch (e) {
+      console.warn('Cache clear error:', e);
+    }
+    window.location.reload();
+  };
 
   const handleUpdateVaultSettings = (newSettings: UserSettings) => {
     setVaultSettings(newSettings);
@@ -119,18 +186,56 @@ export default function App() {
 
   const handleBackToCalculator = () => {
     if (vaultSettings.soundEnabled) playLockSound();
-    if (vaultSettings.hapticsEnabled) triggerHaptic(20);
     setVaultView('calculator');
   };
 
   const handleCloseVault = () => {
+    if (vaultSettings.soundEnabled) playLockSound();
     setIsVaultOpen(false);
-    if (window.location.hash) {
-      history.pushState('', document.title, window.location.pathname + window.location.search);
+    setVaultView('calculator');
+    window.location.hash = '';
+  };
+
+  const handleOpenNotes = () => {
+    setIsVaultOpen(false);
+    setIsSukhanOpen(false);
+    setActiveTab('notes');
+    window.location.hash = 'notes';
+  };
+
+  const handleOpenSukhan = () => {
+    setIsVaultOpen(false);
+    setIsSukhanOpen(true);
+    window.location.hash = 'sukhan';
+  };
+
+  const handleCloseSukhan = () => {
+    setIsSukhanOpen(false);
+    window.location.hash = '';
+  };
+
+  const handleOpenAppSwitcher = () => {
+    setIsAppSwitcherOpen(true);
+  };
+
+  const handleSelectApp = (app: CurrentAppType) => {
+    setIsAppSwitcherOpen(false);
+    if (app === 'bca') {
+      setIsSukhanOpen(false);
+      setIsVaultOpen(false);
+      window.location.hash = '';
+    } else if (app === 'calc') {
+      setIsSukhanOpen(false);
+      setIsVaultOpen(true);
+      window.location.hash = 'calc';
+    } else if (app === 'sukhan') {
+      setIsVaultOpen(false);
+      setIsSukhanOpen(true);
+      window.location.hash = 'sukhan';
     }
   };
 
-  // Direct Chat Hook for Secret Vault
+  // Direct Peer-to-Peer Chat Hook (only active when room is connected)
   const {
     messages,
     onlineCount,
@@ -141,29 +246,33 @@ export default function App() {
     sendAudio,
     sendImage,
     sendTyping,
-    burnEntireChat,
     burnSingleMessage,
+    burnEntireChat,
   } = useDirectChat({
+    roomId: vaultSettings.roomId,
     peerId,
     peerName: vaultSettings.displayName,
-    roomId: vaultSettings.roomId || 'direct',
     isActiveChat: isVaultOpen && vaultView === 'chat',
     soundEnabled: vaultSettings.soundEnabled,
     hapticsEnabled: vaultSettings.hapticsEnabled,
     onRoomBurned: handleRoomBurnedNotification,
   });
 
-  // --- BCA Verse State ---
-  const [prefillLogic, setPrefillLogic] = useState<{
-    type?: NumberSystemType;
-    input?: string;
-  }>({
-    type: 'dec-to-bin',
-    input: '25.625',
-  });
+  // --- Theme Management ---
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add('dark');
+      localStorage.setItem('bca_buddy_theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('bca_buddy_theme', 'light');
+    }
+  }, [isDark]);
 
-  const [prefillCProgramId, setPrefillCProgramId] = useState<string>('fibonacci-series');
+  const toggleTheme = () => setIsDark((prev) => !prev);
 
+  // --- Bookmarks State ---
   const [bookmarks, setBookmarks] = useState<BookmarkItem[]>(() => {
     try {
       const saved = localStorage.getItem('bca_buddy_bookmarks');
@@ -173,6 +282,40 @@ export default function App() {
     }
   });
 
+  const handleSaveBookmark = (item: {
+    type: 'logic' | 'c-program' | 'fundamentals';
+    title: string;
+    subtitle: string;
+    data: any;
+  }) => {
+    const newItem: BookmarkItem = {
+      ...item,
+      id: `${item.type}_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      timestamp: Date.now(),
+    };
+    const updated = [newItem, ...bookmarks.filter((b) => b.title !== newItem.title)];
+    setBookmarks(updated);
+    localStorage.setItem('bca_buddy_bookmarks', JSON.stringify(updated));
+    showToast('Saved to Bookmarks!');
+  };
+
+  const handleRemoveBookmark = (id: string) => {
+    const updated = bookmarks.filter((b) => b.id !== id);
+    setBookmarks(updated);
+    localStorage.setItem('bca_buddy_bookmarks', JSON.stringify(updated));
+    showToast('Removed from Bookmarks');
+  };
+
+  const handleClearBookmarks = () => {
+    setBookmarks([]);
+    localStorage.removeItem('bca_buddy_bookmarks');
+    showToast('All bookmarks cleared');
+  };
+
+  const isBookmarked = (idOrTitle: string) =>
+    bookmarks.some((b) => b.id === idOrTitle || b.title === idOrTitle);
+
+  // --- Recent Searches State ---
   const [recentSearches, setRecentSearches] = useState<RecentSearchItem[]>(() => {
     try {
       const saved = localStorage.getItem('bca_buddy_recent_searches');
@@ -182,91 +325,53 @@ export default function App() {
     }
   });
 
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  // Sync dark class on document element and body
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      document.body.classList.add('dark');
-      localStorage.setItem('bca_buddy_theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.body.classList.remove('dark');
-      localStorage.setItem('bca_buddy_theme', 'light');
-    }
-  }, [isDark]);
-
-  // Sync bookmarks to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('bca_buddy_bookmarks', JSON.stringify(bookmarks));
-    } catch {}
-  }, [bookmarks]);
-
-  // Sync recent searches to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('bca_buddy_recent_searches', JSON.stringify(recentSearches));
-    } catch {}
-  }, [recentSearches]);
-
-  const toggleTheme = () => {
-    setIsDark((prev) => !prev);
-  };
-
-  const showBcaToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
-
-  const handleSaveBookmark = (item: Omit<BookmarkItem, 'id' | 'timestamp'>) => {
-    const existing = bookmarks.find((b) => b.title === item.title && b.type === item.type);
-    if (existing) {
-      setBookmarks((prev) => prev.filter((b) => b.id !== existing.id));
-      showBcaToast('Bookmark se hata diya');
-      return;
-    }
-
-    const newItem: BookmarkItem = {
-      ...item,
-      id: `bm_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-      timestamp: Date.now(),
-    };
-    setBookmarks((prev) => [newItem, ...prev]);
-    showBcaToast('Bookmark me save ho gaya!');
-  };
-
-  const handleRemoveBookmark = (id: string) => {
-    setBookmarks((prev) => prev.filter((b) => b.id !== id));
-    showBcaToast('Bookmark delete kar diya');
-  };
-
-  const handleClearBookmarks = () => {
-    setBookmarks([]);
-    showBcaToast('Saare bookmarks clear ho gaye');
-  };
-
-  const isBookmarked = (id: string) => {
-    return bookmarks.some((b) => b.id === id || b.title === id || b.data?.id === id);
-  };
-
-  const handleAddRecentSearch = (query: string, type: 'logic' | 'c-program' | 'fundamentals', targetId?: string) => {
-    const filtered = recentSearches.filter((s) => s.query.toLowerCase() !== query.toLowerCase());
+  const handleAddRecentSearch = (
+    query: string,
+    type: 'logic' | 'c-program' | 'fundamentals',
+    targetId?: string
+  ) => {
     const newItem: RecentSearchItem = {
-      id: `rs_${Date.now()}`,
+      id: `${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
       query,
       type,
       targetId,
       timestamp: Date.now(),
     };
-    setRecentSearches([newItem, ...filtered.slice(0, 7)]);
+    const updated = [newItem, ...recentSearches.filter((s) => s.query !== query)].slice(0, 8);
+    setRecentSearches(updated);
+    localStorage.setItem('bca_buddy_recent_searches', JSON.stringify(updated));
   };
 
   const handleClearRecentSearches = () => {
     setRecentSearches([]);
+    localStorage.removeItem('bca_buddy_recent_searches');
   };
+
+  // --- Toast Feedback State ---
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 2500);
+  };
+
+  // --- Global Search Modal State ---
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Keyboard shortcut Ctrl+K / Cmd+K for search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // --- Deep Link / Prefill state for Solvers ---
+  const [prefillLogic, setPrefillLogic] = useState<{ type?: NumberSystemType; input?: string }>({});
+  const [prefillCProgramId, setPrefillCProgramId] = useState<string | undefined>();
 
   const handleNavigate = (tab: ActiveTab, params?: any) => {
     setActiveTab(tab);
@@ -288,6 +393,8 @@ export default function App() {
             secretPin={vaultSettings.secretPin}
             onUnlockVault={handleUnlockVault}
             onBackToBca={handleCloseVault}
+            onOpenNotes={handleOpenNotes}
+            onOpenSukhan={handleOpenSukhan}
             soundEnabled={vaultSettings.soundEnabled}
             hapticsEnabled={vaultSettings.hapticsEnabled}
           />
@@ -333,11 +440,51 @@ export default function App() {
     );
   }
 
+  // --- RENDER 2: SUKHAN Literary Lounge (Made by Prince Thakur) ---
+  if (isSukhanOpen) {
+    return (
+      <>
+        <SukhanApp
+          onBackToSuite={handleOpenAppSwitcher}
+          onOpenCalcVault={() => {
+            setIsSukhanOpen(false);
+            setIsVaultOpen(true);
+            window.location.hash = 'calc';
+          }}
+          onOpenBcaVerse={handleCloseSukhan}
+          onOpenAppSwitcher={handleOpenAppSwitcher}
+        />
+
+        {/* 3-Apps Suite Switcher Modal */}
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp="sukhan"
+          onSelectApp={handleSelectApp}
+        />
+      </>
+    );
+  }
+
   // --- RENDER 2: BCA Verse Portal ---
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
       {/* App Launch Splash Screen: "Made by Prince Thakur" */}
       {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
+
+      {/* Floating Instant Update Notification Banner */}
+      {updateAvailable && (
+        <aside aria-label="Update notification" className="fixed top-3 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-2xl shadow-2xl border border-indigo-400 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 text-xs font-bold">
+          <Zap className="w-4 h-4 text-amber-300 fill-amber-300 animate-pulse" />
+          <span>Naya App Update Available Hai!</span>
+          <button
+            onClick={handleForceUpdateApp}
+            className="px-3 py-1 bg-white text-indigo-700 rounded-xl text-xs font-extrabold hover:bg-indigo-50 shadow-xs cursor-pointer"
+          >
+            Update Now
+          </button>
+        </aside>
+      )}
 
       {/* Top Navigation */}
       <Navbar
@@ -350,6 +497,10 @@ export default function App() {
           setIsVaultOpen(true);
           window.location.hash = 'calc';
         }}
+        onOpenNotes={handleOpenNotes}
+        onOpenSukhan={handleOpenSukhan}
+        onOpenAppSwitcher={handleOpenAppSwitcher}
+        onForceUpdateApp={handleForceUpdateApp}
         bookmarkCount={bookmarks.length}
       />
 
@@ -383,6 +534,23 @@ export default function App() {
           />
         )}
 
+        {activeTab === 'notes' && (
+          <OfflineNotesPad
+            onBackToBca={() => {
+              setActiveTab('home');
+              window.location.hash = '';
+            }}
+            onOpenCalculator={() => {
+              setIsVaultOpen(true);
+              window.location.hash = 'calc';
+            }}
+            onOpenSukhan={handleOpenSukhan}
+            secretPin={vaultSettings.secretPin}
+            soundEnabled={vaultSettings.soundEnabled}
+            hapticsEnabled={vaultSettings.hapticsEnabled}
+          />
+        )}
+
         {activeTab === 'formula-sheet' && <FormulaSheet />}
 
         {activeTab === 'bookmarks' && (
@@ -403,6 +571,14 @@ export default function App() {
         recentSearches={recentSearches}
         onAddRecentSearch={handleAddRecentSearch}
         onClearRecentSearches={handleClearRecentSearches}
+      />
+
+      {/* 3-Apps Suite Switcher Modal */}
+      <AppSwitcherModal
+        isOpen={isAppSwitcherOpen}
+        onClose={() => setIsAppSwitcherOpen(false)}
+        currentApp={isVaultOpen ? 'calc' : isSukhanOpen ? 'sukhan' : 'bca'}
+        onSelectApp={handleSelectApp}
       />
 
       {/* Toast Feedback */}
@@ -453,10 +629,20 @@ export default function App() {
               <span>Fundamental Notes</span>
             </button>
             <button
-              onClick={() => handleNavigate('formula-sheet')}
-              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
+              onClick={handleOpenNotes}
+              className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold hover:underline cursor-pointer"
+              title="Open Offline Notes Pad"
             >
-              Formulas
+              <FileText className="w-3.5 h-3.5" />
+              <span>Notes Pad (#notes)</span>
+            </button>
+            <button
+              onClick={handleOpenSukhan}
+              className="flex items-center gap-1 text-[#C6A66B] font-semibold hover:underline cursor-pointer"
+              title="Open SUKHAN Literary Lounge"
+            >
+              <SukhanPenIcon size={14} />
+              <span className="font-serif">SUKHAN (#sukhan)</span>
             </button>
             <button
               onClick={() => {
@@ -469,9 +655,22 @@ export default function App() {
               <CalcIcon className="w-3.5 h-3.5" />
               <span>Calc Vault (#calc)</span>
             </button>
-            <span className="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold text-[11px] border border-emerald-200 dark:border-emerald-800">
-              100% Offline in Browser
-            </span>
+            <button
+              onClick={handleOpenAppSwitcher}
+              className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer"
+              title="Switch Between 3 Apps"
+            >
+              <Grid className="w-3.5 h-3.5" />
+              <span>3-Apps Suite</span>
+            </button>
+            <button
+              onClick={handleForceUpdateApp}
+              className="flex items-center gap-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium hover:underline cursor-pointer"
+              title="Clear cache and reload latest version"
+            >
+              <RotateCw className="w-3 h-3" />
+              <span>Force Update</span>
+            </button>
           </div>
         </div>
       </footer>

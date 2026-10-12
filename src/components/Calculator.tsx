@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { playKeySound, playUnlockSound, triggerHaptic } from '../utils/sound';
-import { Delete, ArrowLeft, GraduationCap } from 'lucide-react';
+import { Delete, ArrowLeft, GraduationCap, FileText, Feather } from 'lucide-react';
+import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 
 interface CalculatorProps {
   secretPin: string;
   onUnlockVault: () => void;
   onOpenInstall?: () => void;
   onBackToBca?: () => void;
+  onOpenNotes?: () => void;
+  onOpenSukhan?: () => void;
   soundEnabled: boolean;
   hapticsEnabled: boolean;
 }
@@ -15,6 +18,8 @@ export const Calculator: React.FC<CalculatorProps> = ({
   secretPin,
   onUnlockVault,
   onBackToBca,
+  onOpenNotes,
+  onOpenSukhan,
   soundEnabled,
   hapticsEnabled,
 }) => {
@@ -282,20 +287,42 @@ export const Calculator: React.FC<CalculatorProps> = ({
   return (
     <div className="relative flex flex-col h-full max-h-full w-full max-w-md mx-auto bg-black text-white px-3.5 py-2.5 sm:px-5 sm:py-4 justify-between select-none overflow-hidden font-sans">
       {/* Top stealth bar */}
-      <div className="shrink-0 flex items-center justify-between pt-0.5 pb-1">
-        {onBackToBca ? (
-          <button
-            onClick={onBackToBca}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white text-[11px] font-medium transition-colors cursor-pointer"
-            title="BCA Verse me wapas jayein"
-          >
-            <ArrowLeft size={12} className="text-zinc-400" />
-            <GraduationCap size={12} className="text-indigo-400" />
-            <span>BCA Verse</span>
-          </button>
-        ) : (
-          <div />
-        )}
+      <div className="shrink-0 flex items-center justify-between pt-0.5 pb-1 gap-2">
+        <div className="flex items-center gap-1.5">
+          {onBackToBca && (
+            <button
+              onClick={onBackToBca}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white text-[11px] font-medium transition-colors cursor-pointer"
+              title="BCA Verse me wapas jayein"
+            >
+              <ArrowLeft size={12} className="text-zinc-400" />
+              <GraduationCap size={12} className="text-indigo-400" />
+              <span>BCA Verse</span>
+            </button>
+          )}
+
+          {onOpenNotes && (
+            <button
+              onClick={onOpenNotes}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-emerald-500/30 text-emerald-400 hover:text-emerald-300 text-[11px] font-medium transition-colors cursor-pointer"
+              title="Open Offline Notes Pad"
+            >
+              <FileText size={12} />
+              <span>Notes</span>
+            </button>
+          )}
+
+          {onOpenSukhan && (
+            <button
+              onClick={onOpenSukhan}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-[#C6A66B]/40 text-[#C6A66B] hover:text-[#FFF5EA] text-[11px] font-medium transition-colors cursor-pointer"
+              title="Open SUKHAN Literary Lounge"
+            >
+              <SukhanPenIcon size={12} />
+              <span className="font-serif">SUKHAN</span>
+            </button>
+          )}
+        </div>
 
         <div className="flex items-center gap-1.5">
           {/* Stealth subtle mode indicator */}
