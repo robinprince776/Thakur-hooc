@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>BCA Verse - Logic & C Programming Solver</title>
     <meta name="description" content="Comprehensive Logic, Number System and C Programming solver with step-by-step Hinglish explanations for BCA students." />
     <meta property="og:title" content="BCA Verse - Logic & C Programming Solver" />
@@ -27,9 +27,14 @@
     <script>
       (function() {
         try {
-          var saved = localStorage.getItem('bca_buddy_theme');
-          if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
+          var omni = localStorage.getItem('bca_omnitrix_mode');
+          if (omni !== 'false') {
+            document.documentElement.classList.add('dark', 'theme-omnitrix');
+          } else {
+            var saved = localStorage.getItem('bca_buddy_theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+              document.documentElement.classList.add('dark');
+            }
           }
         } catch (e) {}
       })();

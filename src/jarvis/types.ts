@@ -1,4 +1,10 @@
-export type JarvisPersonality = 'ironman' | 'bca_guru' | 'bollywood' | 'sarcastic';
+export type JarvisPersonality =
+  | 'ironman'
+  | 'bca_guru'
+  | 'cyber_expert'
+  | 'code_architect'
+  | 'bollywood'
+  | 'sarcastic';
 
 export type JarvisCringeLevel = 'mild' | 'balanced' | 'overdose';
 
@@ -15,7 +21,7 @@ export interface JarvisQuickPrompt {
   id: string;
   title: string;
   prompt: string;
-  category: 'Tech' | 'College Life' | 'Roast' | 'Cringe Flirt' | 'Science';
+  category: string;
 }
 
 export interface PromptChip {

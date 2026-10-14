@@ -20,6 +20,8 @@ import {
   Wrench
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
+import { OmnitrixDial } from './OmnitrixDial';
+import { OmnitrixLogo } from './OmnitrixLogo';
 
 export type ActiveTab =
   | 'home'
@@ -35,7 +37,10 @@ interface NavbarProps {
   setActiveTab: (tab: ActiveTab) => void;
   isDark: boolean;
   toggleTheme: () => void;
+  isOmnitrixActive?: boolean;
+  onToggleOmnitrix?: () => void;
   onOpenSearch: () => void;
+  onOpenTechMaster?: () => void;
   onOpenCalculatorVault?: () => void;
   onOpenNotes?: () => void;
   onOpenSukhan?: () => void;
@@ -53,7 +58,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   isDark,
   toggleTheme,
+  isOmnitrixActive = false,
+  onToggleOmnitrix,
   onOpenSearch,
+  onOpenTechMaster,
   onOpenCalculatorVault,
   onOpenNotes,
   onOpenSukhan,
@@ -100,21 +108,38 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               className="flex items-center gap-2.5 group text-left cursor-pointer"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-                <Cpu className="w-5 h-5 text-white" />
-              </div>
+              {isOmnitrixActive ? (
+                <div className="relative group-hover:scale-105 transition-transform">
+                  <OmnitrixLogo size="sm" isGlowing={true} animated={true} />
+                </div>
+              ) : (
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                  <Cpu className="w-5 h-5 text-white" />
+                </div>
+              )}
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+                  <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
                     BCA Verse
+                    {isOmnitrixActive && (
+                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-[#00FF66]/20 text-[#00FF66] border border-[#00FF66]/40 uppercase tracking-wider">
+                        Alien Force
+                      </span>
+                    )}
                   </span>
                   {/* Made by Prince Thakur badge */}
-                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/60">
+                  <span className={`hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${
+                    isOmnitrixActive
+                      ? 'bg-[#00FF66]/15 text-[#00FF66] border border-[#00FF66]/40'
+                      : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/60'
+                  }`}>
                     By Prince Thakur
                   </span>
                 </div>
-                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 hidden xs:block">
-                  Academic Suite + Offline Tools
+                <span className={`text-[11px] font-medium hidden xs:block ${
+                  isOmnitrixActive ? 'text-[#00FF66]/80 font-mono' : 'text-slate-500 dark:text-slate-400'
+                }`}>
+                  {isOmnitrixActive ? 'Omnitrix Recalibrated · 8 Apps Suite' : 'Academic Suite + Offline Tools'}
                 </span>
               </div>
             </button>
@@ -175,41 +200,27 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>Notes Pad</span>
             </button>
 
-            {/* SUKHAN Literary Lounge Button */}
-            {onOpenSukhan && (
-              <button
-                onClick={onOpenSukhan}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-[#C6A66B]/50 bg-gradient-to-r from-[#59263C]/30 to-[#0B0B0F] hover:border-[#C6A66B] text-[#C6A66B] text-xs font-semibold transition-all shadow-xs cursor-pointer"
-                title="Open SUKHAN Literary Lounge (#sukhan)"
-              >
-                <SukhanPenIcon size={14} />
-                <span className="font-serif hidden sm:inline">SUKHAN</span>
-              </button>
+            {/* Ben 10 Omnitrix Dial (Active on All Screen Sizes!) */}
+            {onToggleOmnitrix && (
+              <div className="flex items-center">
+                <OmnitrixDial
+                  isOmnitrixActive={isOmnitrixActive}
+                  onToggleOmnitrix={onToggleOmnitrix}
+                  size="md"
+                />
+              </div>
             )}
 
-            {/* Simple C Compiler Button */}
-            {onOpenCompiler && (
+            {/* TechMaster 2000+ Flagship Button */}
+            {onOpenTechMaster && (
               <button
-                onClick={onOpenCompiler}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
-                title="Open Simple C Compiler (#compiler)"
+                onClick={onOpenTechMaster}
+                className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-bold transition-all shadow-xs cursor-pointer"
+                title="Open TechMaster 2000+ (#techmaster)"
               >
-                <span className="w-4 h-4 rounded bg-cyan-600 text-white font-mono font-black text-[10px] flex items-center justify-center">
-                  C
-                </span>
-                <span className="hidden sm:inline">C Compiler</span>
-              </button>
-            )}
-
-            {/* CyberShield Cybersecurity Button */}
-            {onOpenCyber && (
-              <button
-                onClick={onOpenCyber}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
-                title="Open CyberShield (#cyber)"
-              >
-                <Shield className="w-3.5 h-3.5 text-emerald-500" />
-                <span className="hidden sm:inline">CyberShield</span>
+                <BookOpen className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="hidden xl:inline">TechMaster 2000+</span>
+                <span className="xl:hidden">TechMaster</span>
               </button>
             )}
 
@@ -217,11 +228,23 @@ export const Navbar: React.FC<NavbarProps> = ({
             {onOpenJarvis && (
               <button
                 onClick={onOpenJarvis}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+                className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
                 title="Open JARVIS AI (#jarvis)"
               >
                 <Bot className="w-3.5 h-3.5 text-cyan-400" />
-                <span className="hidden sm:inline">JARVIS AI</span>
+                <span className="hidden xl:inline">JARVIS AI</span>
+              </button>
+            )}
+
+            {/* CyberShield Cybersecurity Button */}
+            {onOpenCyber && (
+              <button
+                onClick={onOpenCyber}
+                className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+                title="Open CyberShield (#cyber)"
+              >
+                <Shield className="w-3.5 h-3.5 text-emerald-500" />
+                <span>CyberShield</span>
               </button>
             )}
 
@@ -229,11 +252,37 @@ export const Navbar: React.FC<NavbarProps> = ({
             {onOpenDevForge && (
               <button
                 onClick={onOpenDevForge}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+                className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
                 title="Open DevForge Toolkit (#dev)"
               >
                 <Wrench className="w-3.5 h-3.5 text-indigo-400" />
-                <span className="hidden sm:inline">DevForge</span>
+                <span>DevForge</span>
+              </button>
+            )}
+
+            {/* Simple C Compiler Button */}
+            {onOpenCompiler && (
+              <button
+                onClick={onOpenCompiler}
+                className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+                title="Open Simple C Compiler (#compiler)"
+              >
+                <span className="w-4 h-4 rounded bg-cyan-600 text-white font-mono font-black text-[10px] flex items-center justify-center">
+                  C
+                </span>
+                <span>C Compiler</span>
+              </button>
+            )}
+
+            {/* SUKHAN Literary Lounge Button */}
+            {onOpenSukhan && (
+              <button
+                onClick={onOpenSukhan}
+                className="hidden 2xl:flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-[#C6A66B]/50 bg-gradient-to-r from-[#59263C]/30 to-[#0B0B0F] hover:border-[#C6A66B] text-[#C6A66B] text-xs font-semibold transition-all shadow-xs cursor-pointer"
+                title="Open SUKHAN Literary Lounge (#sukhan)"
+              >
+                <SukhanPenIcon size={14} />
+                <span className="font-serif">SUKHAN</span>
               </button>
             )}
 
@@ -241,23 +290,23 @@ export const Navbar: React.FC<NavbarProps> = ({
             {onOpenCalculatorVault && (
               <button
                 onClick={onOpenCalculatorVault}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+                className="hidden 2xl:flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
                 title="Open Calculator Vault (#calc)"
               >
                 <Calculator className="w-3.5 h-3.5 text-amber-500" />
-                <span className="hidden md:inline">Calculator</span>
+                <span>Calculator</span>
               </button>
             )}
 
-            {/* 6-Apps Suite Switcher */}
+            {/* 8-Apps Suite Switcher */}
             {onOpenAppSwitcher && (
               <button
                 onClick={onOpenAppSwitcher}
                 className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                title="Open 6-Apps Suite Switcher"
+                title="Open 8-Apps Suite Switcher"
                 aria-label="App Suite Switcher"
               >
-                <Grid className="w-4 h-4 text-cyan-500" />
+                <Grid className="w-4 h-4 text-emerald-500" />
               </button>
             )}
 
@@ -411,6 +460,25 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
+            {/* Direct button to TechMaster 2000+ */}
+            {onOpenTechMaster && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenTechMaster();
+                }}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <BookOpen className="w-4 h-4 text-emerald-400" />
+                  <span>TechMaster 2000+ (Zero to Hero)</span>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">
+                  #tech
+                </span>
+              </button>
+            )}
+
             {/* Direct button to JARVIS AI */}
             {onOpenJarvis && (
               <button
@@ -422,7 +490,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <div className="flex items-center gap-3">
                   <Bot className="w-4 h-4 text-cyan-400" />
-                  <span>JARVIS AI (Smart &amp; Cringe)</span>
+                  <span>JARVIS AI (Gemini Powered · 100% Accurate)</span>
                 </div>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 font-bold">
                   #jarvis
@@ -468,21 +536,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
-            {/* 7-Apps Suite Launcher Button */}
+            {/* 8-Apps Suite Launcher Button */}
             {onOpenAppSwitcher && (
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   onOpenAppSwitcher();
                 }}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20 transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <Grid className="w-4 h-4 text-cyan-500" />
-                  <span>7-Apps Master Suite Switcher</span>
+                  <Grid className="w-4 h-4 text-emerald-400" />
+                  <span>8-Apps Master Suite Switcher</span>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 font-bold">
-                  7 Apps
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 font-bold">
+                  8 Apps
                 </span>
               </button>
             )}

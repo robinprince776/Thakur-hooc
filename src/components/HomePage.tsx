@@ -9,9 +9,17 @@ interface HomePageProps {
   onOpenCyber?: () => void;
   onOpenJarvis?: () => void;
   onOpenDevForge?: () => void;
+  onOpenTechMaster?: () => void;
 }
 
-export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenCompiler, onOpenCyber, onOpenJarvis, onOpenDevForge }) => {
+export const HomePage: React.FC<HomePageProps> = ({
+  onNavigate,
+  onOpenCompiler,
+  onOpenCyber,
+  onOpenJarvis,
+  onOpenDevForge,
+  onOpenTechMaster
+}) => {
   const quickSolvers = [
     { label: '25.625 to Binary (Point)', type: 'dec-to-bin', input: '25.625' },
     { label: '11001.101 to Decimal', type: 'bin-to-dec', input: '11001.101' },
@@ -527,7 +535,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenCompiler, 
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-                  Super intelligent AI companion, answers simply &amp; lightly with impressive cringe humor!
+                  Super intelligent AI assistant powered by Gemini. 100% accurate, verified solutions with zero cringe!
                 </p>
               </div>
             </div>
@@ -567,6 +575,39 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenCompiler, 
 
             <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
               <span>Launch DevForge</span>
+              <span className="group-hover:translate-x-1 transition-transform">➔</span>
+            </div>
+          </div>
+
+          {/* OFFLINE APP 8: TechMaster 2000+ (Zero to Hero Academy) */}
+          <div
+            onClick={() => {
+              if (onOpenTechMaster) onOpenTechMaster();
+              else window.location.hash = 'techmaster';
+            }}
+            className="group cursor-pointer rounded-2xl bg-gradient-to-br from-emerald-500/15 via-slate-50 to-teal-500/15 dark:from-emerald-950/40 dark:via-slate-900/90 dark:to-[#040E06] p-5 border border-emerald-400/60 dark:border-emerald-500/60 shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 text-slate-950 flex items-center justify-center shrink-0 border border-emerald-400 group-hover:scale-105 transition-transform shadow-md shadow-emerald-500/30">
+                <BookOpen className="w-5 h-5 text-slate-950" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-1">
+                  <h3 className="text-sm font-black text-slate-900 dark:text-white group-hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+                    <span>TechMaster 2000+</span>
+                  </h3>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-bold shrink-0">
+                    #tech
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                  2000+ technical questions: Ethical Hacking, Indian Cyber Cell (1930), Supercomputers &amp; Roadmap!
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+              <span>Become Tech Master ➔</span>
               <span className="group-hover:translate-x-1 transition-transform">➔</span>
             </div>
           </div>

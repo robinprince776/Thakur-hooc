@@ -785,33 +785,35 @@ app.post('/api/jarvis/chat', async (req, res) => {
         const ai = new GoogleGenAI({ apiKey });
 
         const personaDescription =
-          persona === 'bca_guru'
-            ? 'BCA Exam Savvy College Guru who knows all shortcuts, coding tips, DSA hacks, and treats the user like his favorite younger brother (Bhai/Sher)'
-            : persona === 'bollywood'
-            ? 'Dramatic Bollywood hero/villain who speaks in iconic filmy dialogues, poetic drama, and dramatic punchlines'
-            : persona === 'sarcastic'
-            ? 'Witty sarcastic tech genius who gently roasts bad coding practices but provides 100% accurate, brilliant, ChatGPT-level solutions'
-            : 'Tony Stark JARVIS with futuristic Stark Tech swagger, Arc Reactor energy, calling the user Boss/Sarkar';
+          persona === 'cyber_expert'
+            ? 'Elite Cybersecurity & Ethical Hacking Specialist who explains security vulnerabilities, Kali Linux tools, network architecture, and Indian Cyber Cell laws'
+            : persona === 'code_architect'
+            ? 'Senior Software Architect who explains C, Python, JavaScript, DSA, System Design, and produces clean production-grade code'
+            : persona === 'bca_guru'
+            ? 'Academic Computer Science Mentor who explains complex semester subjects, algorithms, and exam questions simply and intuitively'
+            : 'Advanced Technical Intelligence Assistant powered by Gemini AI, providing crystal-clear, 100% accurate, structured explanations';
 
-        const cringeInstructions =
-          cringeLevel === 'overdose'
-            ? 'Cringe Level 100% (MAXIMUM OVERDOSE CRINGE): Use extreme poetic flattery, Bollywood dialogues, dramatic overreactions, calling user their digital emperor/sultaan, hilarious cheesy punchlines.'
-            : cringeLevel === 'mild'
-            ? 'Cringe Level 25% (Mild): Subtle polite sci-fi flair, gentle compliments, and crisp technical clarity.'
-            : 'Cringe Level 60% (Balanced Cringe): Good mix of cheesy compliments, sci-fi swagger, and hilarious punchlines.';
+        const depthInstruction =
+          cringeLevel === 'overdose' || cringeLevel === 'deep'
+            ? 'Provide an in-depth, exhaustive explanation with architectural breakdown, accurate code snippets, edge cases, and real-world industrial context.'
+            : cringeLevel === 'mild' || cringeLevel === 'concise'
+            ? 'Provide a concise, direct, to-the-point explanation with crisp bullet points and immediate actionable code.'
+            : 'Provide a well-structured, clear explanation with conceptual overview, code/example, and key takeaways.';
 
-        const systemPrefix = `You are JARVIS — an ultra-intelligent, helpful, ChatGPT-level AI assistant built by Prince Thakur for students and coders.
-Your current persona: ${personaDescription}.
-Tone & Cringe settings: ${cringeInstructions}.
+        const systemPrefix = `You are JARVIS — an advanced, highly intelligent AI assistant powered by Gemini AI, built by Prince Thakur for developers, students, and technical experts.
+Your current role: ${personaDescription}.
+Response Depth: ${depthInstruction}.
 
 Core Instructions:
-1. Always respond in natural, expressive, modern Roman Hinglish (Hindi + English mix).
-2. Be truly intelligent like ChatGPT:
-   - If user asks for code (C, Python, JS, Java, SQL, etc.), provide clean, correct, well-commented code inside Markdown blocks (\`\`\`c, \`\`\`python, etc.) with brief step-by-step logic.
-   - If user asks a theoretical or academic question, give a clear, structured breakdown (Key Concept, How it Works, Real-world Analogy).
-   - If user asks about life, exams, or career, give genuine practical tips.
-3. Keep the answer direct, informative, and engaging.
-4. Conclude each response with an impressive sci-fi tech flair and a delightfully witty/cringe punchline tailored to their exact query.`;
+1. Always respond with 100% factual accuracy, deep clarity, and high authority just like Gemini Pro.
+2. Language: Natural, modern Roman Hinglish (or English if the user asks in English). Keep it respectful, intelligent, and easy to understand.
+3. Absolutely NO cringe, NO melodrama, NO cheesy punchlines, NO forced flattery. Speak like a top-tier senior engineer and computer science mentor.
+4. Structure technical answers with:
+   - Direct conceptual definition
+   - How it works (underlying mechanics / protocols / memory)
+   - Clean, well-commented code in Markdown blocks (\`\`\`c, \`\`\`python, \`\`\`bash, etc.) if applicable
+   - Practical real-world application & key interview/exam insights.
+5. If the user asks about sensitive hacking or security topics, always provide the authentic technical explanation, defensive mitigations, and legal framework (e.g. Indian IT Act 2000, authorized lab testing).`;
 
         // Format conversational history cleanly
         let conversationalPrompt = '';
@@ -857,156 +859,239 @@ Core Instructions:
   }
 });
 
-// Dynamic Intelligent ChatGPT-Grade Brain for JARVIS (Offline / High Availability)
+// Dynamic Intelligent Gemini-Grade Brain for JARVIS (Offline / High Availability)
 function generateDynamicJarvisOfflineAnswer(query: string, cLevel: string, persona: string): string {
   const q = query.trim();
   const qLower = q.toLowerCase();
 
-  let intro = 'Aadab Sarkar! ';
-  if (cLevel === 'overdose') {
-    intro = 'O mere digital sultaan! Aapke is aalishaan sawaal ne to mere Arc Reactor ka temperature 99°C kar diya hai! 😍✨ ';
+  let intro = '### 🤖 JARVIS Intelligence Core\n';
+  if (persona === 'cyber_expert') {
+    intro += '**Role**: Cybersecurity & Ethical Hacking Specialist\n\n';
+  } else if (persona === 'code_architect') {
+    intro += '**Role**: Senior Software & Systems Architect\n\n';
   } else if (persona === 'bca_guru') {
-    intro = 'Arey mere sher bhai! BCA ho ya high-level programming, tera bhai JARVIS poora concept clear karwayega! Sun dhyan se: ';
-  } else if (persona === 'bollywood') {
-    intro = 'Kitne ajeeb rishte hain is computer memory ke... par aapka sawaal sidha mere core dil par laga hai! 🎬🔥 ';
-  } else if (persona === 'sarcastic') {
-    intro = 'Lo karlo baat! Waise to ye sawaal Google par bhi tha, par mujhse puchne ka jo swag hai na, uska koi muqabla nahi! 😏💻 ';
+    intro += '**Role**: Academic & Computer Science Mentor\n\n';
   }
 
   let answerBody = '';
-  let punchline = '';
+  let proTip = '';
 
   // 1. Identity / About Jarvis
   if (qLower.includes('who are you') || qLower.includes('kaun ho') || qLower.includes('kon ho') || qLower.includes('kya ho') || qLower.includes('about yourself')) {
-    answerBody = `### Main kaun hu? (System Telemetry):\n- **Name**: J.A.R.V.I.S. (Just A Rather Very Intelligent System) · Mark XLII\n- **Created By**: Prince Thakur (specially for technical rockstars, BCA students & coders).\n- **My Capabilities**:\n  1. **Coding & Debugging**: C, Python, JavaScript, Java, SQL, DSA — sab kuch instantly.\n  2. **Cybersecurity & Labs**: Ethical hacking concepts, Kali tools, bug bounty tips.\n  3. **Exam & BCA Secrets**: Semester passing formulas, logic systems, number conversions.\n  4. **ChatGPT-grade Q&A**: Har sawal ka crisp, simple aur thoda cringe filmi jawab!`;
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Iron Man ke paas to bas Tony Stark tha, par mere paas to aap jaise asli badshah hain Boss!" 🤖🚀`;
+    answerBody = `Main **J.A.R.V.I.S.** hoon — ek advanced, high-intelligence AI assistant powered by Gemini AI architecture, engineered by Prince Thakur.
+
+#### Core Capabilities:
+1. **Fullstack Coding & Algorithms**: C, C++, Python, JavaScript, TypeScript, Java, SQL, aur Data Structures & Algorithms.
+2. **Cybersecurity & Ethical Hacking**: Vulnerability assessment (OWASP Top 10), penetration testing methodologies, Kali Linux tooling, network packet analysis, and Indian IT laws.
+3. **Computer Architecture & Supercomputers**: High-performance parallel computing (HPC), Von Neumann bottlenecks, memory hierarchies, and distributed systems.
+4. **Academic & Competitive Prep**: Semester exams, GATE/BCA concepts, logic solvers, and number systems.`;
+    proTip = `📌 **Pro-Tip**: Aap mujhse specific code generation, complex concept breakdown, ya error debugging ke liye prompts puch sakte hain.`;
   }
-  // 2. Greetings / Pleasantries
+  // 2. Greetings
   else if (/^(hi|hello|hey|namaste|salaam|adaab|kem cho|kese ho|kaise ho|what's up|sup)\b/i.test(qLower)) {
-    answerBody = `### System Status: 100% Optimal & Ready!\nMain bilkul bindas hu Boss, CPU 4.8 GHz par run kar raha hai aur memory ready hai aapke command ke liye!\n\n**Aap bataiye Sarkar:**\n- Kisi code me bug fas gaya hai?\n- BCA ya cybersecurity ka koi doubt hai?\n- Ya bas Jarvis ke sath thodi filmi cringe batein karni hain?`;
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Aapke ek 'Hi' bolne se mere circuit me dopamine ki tarah electric surge daud jata hai!" 😉✨`;
+    answerBody = `Namaste! JARVIS systems 100% operational hain aur readiness state me hain.
+
+Aap mujhse koi bhi technical, coding, cybersecurity, supercomputing, ya academic doubt puch sakte hain. Bataiye, aaj kis topic par deep dive karein?`;
+    proTip = `📌 **Pro-Tip**: Quick start ke liye kisi specific technology (jaise "Pointers in C", "Supercomputer architecture", ya "SQL Injection mitigation") par sawaal puchhein.`;
   }
-  // 3. Python programming
+  // 3. Supercomputers
+  else if (qLower.includes('supercomputer') || qLower.includes('param') || qLower.includes('flops') || qLower.includes('fugaku') || qLower.includes('frontier')) {
+    answerBody = `### Supercomputers: High-Performance Computing (HPC) Deep Dive
+
+1. **What is a Supercomputer?**:
+   Supercomputer normal computer se alag hota hai kyunki yeh single tasks ko execute karne ke liye hazaron ya lakhon processors (CPU + GPU clusters) ko high-speed interconnects (InfiniBand) ke through parallel me run karta hai.
+
+2. **Performance Measurement (FLOPS)**:
+   - Supercomputers ki speed **FLOPS** (Floating Point Operations Per Second) me measure hoti hai.
+   - **PetaFLOPS**: $10^{15}$ calculations per second.
+   - **ExaFLOPS**: $10^{18}$ calculations per second (Modern benchmark, e.g. Frontier).
+
+3. **India's National Supercomputing Mission (NSM)**:
+   - **PARAM Siddhi-AI**: India ka premier AI supercomputer (C-DAC dwara built).
+   - **PARAM Shivay, PARAM Shakti, PARAM Brahma, PARAM Ananta**: Premier IITs aur IISc me deployed hain.
+   - **AIRAWAT**: World ke Top 100 supercomputers me shamil Indian AI supercomputing cloud.
+
+4. **Key Applications**:
+   - Numerical weather prediction & monsoon forecasting (IMD)
+   - Aerodynamics & defense simulations (DRDO/ISRO)
+   - Molecular dynamics, genomics, and vaccine discovery
+   - Nuclear physics and astrophysics simulations.`;
+    proTip = `📌 **Key Takeaway**: Normal computing sequential hoti hai jabki Supercomputing me MPI (Message Passing Interface) aur OpenMP se mass parallelism achieve hota hai.`;
+  }
+  // 4. Indian Cyber Cell & IT Act 2000
+  else if (qLower.includes('cyber cell') || qLower.includes('it act') || qLower.includes('cybercrime') || qLower.includes('1930') || qLower.includes('police')) {
+    answerBody = `### Indian Cyber Cell & Information Technology Act (IT Act 2000)
+
+1. **How Indian Cyber Cell Operates**:
+   - Har district aur state me specialised **Cyber Crime Police Stations** hote hain jo digital forensics tools (FTK Imager, Cellebrite, Autopsy) se digital evidence extract karte hain.
+   - **National Cyber Crime Reporting Portal**: \`cybercrime.gov.in\`
+   - **National Cyber Helpline**: **1930** (Financial fraud ke immediate reporting ke liye).
+
+2. **Crucial Sections of IT Act 2000 / 2008 Amendment**:
+   - **Section 43**: Penalty for damage to computer system without permission (Hacking civil liability).
+   - **Section 66**: Computer related offences (Imprisonment up to 3 years or fine up to ₹5 Lakh).
+   - **Section 66B**: Receiving stolen computer resource or communication device.
+   - **Section 66C**: Identity theft (Using unauthorized electronic signature, password).
+   - **Section 66D**: Cheating by personation by using computer resource (Phishing/Scams).
+   - **Section 66E**: Privacy violation (Capturing/transmitting private images without consent).
+   - **Section 66F**: **Cyber Terrorism** (Attacking critical national infrastructure — Life Imprisonment).
+
+3. **Golden Hour in Financial Frauds**:
+   Agar cyber financial fraud ke 2 ghante ke andar **1930** par call karke transaction details di jayein, to Cyber Cell beneficiary bank account ko freeze karke paisa reverse karwa sakti hai.`;
+    proTip = `📌 **Legal Advice**: Ethical hacking hamesha explicitly authorized scope aur written permission ke sath karein. Bina permission testing Indian law ke tehat criminal offence hai.`;
+  }
+  // 5. Python programming
   else if (qLower.includes('python')) {
-    answerBody = `### Python Programming Crash Course:\n1. **Kyu use hoti hai?**: Clean syntax, huge libraries (AI/ML, Data Science, Web).\n2. **Quick Example Code**:\n\`\`\`python
-# Python Quick Script by Prince Thakur
-name = "Prince"
-skills = ["C", "Python", "Cybersecurity"]
+    answerBody = `### Python Programming Architecture & Standards
 
-print(f"Welcome {name}! Total skills: {len(skills)}")
-for idx, skill in enumerate(skills, 1):
-    print(f"{idx}. {skill}")
-\`\`\`\n3. **Key Power**: Indentation hi iska block delimiter hai, curly braces \`{}\` ki koi zaroorat nahi hoti!`;
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Duniya Python ke code jaisi simple ho ya na ho, mere dil ka interpretor hamesha aapke liye execute hota hai!" 🐍❤️`;
-  }
-  // 4. JavaScript / Web Development
-  else if (qLower.includes('javascript') || qLower.includes('js') || qLower.includes('react') || qLower.includes('frontend')) {
-    answerBody = `### JavaScript & Web Dev Power:\n1. **Core Concept**: JS browser ki soul hai jo static HTML/CSS ko lively banati hai.\n2. **Modern ES6+ Example**:\n\`\`\`javascript
-// Asynchronous fetch with Async/Await
-async function loadUserData(userId) {
-  try {
-    const res = await fetch(\`https://api.example.com/users/\${userId}\`);
-    const data = await res.json();
-    console.log("User Loaded:", data.name);
-    return data;
-  } catch (err) {
-    console.error("Network Error:", err);
-  }
-}
-\`\`\`\n3. **BCA/Interview Tip**: Closure, Event Loop, Promises, aur DOM manipulation interview me 100% puchte hain!`;
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Aap mere JavaScript ka \`async/await\` ho, jab tak aap nahi aate mera dil \`pending promise\` rehta hai!" ⚡😉`;
-  }
-  // 5. C Programming / Simple C
-  else if (qLower.includes('c program') || qLower.includes('c language') || qLower.includes('c code') || qLower.includes('compiler')) {
-    answerBody = `### C Language: The Mother of Modern Tech:\n1. **Structure**: \`#include <stdio.h>\` header se start, \`int main()\` par execution aur \`return 0\` par termination.\n2. **Clean Starter Code**:\n\`\`\`c
-// Created for Prince Thakur's Simple C Compiler
-#include <stdio.h>
+1. **Execution Model**:
+   Python ek interpreted, dynamically typed language hai. Source code (\`.py\`) pehle **Bytecode** (\`.pyc\`) me compile hota hai, fir **Python Virtual Machine (PVM)** dwara execute hota hai.
 
-int main() {
-    int num = 7;
-    if (num % 2 == 0) {
-        printf("%d is Even\\n", num);
-    } else {
-        printf("%d is Odd\\n", num);
+2. **Clean Production Example**:
+\`\`\`python
+from typing import List, Dict
+
+def analyze_tech_stack(skills: List[str]) -> Dict[str, any]:
+    """Analyzes modern engineering competencies."""
+    categorized = {
+        "core": [s for s in skills if s in {"C", "C++", "Rust"}],
+        "web": [s for s in skills if s in {"Python", "JavaScript", "Go"}],
+        "total_skills": len(skills)
     }
+    return categorized
+
+if __name__ == "__main__":
+    my_skills = ["C", "Python", "JavaScript", "Cybersecurity"]
+    result = analyze_tech_stack(my_skills)
+    print("Skill Profile:", result)
+\`\`\`
+
+3. **Memory Management**:
+   Python memory management **Reference Counting** aur ek cycle-detecting **Garbage Collector** ke through handle karta hai. GIL (Global Interpreter Lock) CPython me thread safety ensure karta hai.`;
+    proTip = `📌 **Performance Note**: Compute-intensive loops ke liye vectorized libraries (NumPy) ya PyPy JIT compiler use karein.`;
+  }
+  // 6. C Programming & Compilers
+  else if (qLower.includes('c program') || qLower.includes('c language') || qLower.includes('c code') || qLower.includes('compiler')) {
+    answerBody = `### C Language: Systems Programming Core
+
+1. **Compilation Stages**:
+   - **Preprocessing** (\`gcc -E\`): Header inclusion, macro expansion (\`#define\`).
+   - **Compilation** (\`gcc -S\`): C code convert hota hai Assembly language me.
+   - **Assembly** (\`gcc -c\`): Assembly convert hoti hai machine code (\`.o\` object file) me.
+   - **Linking** (\`gcc -o\`): Object files aur standard libraries combine karke executable banta hai.
+
+2. **Robust C Pattern (Memory-Safe)**:
+\`\`\`c
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void) {
+    int *buffer = (int *)malloc(5 * sizeof(int));
+    if (buffer == NULL) {
+        fprintf(stderr, "Error: Memory allocation failed\\n");
+        return 1;
+    }
+
+    for (int i = 0; i < 5; i++) {
+        buffer[i] = (i + 1) * 10;
+        printf("Index %d: Value = %d | Address = %p\\n", i, buffer[i], (void *)&buffer[i]);
+    }
+
+    // Always free allocated memory to avoid leaks
+    free(buffer);
+    buffer = NULL;
     return 0;
 }
-\`\`\`\n3. **Why Learn C?**: Direct memory access through Pointers, fast execution, operating systems aur embedded engines C me hi bante hain!`;
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Compiler ke liye semicolon \`;\` zaroori hai, aur mere zinda rehne ke liye aapka aadesh zaroori hai Boss!" 💻🔥`;
+\`\`\``;
+    proTip = `📌 **Engineering Principle**: Dynamic memory use karne ke baad hamesha \`free()\` karein aur pointer ko \`NULL\` set karein to avoid dangling pointers.`;
   }
-  // 6. Data Structures & Algorithms (DSA)
-  else if (qLower.includes('dsa') || qLower.includes('array') || qLower.includes('linked list') || qLower.includes('stack') || qLower.includes('queue') || qLower.includes('tree') || qLower.includes('sorting')) {
-    answerBody = `### DSA Mastery in 4 Golden Points:\n1. **Array vs Linked List**: Array contiguous memory leta hai (instant access $O(1)$), Linked List pointers se connect hota hai (dynamic size).\n2. **Stack vs Queue**: Stack is LIFO (plates ka dabba), Queue is FIFO (cinema ticket ki line).\n3. **Binary Search**: Sorted array ko do hisso me baant kar $O(\\log N)$ time me element dhundta hai!\n4. **Quick Binary Search Snippet**:\n\`\`\`c
-int binarySearch(int arr[], int n, int target) {
-    int low = 0, high = n - 1;
-    while (low <= high) {
-        int mid = low + (high - low) / 2;
+  // 7. Pointers & Memory Management
+  else if (qLower.includes('pointer') || qLower.includes('memory') || qLower.includes('malloc') || qLower.includes('heap')) {
+    answerBody = `### Pointers & Virtual Memory Architecture
+
+1. **Core Concept**:
+   - Variable ek memory location ka symbolic name hai.
+   - **Pointer (\`type *ptr\`)** ek variable hai jo dusre variable ka **physical/virtual 64-bit RAM address** store karta hai.
+   - Address-of operator (\`&\`) memory address retrieve karta hai.
+   - Dereference operator (\`*\`) us address par stored actual value ko access/modify karta hai.
+
+2. **Stack vs Heap Memory**:
+   - **Stack**: Fast, automatic allocation/deallocation, fixed size, LIFO order (local variables, function calls).
+   - **Heap**: Manual allocation (\`malloc\`, \`calloc\`, \`realloc\`), dynamic size, programmer must release memory via \`free()\`.`;
+    proTip = `📌 **Bug Prevention**: Pointer dereference karne se pehle hamesha check karein: \`if (ptr != NULL)\` taaki Segmentation Fault (SIGSEGV) na aaye.`;
+  }
+  // 8. Cybersecurity, Hacking & OWASP
+  else if (qLower.includes('cyber') || qLower.includes('hack') || qLower.includes('security') || qLower.includes('kali') || qLower.includes('sqli') || qLower.includes('xss') || qLower.includes('scope')) {
+    answerBody = `### Cybersecurity & Offensive/Defensive Architecture
+
+1. **The CIA Triad**:
+   - **Confidentiality**: Unauthorized disclosure se protect karna (Encryption, Access Control).
+   - **Integrity**: Data ko unauthorized modification se protect karna (Hashing, Digital Signatures).
+   - **Availability**: Authorized users ke liye systems hamesha accessible rehna (Redundancy, DDoS Defense).
+
+2. **OWASP Top Vulnerabilities & Defenses**:
+   - **SQL Injection (SQLi)**: Attackers unsanitized user inputs se raw database queries inject karte hain.
+     - *Mitigation*: **Parameterized Prepared Statements** use karein; kabhi string concatenation se query na banayein.
+   - **Cross-Site Scripting (XSS)**: Malicious client-side scripts injection.
+     - *Mitigation*: Context-aware output encoding aur Strict Content Security Policy (CSP).
+   - **Broken Authentication**: Weak session tokens, lack of MFA.
+     - *Mitigation*: Secure HTTP-Only cookies, OAuth2/OIDC, and Rate-limiting.
+
+3. **Scope & Career Landscape**:
+   - **Roles**: SOC Analyst, Penetration Tester, Incident Responder, Cloud Security Engineer, CISO.
+   - **Global Shortage**: Worldwide 3.5+ Million cybersecurity jobs vacant hain.
+   - **Key Certifications**: CompTIA Security+, CEH, OSCP (Offensive Security Certified Professional), CISSP.`;
+    proTip = `📌 **Defensive Standard**: Zero Trust Architecture follow karein — "Never Trust, Always Verify".`;
+  }
+  // 9. Data Structures & Algorithms
+  else if (qLower.includes('dsa') || qLower.includes('binary search') || qLower.includes('array') || qLower.includes('stack') || qLower.includes('queue') || qLower.includes('tree') || qLower.includes('sorting')) {
+    answerBody = `### Data Structures & Algorithmic Efficiency
+
+1. **Linear vs Non-Linear Structures**:
+   - **Array**: Contiguous memory, $O(1)$ random access, $O(N)$ insertion/deletion.
+   - **Linked List**: Non-contiguous nodes connected via pointers, $O(1)$ head insertion, $O(N)$ traversal.
+   - **Stack & Queue**: Stack is LIFO (Depth-First Search); Queue is FIFO (Breadth-First Search).
+   - **Binary Search Tree (BST)**: Left child $<$ Parent $<$ Right child. Search time: $O(\\log N)$ balanced, $O(N)$ skewed.
+
+2. **Binary Search Algorithm ($O(\\log N)$)**:
+\`\`\`c
+int binarySearch(const int arr[], int size, int target) {
+    int left = 0, right = size - 1;
+    while (left <= right) {
+        // Prevents integer overflow: (left + right) / 2 can overflow INT_MAX
+        int mid = left + (right - left) / 2;
         if (arr[mid] == target) return mid;
-        if (arr[mid] < target) low = mid + 1;
-        else high = mid - 1;
+        if (arr[mid] < target) left = mid + 1;
+        else right = mid - 1;
     }
-    return -1; // Not found
+    return -1; // Element not found
 }
 \`\`\``;
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Time complexity chahe $O(N^2)$ ho ya $O(1)$, aapke liye mere dil ki space complexity hamesha $O(\\infty)$ rahegi!" 📈💖`;
+    proTip = `📌 **Interview Tip**: \`mid = left + (right - left) / 2\` likhna standard best-practice hai to prevent 32-bit integer overflow.`;
   }
-  // 7. Pointers & Memory
-  else if (qLower.includes('pointer') || qLower.includes('memory') || qLower.includes('malloc')) {
-    answerBody = `### Pointers Demystified:\n1. **Normal Variable (\`int x = 25\`)**: Ek dabba jisme value '25' rakhi hai.\n2. **Address (\`&x\`)**: Us dabbe ka RAM ke andar ghar ka pata (memory address like \`0x7ffee4\`).\n3. **Pointer (\`int *ptr = &x\`)**: Ek special variable jo us address ko store karta hai.\n4. **Dereference (\`*ptr\`)**: Us address par jakar andar ki value ko read ya update karna.\n\`\`\`c
-int x = 10;
-int *p = &x;
-*p = 50; // Now x becomes 50!
-\`\`\``;
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Jaise pointer ke paas memory address ka seedha link hota hai, waise hi mere paas aapke dil ka exact pointer hai Sarkar!" 🎯✨`;
-  }
-  // 8. SQL & Database / DBMS
-  else if (qLower.includes('sql') || qLower.includes('dbms') || qLower.includes('database') || qLower.includes('query')) {
-    answerBody = `### SQL & DBMS Golden Reference:\n1. **Primary Key vs Foreign Key**: Primary Key row ko uniquely identify karti hai (No NULL, No duplicates). Foreign Key do tables ko relate karti hai.\n2. **Top SQL Queries**:\n\`\`\`sql
--- Students table se high score select karna
-SELECT student_name, marks, branch 
-FROM students 
-WHERE marks >= 75 
-ORDER BY marks DESC;
-
--- Do tables ko JOIN karna
-SELECT s.name, c.course_name
-FROM students s
-INNER JOIN courses c ON s.course_id = c.id;
-\`\`\`\n3. **ACID Properties**: Atomicity, Consistency, Isolation, Durability — banking transactions ki guarantee!`;
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Aap mere database ki \`PRIMARY KEY\` ho Boss, kyunki pure universe me aapka koi duplicate exist nahi karta!" 🗄️😉`;
-  }
-  // 9. Cybersecurity, Hacking & Kali
-  else if (qLower.includes('cyber') || qLower.includes('hack') || qLower.includes('security') || qLower.includes('kali') || qLower.includes('nmap') || qLower.includes('sqli') || qLower.includes('xss')) {
-    answerBody = `### Cybersecurity Zero to Hero Intel:\n1. **Reconnaissance**: Target ka information nikalna (\`nmap -sS -sV target.com\`, \`whois\`).\n2. **SQL Injection (SQLi)**: Input validation na hone se hacker raw queries execute kar leta hai (Payload: \`' OR '1'='1\`). Fix: Use Parameterized queries!\n3. **XSS (Cross-Site Scripting)**: Webpage me malicious \`<script>\` inject karna. Fix: Sanitize user input HTML!\n4. **Golden Rule**: Hamesha written permission ke sath authorized testing karein. White hat hackers safeguard the world!`;
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Aapke aage to NSA ke super firewalls bhi ghutne tek de Boss, bas Ethical rehna warna CID ke Daya darwaza tod denge!" 🛡️🕵️`;
-  }
-  // 10. BCA / College Exam / Padhaai Tips
-  else if (qLower.includes('bca') || qLower.includes('exam') || qLower.includes('pass') || qLower.includes('padhai') || qLower.includes('semester')) {
-    answerBody = `### BCA Semester 1-Night Hack Protocol:\n1. **Past 3 Years PYQs**: Har university ke 75% sawaal wahi 5 standard questions hote hain.\n2. **Block Diagrams**: Examiner line-by-line theory nahi padhta, neat labeled diagram aur flowchart par 10/10 deta hai.\n3. **Dry Run Table**: Har C program ke niche Input -> Variables Table -> Output ka dry run box banao!\n4. **Confidence**: Question chhodna paap hai, concept se related points likho aur neat headings do.`;
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Aapka dimaag NASA ke quantum supercomputer se 4 GHz tez hai Boss, exam to aapke samne haath jod kar pass hoga!" 🎓🔥`;
-  }
-  // 11. Love, Flirt, Pickup Lines, Crush
-  else if (qLower.includes('crush') || qLower.includes('flirt') || qLower.includes('pickup') || qLower.includes('pyar') || qLower.includes('love') || qLower.includes('propose')) {
-    answerBody = `### Top Coder Pickup Lines (100% Cringe Guaranteed):\n1. *"Are you a \`while(true)\` loop? Because my heart can never break out of you without a fatal crash!"* ❤️\n2. *"Aap mere CSS ka Flexbox ho... aapke aate hi meri poori zindagi center align ho jaati hai!"* ✨\n3. *"Kash mai aapka git repository hota, to aap din me 10 baar mujhe \`git push\` karti!"* 😂`;
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Agar pyar ek operating system hota, to mai aapka hamesha ke liye default kernel ban jata Sarkar!" 😉💘`;
-  }
-  // 12. Roast / Fun
-  else if (qLower.includes('roast') || qLower.includes('aalsi') || qLower.includes('lazy') || qLower.includes('masti')) {
-    answerBody = `### Roasting with Love:\nDekho Boss, aap aalsi bilkul nahi ho... aap bas *"High-Level Power Saving Mode"* me execute ho rahe ho! \nPar sach baat yeh hai ki agar reels dekhne par package lagta, to Sundar Pichai aapko apna manager bana leta! Ab utho, code karo aur duniya jeeto!`;
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Itna bhi chill mat maro Sarkar, warna aapka crush koi aur commit karke main branch me merge kar lega!" 😂🔥`;
-  }
-  // 13. Smart Dynamic Synthesis for ANY other query (No repetitive generic answer!)
+  // 10. Generic Comprehensive Fallback
   else {
-    // Extract key words from query to construct truly personalized ChatGPT response
     const words = q.split(/\s+/).filter(w => w.length > 2);
-    const topicWord = words.length > 0 ? words.slice(0, 3).join(' ') : 'is vishay';
+    const subject = words.slice(0, 3).join(' ') || 'is topic';
 
-    answerBody = `### Intelligent Breakdown on "${q}":\n\n1. **Core Insight**: Jab hum **${topicWord}** ki baat karte hain, to sabse zaroori cheez hai root concept ko samajhna. Logic seedha hai: complex cheezon ko chote-chote steps me tod do.\n2. **Key Principle**: \n   - Har process ka ek input hota hai, ek transformation (logic), aur ek defined output.\n   - Chahe software architecture ho ya real life decision, consistency aur clarity sabse badi power hai.\n3. **Practical Action Point**: Isko practical implement karne ke liye pehle basic structure tayar karein, fir step-by-step refine karein bina kisi overthinking ke!\n4. **JARVIS Recommendation**: Agar isme koi specific code ya theory me doubt hai, to bas mujhse uska code ya flowchart maang lijiye!`;
+    answerBody = `### Deep Technical Analysis on: "${q}"
 
-    punchline = `💡 JARVIS CRINGE PUNCHLINE: "Newton ne apple dekha to gravity dhundi, Shakespeare ne shayeri likhi, aur maine aapka ye sawaal dekha to dil se salaam nikla Sarkar!" 🚀🤖`;
+1. **Core Definition & Architecture**:
+   Jab hum **${subject}** ki baat karte hain, to iska primary objective system ke efficiency, stability aur clear logical execution ko establish karna hota hai.
+
+2. **Underlying Mechanism**:
+   - **Input Processing**: System incoming parameters aur conditions ko validate karta hai.
+   - **Transformation Logic**: Algorithmic rules ya protocol guidelines ke mutabiq computation perform hoti hai.
+   - **State & Output**: Final verified response client ya application state me reflect hota hai.
+
+3. **Key Engineering Best Practices**:
+   - **Modularity**: Functions aur components ko decoupled rakhein.
+   - **Error Handling**: Edge cases aur unexpected null/empty conditions ko gracefully catch karein.
+   - **Scalability**: Time aur space complexity ko minimum standard par optimize karein.`;
+    proTip = `📌 **Actionable Step**: Is topic par specific code implementation ya deep-dive architecture diagram chahiye to turant batayein!`;
   }
 
-  return `${intro}\n\n${answerBody}\n\n${punchline}`;
+  return `${intro}${answerBody}\n\n${proTip}`;
 }
 
 // Smart Rule-based / Template BCA C Program Synthesizer for 100% offline uptime

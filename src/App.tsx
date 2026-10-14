@@ -18,6 +18,7 @@ import { SimpleCCompilerApp } from './compiler/components/SimpleCCompilerApp';
 import { CyberShieldApp } from './cyber/components/CyberShieldApp';
 import { JarvisApp } from './jarvis/components/JarvisApp';
 import { DevForgeApp } from './devforge/components/DevForgeApp';
+import { TechMasterApp } from './techmaster/components/TechMasterApp';
 import { AppSwitcherModal, CurrentAppType } from './components/AppSwitcherModal';
 import { useDirectChat } from './hooks/useDirectChat';
 import { playUnlockSound, playLockSound, triggerHaptic } from './utils/sound';
@@ -60,6 +61,15 @@ export default function App() {
       return typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
     } catch {
       return false; // Default light theme
+    }
+  });
+
+  const [isOmnitrix, setIsOmnitrix] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('bca_omnitrix_mode');
+      return saved !== 'false'; // Default to Ben 10 Alien Force Theme
+    } catch {
+      return true;
     }
   });
 
@@ -141,14 +151,33 @@ export default function App() {
     }
   });
 
+  // --- TechMaster 2000+ Zero-to-Hero State ---
+  const [isTechMasterOpen, setIsTechMasterOpen] = useState<boolean>(() => {
+    try {
+      const h = window.location.hash.toLowerCase();
+      return h === '#tech' || h === '#techmaster' || h === '#qna' || h === '#cybercell';
+    } catch {
+      return false;
+    }
+  });
+
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState<boolean>(false);
 
-  // Sync URL hash with vault, sukhan, compiler, cyber, jarvis, dev & offline notes mode
+  // Sync URL hash with vault, sukhan, compiler, cyber, jarvis, dev, techmaster & offline notes mode
   useEffect(() => {
     const handleHash = () => {
       const h = window.location.hash.toLowerCase();
-      if (h === '#compiler' || h === '#c' || h === '#ccompiler' || h === '#run') {
+      if (h === '#tech' || h === '#techmaster' || h === '#qna' || h === '#cybercell' || h === '#terminal' || h === '#shell' || h === '#fir') {
+        setIsTechMasterOpen(true);
+        setIsDevForgeOpen(false);
+        setIsJarvisOpen(false);
+        setIsCyberOpen(false);
+        setIsCompilerOpen(false);
+        setIsSukhanOpen(false);
+        setIsVaultOpen(false);
+      } else if (h === '#compiler' || h === '#c' || h === '#ccompiler' || h === '#run') {
         setIsCompilerOpen(true);
+        setIsTechMasterOpen(false);
         setIsSukhanOpen(false);
         setIsVaultOpen(false);
         setIsCyberOpen(false);
@@ -156,6 +185,7 @@ export default function App() {
         setIsDevForgeOpen(false);
       } else if (h === '#cyber' || h === '#security' || h === '#hack' || h === '#kali') {
         setIsCyberOpen(true);
+        setIsTechMasterOpen(false);
         setIsCompilerOpen(false);
         setIsSukhanOpen(false);
         setIsVaultOpen(false);
@@ -163,6 +193,7 @@ export default function App() {
         setIsDevForgeOpen(false);
       } else if (h === '#jarvis' || h === '#ai' || h === '#bot' || h === '#assistant') {
         setIsJarvisOpen(true);
+        setIsTechMasterOpen(false);
         setIsCyberOpen(false);
         setIsCompilerOpen(false);
         setIsSukhanOpen(false);
@@ -170,6 +201,7 @@ export default function App() {
         setIsDevForgeOpen(false);
       } else if (h === '#dev' || h === '#devforge' || h === '#tools' || h === '#forge') {
         setIsDevForgeOpen(true);
+        setIsTechMasterOpen(false);
         setIsJarvisOpen(false);
         setIsCyberOpen(false);
         setIsCompilerOpen(false);
@@ -177,6 +209,7 @@ export default function App() {
         setIsVaultOpen(false);
       } else if (h === '#sukhan' || h === '#shayar' || h === '#poetry') {
         setIsSukhanOpen(true);
+        setIsTechMasterOpen(false);
         setIsVaultOpen(false);
         setIsCompilerOpen(false);
         setIsCyberOpen(false);
@@ -184,6 +217,7 @@ export default function App() {
         setIsDevForgeOpen(false);
       } else if (h === '#calc' || h === '#vault' || h === '#chat') {
         setIsVaultOpen(true);
+        setIsTechMasterOpen(false);
         setIsSukhanOpen(false);
         setIsCompilerOpen(false);
         setIsCyberOpen(false);
@@ -191,6 +225,7 @@ export default function App() {
         setIsDevForgeOpen(false);
       } else if (h === '#notes' || h === '#pad') {
         setIsVaultOpen(false);
+        setIsTechMasterOpen(false);
         setIsSukhanOpen(false);
         setIsCompilerOpen(false);
         setIsCyberOpen(false);
@@ -198,6 +233,7 @@ export default function App() {
         setIsDevForgeOpen(false);
         setActiveTab('notes');
       } else if (h === '#bca' || h === '#home' || h === '') {
+        setIsTechMasterOpen(false);
         setIsSukhanOpen(false);
         setIsVaultOpen(false);
         setIsCompilerOpen(false);
@@ -363,6 +399,22 @@ export default function App() {
     window.location.hash = '';
   };
 
+  const handleOpenTechMaster = () => {
+    setIsVaultOpen(false);
+    setIsSukhanOpen(false);
+    setIsCompilerOpen(false);
+    setIsCyberOpen(false);
+    setIsJarvisOpen(false);
+    setIsDevForgeOpen(false);
+    setIsTechMasterOpen(true);
+    window.location.hash = 'techmaster';
+  };
+
+  const handleCloseTechMaster = () => {
+    setIsTechMasterOpen(false);
+    window.location.hash = '';
+  };
+
   const handleOpenAppSwitcher = () => {
     setIsAppSwitcherOpen(true);
   };
@@ -376,6 +428,7 @@ export default function App() {
       setIsCyberOpen(false);
       setIsJarvisOpen(false);
       setIsDevForgeOpen(false);
+      setIsTechMasterOpen(false);
       window.location.hash = '';
     } else if (app === 'calc') {
       setIsSukhanOpen(false);
@@ -383,6 +436,7 @@ export default function App() {
       setIsCyberOpen(false);
       setIsJarvisOpen(false);
       setIsDevForgeOpen(false);
+      setIsTechMasterOpen(false);
       setIsVaultOpen(true);
       window.location.hash = 'calc';
     } else if (app === 'sukhan') {
@@ -391,6 +445,7 @@ export default function App() {
       setIsCyberOpen(false);
       setIsJarvisOpen(false);
       setIsDevForgeOpen(false);
+      setIsTechMasterOpen(false);
       setIsSukhanOpen(true);
       window.location.hash = 'sukhan';
     } else if (app === 'compiler') {
@@ -399,6 +454,7 @@ export default function App() {
       setIsCyberOpen(false);
       setIsJarvisOpen(false);
       setIsDevForgeOpen(false);
+      setIsTechMasterOpen(false);
       setIsCompilerOpen(true);
       window.location.hash = 'compiler';
     } else if (app === 'cyber') {
@@ -407,6 +463,7 @@ export default function App() {
       setIsCompilerOpen(false);
       setIsJarvisOpen(false);
       setIsDevForgeOpen(false);
+      setIsTechMasterOpen(false);
       setIsCyberOpen(true);
       window.location.hash = 'cyber';
     } else if (app === 'jarvis') {
@@ -415,6 +472,7 @@ export default function App() {
       setIsCompilerOpen(false);
       setIsCyberOpen(false);
       setIsDevForgeOpen(false);
+      setIsTechMasterOpen(false);
       setIsJarvisOpen(true);
       window.location.hash = 'jarvis';
     } else if (app === 'dev') {
@@ -423,8 +481,18 @@ export default function App() {
       setIsCompilerOpen(false);
       setIsCyberOpen(false);
       setIsJarvisOpen(false);
+      setIsTechMasterOpen(false);
       setIsDevForgeOpen(true);
       window.location.hash = 'dev';
+    } else if (app === 'techmaster') {
+      setIsVaultOpen(false);
+      setIsSukhanOpen(false);
+      setIsCompilerOpen(false);
+      setIsCyberOpen(false);
+      setIsJarvisOpen(false);
+      setIsDevForgeOpen(false);
+      setIsTechMasterOpen(true);
+      window.location.hash = 'techmaster';
     }
   };
 
@@ -451,19 +519,27 @@ export default function App() {
     onRoomBurned: handleRoomBurnedNotification,
   });
 
-  // --- Theme Management ---
+  // --- Theme Management (Light, Dark, and Ben 10 Omnitrix Theme) ---
   useEffect(() => {
     const root = document.documentElement;
-    if (isDark) {
-      root.classList.add('dark');
-      localStorage.setItem('bca_buddy_theme', 'dark');
+    if (isOmnitrix) {
+      root.classList.add('dark', 'theme-omnitrix');
+      localStorage.setItem('bca_omnitrix_mode', 'true');
     } else {
-      root.classList.remove('dark');
-      localStorage.setItem('bca_buddy_theme', 'light');
+      root.classList.remove('theme-omnitrix');
+      localStorage.setItem('bca_omnitrix_mode', 'false');
+      if (isDark) {
+        root.classList.add('dark');
+        localStorage.setItem('bca_buddy_theme', 'dark');
+      } else {
+        root.classList.remove('dark');
+        localStorage.setItem('bca_buddy_theme', 'light');
+      }
     }
-  }, [isDark]);
+  }, [isDark, isOmnitrix]);
 
   const toggleTheme = () => setIsDark((prev) => !prev);
+  const handleToggleOmnitrix = () => setIsOmnitrix((prev) => !prev);
 
   // --- Bookmarks State ---
   const [bookmarks, setBookmarks] = useState<BookmarkItem[]>(() => {
@@ -793,7 +869,48 @@ export default function App() {
     );
   }
 
-  // --- RENDER 7: BCA Verse Portal ---
+  // --- RENDER 7: TechMaster 2000+ (Zero to Hero Academy) ---
+  if (isTechMasterOpen) {
+    return (
+      <>
+        <TechMasterApp
+          onBackToBca={handleCloseTechMaster}
+          onOpenJarvis={() => {
+            setIsTechMasterOpen(false);
+            setIsJarvisOpen(true);
+            window.location.hash = 'jarvis';
+          }}
+          onOpenCompiler={() => {
+            setIsTechMasterOpen(false);
+            setIsCompilerOpen(true);
+            window.location.hash = 'compiler';
+          }}
+          onOpenCyber={() => {
+            setIsTechMasterOpen(false);
+            setIsCyberOpen(true);
+            window.location.hash = 'cyber';
+          }}
+          onOpenDevForge={() => {
+            setIsTechMasterOpen(false);
+            setIsDevForgeOpen(true);
+            window.location.hash = 'dev';
+          }}
+          onOpenAppSwitcher={handleOpenAppSwitcher}
+          isOmnitrixTheme={isOmnitrix}
+        />
+
+        {/* 8-Apps Suite Switcher Modal */}
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp="techmaster"
+          onSelectApp={handleSelectApp}
+        />
+      </>
+    );
+  }
+
+  // --- RENDER 8: BCA Verse Portal ---
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
       {/* App Launch Splash Screen: "Made by Prince Thakur" */}
@@ -819,7 +936,10 @@ export default function App() {
         setActiveTab={setActiveTab}
         isDark={isDark}
         toggleTheme={toggleTheme}
+        isOmnitrixActive={isOmnitrix}
+        onToggleOmnitrix={handleToggleOmnitrix}
         onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenTechMaster={handleOpenTechMaster}
         onOpenCalculatorVault={() => {
           setIsVaultOpen(true);
           window.location.hash = 'calc';
@@ -844,6 +964,7 @@ export default function App() {
             onOpenCyber={handleOpenCyber}
             onOpenJarvis={handleOpenJarvis}
             onOpenDevForge={handleOpenDevForge}
+            onOpenTechMaster={handleOpenTechMaster}
           />
         )}
 

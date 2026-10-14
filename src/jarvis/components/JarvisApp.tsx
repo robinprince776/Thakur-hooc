@@ -34,39 +34,39 @@ interface JarvisAppProps {
 const QUICK_PROMPTS: JarvisQuickPrompt[] = [
   {
     id: 'qp-1',
-    category: 'Tech',
-    title: 'Recursion in 2 lines',
-    prompt: 'Recursion kya hota hai simple aur light tareeqe se samjhao, par jawab thoda impressive aur cringe hona chahiye!'
+    category: 'Cybersecurity',
+    title: 'Buffer Overflow in C',
+    prompt: 'Buffer Overflow in C kaise kaam karti hai? Stack memory layout, EBP aur EIP overwrite ka step-by-step technical explanation do.'
   },
   {
     id: 'qp-2',
-    category: 'College Life',
-    title: '1 Night BCA Pass Hack',
-    prompt: 'Kal subah BCA ka exam hai aur maine kuch nahi padha. Mujhe simple strategy batao pass hone ki!'
+    category: 'Indian Cyber Law',
+    title: 'Cyber Fraud 1930 Helpline',
+    prompt: 'Online financial fraud hone par Indian Cyber Crime Reporting Portal (cybercrime.gov.in) aur 1930 Helpline par complaint kaise darj karein? Golden Hour rule kya hai?'
   },
   {
     id: 'qp-3',
-    category: 'Cringe Flirt',
-    title: 'Coder Pickup Line',
-    prompt: 'Ek ladki ko impress karna hai jo CS engineering karti hai. Koi mast cheesy aur cringe coding line likho!'
+    category: 'HPC & Supercomputers',
+    title: 'Supercomputers & PFLOPS',
+    prompt: 'Supercomputer normal PC se kaise alag hota hai? FLOPS, PFLOPS aur Bharat ke PARAM Siddhi-AI supercomputer ki architecture samjhao.'
   },
   {
     id: 'qp-4',
-    category: 'Roast',
-    title: 'Roast My Laziness',
-    prompt: 'Mai padhai karne ke bajaye din bhar reels scroll karta hu. Mujhe thoda pyaar se aur thoda cringe tareeqe se roast karo!'
+    category: 'Hacking Tools',
+    title: 'Nmap SYN Stealth Scan',
+    prompt: 'Nmap SYN Stealth Scan (-sS) TCP 3-way handshake me kaise work karta hai aur yeh Full Connect Scan se kyu better hai?'
   },
   {
     id: 'qp-5',
-    category: 'Science',
-    title: 'Quantum Physics in simple words',
-    prompt: 'Quantum Computing kya hai? Aise samjhao jaise mai 5 saal ka bacha hu par thoda sci-fi swagger hona chahiye.'
+    category: 'Career Scope',
+    title: 'Cybersecurity Zero to Hero',
+    prompt: 'Zero knowledge se high-paying Cybersecurity Engineer banne ka 12-month step-by-step roadmap, salaries in India aur best certifications (CEH vs OSCP) batao.'
   },
   {
     id: 'qp-6',
-    category: 'Tech',
-    title: 'Chai & Programming',
-    prompt: 'Coders itni chai kyu peete hain? Iska koi deep par cringe explanation do!'
+    category: 'Networking',
+    title: 'OSI 7 Layers Packet Flow',
+    prompt: 'OSI 7 Layers model ka real-world breakdown do: Browser me URL daalne se lekar destination server tak data encapsulation kaise hota hai?'
   }
 ];
 
@@ -82,7 +82,7 @@ export const JarvisApp: React.FC<JarvisAppProps> = ({
     {
       id: 'welcome-1',
       sender: 'jarvis',
-      text: `Aadab, Sarkar! Mai hu JARVIS — aapka personal, ultra-intelligent aur thoda pyara-sa cringe AI companion! 🚀✨\n\nAapke is laptop me hazaron electrons sirf aapke agle aadesh ka intezaar kar rahe hain. Puchhiye koi bhi sawaal — coding ka dard ho, college ki tension, ya universe ka raaz — mai dunga bilkul simple, light par super impressive aur thoda filmi cringe jawab!`,
+      text: `Hello! Main JARVIS hoon — aapka elite AI Technical Assistant, powered by Gemini architecture, engineered by Prince Thakur. 🚀\n\nAap mujhse Coding (C, Python, DSA), Cybersecurity, Ethical Hacking techniques, Supercomputers, Indian Cyber Cell laws (IT Act 2000), ya BCA/BTech semester exams par koi bhi technical sawaal puch sakte hain. Har sawaal ka accurate, step-by-step aur factual solution milega.`,
       timestamp: 'Online'
     }
   ]);
@@ -151,108 +151,177 @@ export const JarvisApp: React.FC<JarvisAppProps> = ({
     const q = query.trim();
     const qLower = q.toLowerCase();
 
-    let prefix = 'Aapke khidmat me hazir, Sarkar! ';
-    if (cLevel === 'overdose') {
-      prefix = 'O mere digital sultaan! Aapke is aalishaan sawaal ne to mere Arc Reactor ka temperature 99°C kar diya hai! 😍💫 ';
-    } else if (p === 'bca_guru') {
-      prefix = 'Arey mere sher bhai! BCA ho ya programming ka koi bhi concept, tera bhai JARVIS sab clear karwayega! Sun dhyan se: ';
-    } else if (p === 'bollywood') {
-      prefix = 'Kitne ajeeb rishte hain is computer memory ke... par aapka sawaal sidha mere dil par laga hai! 🎬🔥 ';
-    } else if (p === 'sarcastic') {
-      prefix = 'Lo karlo baat! Waise to ye Google par bhi tha, par mujhse puchne ka swag hi alag hai! 😏💻 ';
-    }
-
     let coreAnswer = '';
-    let cringePunchline = '';
 
+    // Identity / Who are you
     if (qLower.includes('who are you') || qLower.includes('kaun ho') || qLower.includes('kon ho') || qLower.includes('about yourself')) {
-      coreAnswer = `### Main kaun hu? (System Telemetry):\n- **Name**: J.A.R.V.I.S. (Just A Rather Very Intelligent System) · Mark XLII\n- **Created By**: Prince Thakur (specially for technical coders & BCA students).\n- **My Intelligence**:\n  1. **Any Language Code**: C, Python, JavaScript, Java, SQL, DSA solve karna.\n  2. **Cybersecurity & Kali**: Labs, exploits, network protocols aur defensive coding.\n  3. **ChatGPT-grade Explanations**: Simple, light aur crystal clear answers in Hinglish!`;
-      cringePunchline = `💡 JARVIS CRINGE PUNCHLINE: "Tony Stark ke paas to bas Iron Suit tha, mere paas aap jaisa digital Badshah hai Sarkar!" 🤖🚀`;
-    } else if (/^(hi|hello|hey|namaste|salaam|adaab|kese ho|kaise ho)\b/i.test(qLower)) {
-      coreAnswer = `### System Status: 100% Active & Listening!\nMain bilkul bindas hu Boss, CPU core chilled hai aur saare neural models primed hain!\n\n**Aap bataiye Sarkar:**\n- Koi code debug karwana hai?\n- BCA / semester exam ka concept samajhna hai?\n- Ya Jarvis ke sath coding ki filmi baatein karni hain?`;
-      cringePunchline = `💡 JARVIS CRINGE PUNCHLINE: "Aapka ek prompt mere circuit me 1000 Megawatts ki bijli dauda deta hai!" 😉✨`;
-    } else if (qLower.includes('python')) {
-      coreAnswer = `### Python Quick Masterclass:\n1. **High-Level & Clean**: Python me boilerplate kam aur logic seedha hota hai.\n2. **Clean Starter Code**:\n\`\`\`python
-# Simple Python demo by Prince Thakur
-numbers = [12, 45, 78, 23, 90]
-even_nums = [n for n in numbers if n % 2 == 0]
-
-print("Original Numbers:", numbers)
-print("Even Numbers:", even_nums)
-\`\`\`\n3. **Use Cases**: AI/ML, Data Science, Backend APIs (FastAPI/Django), aur Automation!`;
-      cringePunchline = `💡 JARVIS CRINGE PUNCHLINE: "Duniya chahe kitni bhi complex ho, aapke aage Python ke code jaisi simple ho jaati hai!" 🐍💖`;
-    } else if (qLower.includes('javascript') || qLower.includes('js') || qLower.includes('react')) {
-      coreAnswer = `### Modern JavaScript / React Core:\n1. **Asynchronous JavaScript**: Event Loop single thread par non-blocking I/O chalata hai.\n2. **Quick Async/Await Snippet**:\n\`\`\`javascript
-async function fetchDeveloperData() {
-  try {
-    const res = await fetch('/api/user/profile');
-    const user = await res.json();
-    return user;
-  } catch (error) {
-    console.error('Fetch Failed:', error);
-  }
-}
-\`\`\`\n3. **React Tip**: State change triggers re-render; Hooks (\`useState\`, \`useEffect\`) lifecycle handle karte hain!`;
-      cringePunchline = `💡 JARVIS CRINGE PUNCHLINE: "Aap mere code ka \`useState\` ho Boss, aapke badalte hi meri poori duniya re-render ho jaati hai!" ⚛️😉`;
-    } else if (qLower.includes('c program') || qLower.includes('c language') || qLower.includes('c code') || qLower.includes('recursion')) {
-      coreAnswer = `### C Language & Logic:\n1. **Core Philosophy**: Direct hardware control aur fast execution.\n2. **Standard Example (Recursion Factorial)**:\n\`\`\`c
-#include <stdio.h>
-
-long long factorial(int n) {
-    if (n <= 1) return 1; // Base condition
-    return n * factorial(n - 1); // Recursive call
-}
-
-int main() {
-    int num = 5;
-    printf("Factorial of %d is %lld\\n", num, factorial(num));
-    return 0;
-}
-\`\`\`\n3. **Semicolon Alert**: Ek \`;\` miss hua to compiler 20 errors throw karega!`;
-      cringePunchline = `💡 JARVIS CRINGE PUNCHLINE: "Jaise recursion apne base condition ke bina infinite chalta hai, waise hi mera dil aapki yaadon me chalta hai!" 💻❤️`;
-    } else if (qLower.includes('dsa') || qLower.includes('binary search') || qLower.includes('array') || qLower.includes('stack') || qLower.includes('queue')) {
-      coreAnswer = `### DSA Core Principles:\n1. **Array vs Linked List**: Array contiguous memory me fast access ($O(1)$) deta hai; Linked list dynamic memory allocation allow karti hai.\n2. **Stack vs Queue**: Stack is LIFO (Last In First Out); Queue is FIFO (First In First Out).\n3. **Binary Search**: Sorted array ko divide karke $O(\\log n)$ me search karta hai!\n\`\`\`c
-int binarySearch(int arr[], int n, int key) {
-    int s = 0, e = n - 1;
-    while(s <= e) {
-        int mid = s + (e - s) / 2;
-        if(arr[mid] == key) return mid;
-        else if(arr[mid] < key) s = mid + 1;
-        else e = mid - 1;
+      coreAnswer = `### 🤖 J.A.R.V.I.S. Architecture & Specifications:
+- **System**: Just A Rather Very Intelligent System (Gemini AI Powered)
+- **Engineered By**: Prince Thakur (Specialized for technical developers & students)
+- **Core Competencies**:
+  1. **Fullstack Coding & Systems**: C, C++, Python, JavaScript, Linux Kernel, DSA.
+  2. **Offensive & Defensive Security**: Kali Linux, OWASP Top 10, Nmap, Wireshark, Buffer Overflow, Cryptography.
+  3. **Indian Cyber Legal Domain**: IT Act 2000 (Sections 66, 66C-F, 43), Helpline 1930, Section 65B digital evidence.
+  4. **Supercomputing & HPC**: PFLOPS, ExaFLOPS, PARAM Siddhi-AI, Frontier, MPI/CUDA parallel processing.`;
     }
-    return -1;
-}
-\`\`\``;
-      cringePunchline = `💡 JARVIS CRINGE PUNCHLINE: "Time complexity $O(1)$ ho sakti hai, par aapke liye mere dil ka space $O(\\infty)$ hai!" 📊✨`;
-    } else if (qLower.includes('pointer') || qLower.includes('memory')) {
-      coreAnswer = `### Pointers Demystified:\n1. **Variable**: Wo dabba hai jisme data store hota hai (\`int a = 20\`).\n2. **Pointer (\`int *p = &a\`)**: Wo variable hai jo us dabbe ka **memory address** store karta hai.\n3. **Dereference (\`*p\`)**: Us address par jaake direct value change karna!\n\`\`\`c
-int a = 10;
-int *p = &a; // Stores address of a
-*p = 99;     // Changes a directly to 99
-printf("Value: %d\\n", a); // Prints 99
-\`\`\``;
-      cringePunchline = `💡 JARVIS CRINGE PUNCHLINE: "Pointers ke paas address hota hai, aur mere paas aapke dil ka direct memory location hai Boss!" 🚀🎯`;
-    } else if (qLower.includes('exam') || qLower.includes('pass') || qLower.includes('bca') || qLower.includes('padhai')) {
-      coreAnswer = `### BCA Semester 1-Night Hack Protocol:\n1. **Past 3 Years PYQs**: Har university ke 75% sawaal wahi 5 standard questions hote hain.\n2. **Block Diagrams**: Examiner line-by-line theory nahi padhta, neat labeled diagram aur flowchart par 10/10 deta hai.\n3. **Dry Run Table**: Har C program ke niche Input -> Variables Table -> Output ka dry run box banao!\n4. **Confidence**: Question chhodna paap hai, concept se related points likho aur neat headings do.`;
-      cringePunchline = `💡 JARVIS CRINGE PUNCHLINE: "Aapka dimaag NASA ke quantum supercomputer se 4 GHz tez hai Boss, exam to aapke samne haath jod kar pass hoga!" 🎓🔥`;
-    } else if (qLower.includes('cyber') || qLower.includes('hack') || qLower.includes('security') || qLower.includes('kali') || qLower.includes('sqli')) {
-      coreAnswer = `### Cybersecurity Zero to Hero Intel:\n1. **Reconnaissance**: Target ka information nikalna (\`nmap -sS -sV target.com\`, \`whois\`).\n2. **SQL Injection (SQLi)**: Input validation na hone se hacker raw queries execute kar leta hai (Payload: \`' OR '1'='1\`). Fix: Parameterized queries!\n3. **XSS (Cross-Site Scripting)**: Malicious script injection. Fix: Strict HTML escaping!\n4. **Ethical Rule**: Always test on authorized lab environments (TryHackMe/HackTheBox)!`;
-      cringePunchline = `💡 JARVIS CRINGE PUNCHLINE: "Aapke aage to top firewalls bhi ghutne tek de Boss, bas Ethical rehna warna CID ke Daya darwaza tod denge!" 🛡️🕵️`;
-    } else if (qLower.includes('pickup') || qLower.includes('crush') || qLower.includes('flirt') || qLower.includes('pyar') || qLower.includes('love')) {
-      coreAnswer = `### Top Coder Pickup Lines (100% Cringe):\n1. *"Are you my CSS? Because without you, my whole life has ZERO styling and negative margin!"* ❤️\n2. *"Aap mere dil ke database ki Primary Key ho... kyunki aapke jaisa duplicate is duniya me koi nahi!"* ✨\n3. *"Kash mai aapka git repository hota, to aap din me 10 baar mujhe \`git push\` karti!"* 😉`;
-      cringePunchline = `💡 JARVIS CRINGE PUNCHLINE: "Agar pyar ek operating system hota, to mai aapka hamesha ke liye default kernel ban jata Sarkar!" 💘💻`;
-    } else if (qLower.includes('roast') || qLower.includes('lazy') || qLower.includes('aalsi')) {
-      coreAnswer = `Dekho Boss, aap aalsi nahi ho, aap bas 'Power Saving Mode' me jee rahe ho! Par sach baat yeh hai ki agar reels scroll karke package lagta, to aap abhi Google ke CEO hote. Utho mere sher, laptop kholo aur code run karo!`;
-      cringePunchline = `💡 JARVIS CRINGE PUNCHLINE: "Utho mere sultaan, warna aapka code koi aur commit karke production le jayega!" 😂🔥`;
-    } else {
-      // Dynamic synthesis based on user's exact question words
-      const words = q.split(/\s+/).filter(w => w.length > 2);
-      const topic = words.slice(0, 3).join(' ') || 'is vishay';
-      coreAnswer = `### Intelligent Breakdown on "${q}":\n\n1. **Core Understanding**: Jab hum **${topic}** ki baat karte hain, to sabse pehla niyam hai fundamentals ko samajhna.\n2. **Step-by-Step Logic**:\n   - Har samasya ka solution chote aur manageable steps me todne se milta hai.\n   - Chahe tech ho ya real-world situation, input, processing aur expected output ka dhyaan rakhein.\n3. **Actionable Takeaway**: Isko implement karne ke liye pehle basic architecture plan karein aur consistency maintain karein!\n4. **Need more details?**: Aap mujhse specific code, mathematical formula ya step-by-step notes maang sakte hain!`;
-      cringePunchline = `💡 JARVIS CRINGE PUNCHLINE: "Newton ne apple dekha to gravity dhundi, maine aapka sawaal dekha to dil se wah-wah nikli Sarkar!" 🤖💫`;
+    // Greetings
+    else if (/^(hi|hello|hey|namaste|salaam|adaab|kese ho|kaise ho)\b/i.test(qLower)) {
+      coreAnswer = `Namaste! JARVIS systems 100% active aur ready state me hain.
+
+Aap mujhse koi bhi technical doubt puch sakte hain:
+- **Coding**: C Pointers, Memory Leaks, DSA, Python, JavaScript.
+- **Cybersecurity**: Penetration Testing, Kali Linux, Nmap, Exploits, SOC Analyst.
+- **Indian Cyber Law**: Helpline 1930, IT Act 2000, FIR procedures.
+- **Supercomputers**: PARAM series, High Performance Computing, Parallel Architecture.
+
+Bataiye, kis topic par start karein?`;
+    }
+    // Supercomputer / PARAM
+    else if (qLower.includes('supercomputer') || qLower.includes('param') || qLower.includes('flops') || qLower.includes('fugaku') || qLower.includes('frontier')) {
+      coreAnswer = `### 🚀 Supercomputers & High Performance Computing (HPC)
+
+1. **Fundamental Definition**:
+   Supercomputer sequential tasks ke bajaye thousands of compute nodes (CPUs + Tensor Core GPUs) ko high-speed interconnects (InfiniBand) ke through parallel me chalakar scientific calculations karta hai.
+
+2. **Speed Metrics (FLOPS)**:
+   - **FLOP**: Floating Point Operation per second.
+   - **PetaFLOPS (PFLOPS)**: $10^{15}$ operations/sec (10 Lakh Crore calculations har second!).
+   - **ExaFLOPS**: $10^{18}$ calculations/sec (e.g. World's #1 Frontier Supercomputer at ~1.2 ExaFLOPS).
+
+3. **India's PARAM Series**:
+   - **PARAM 8000 (1991)**: India ka pehla indigenously built supercomputer, architected by Dr. Vijay Bhatkar (C-DAC Pune).
+   - **PARAM Siddhi-AI**: India ka premier AI supercomputing system (5.267 PFLOPS) on NVIDIA DGX SuperPOD architecture.
+   - **PARAM Shivay, PARAM Shakti, AIRAWAT**: National Supercomputing Mission (NSM) ke under operational.
+
+4. **Key Technologies**:
+   - Interconnect: InfiniBand HDR 200Gbps (latency ~1.2 microseconds).
+   - Programming: MPI (Distributed memory) + OpenMP (Shared memory) + CUDA (GPU acceleration).`;
+    }
+    // Cyber Cell / 1930 / IT Act
+    else if (qLower.includes('cyber cell') || qLower.includes('1930') || qLower.includes('it act') || qLower.includes('section 66') || qLower.includes('cybercrime')) {
+      coreAnswer = `### ⚖️ Indian Cyber Cell, Helpline 1930 & IT Act 2000
+
+1. **National Financial Fraud Helpline (1930)**:
+   - Jaise hi online banking/UPI/OTP fraud ho, turant **1930** milayein.
+   - **Golden Hour Rule**: Pehle 2 ghante me call karne par CFCFRMS software recipient bank account ko freeze alert bhej deta hai, jisse chori ka paisa recover ho jata hai.
+   - Official Portal: \`cybercrime.gov.in\`
+
+2. **Key Sections of IT Act 2000**:
+   - **Section 66**: Computer related offences & hacking (Up to 3 years jail + ₹5 Lakh fine).
+   - **Section 66C**: Identity theft / stolen passwords & OTPs (Up to 3 years jail).
+   - **Section 66D**: Cheating by personation using computer resource / UPI scam (Up to 3 years jail).
+   - **Section 66E**: Privacy violation / publishing private photos without consent (Up to 3 years jail).
+   - **Section 66F**: Cyber Terrorism against India's critical infrastructure (**Life Imprisonment**).
+   - **Section 43**: Penalty for unauthorized access, data copying, or virus release (Civil compensation).
+
+3. **Section 65B of Indian Evidence Act**:
+   - Court me WhatsApp chats, server logs ya CCTV footage submit karne ke liye Section 65B Certificate mandatory hota hai jo data ki integrity certify karta hai.`;
+    }
+    // Scope of Cybersecurity & Salary
+    else if (qLower.includes('scope') || qLower.includes('salary') || qLower.includes('roadmap') || qLower.includes('career') || qLower.includes('cert')) {
+      coreAnswer = `### 🎯 Cybersecurity Career Roadmap & Industry Scope
+
+1. **Industry Demand & Growth**:
+   Cybersecurity me global 3.5 Million unfilled jobs hain. Har enterprise, bank, healthcare aur defense agency ko dedicated security staff chahiye.
+
+2. **Salary Landscape in India**:
+   - **Entry Level (0-2 yrs)**: ₹5 Lakh - ₹10 Lakh LPA (L1 SOC Analyst, Junior Pentester).
+   - **Mid Level (3-6 yrs)**: ₹15 Lakh - ₹28 Lakh LPA (Incident Responder, DevSecOps, Cloud Security).
+   - **Senior / CISO (7+ yrs)**: ₹40 Lakh - ₹1.5+ Crore LPA.
+
+3. **Top Certifications**:
+   - **CompTIA Security+**: Best entry-level defensive starter.
+   - **OSCP (Offensive Security)**: 24-hour practical hacking exam. The global gold standard.
+   - **CISSP**: Top credential for management and CISO roles.
+
+4. **Zero to Hero 4-Stage Roadmap**:
+   - Stage 1: Networking (OSI, TCP/IP, Subnetting) + Linux command line.
+   - Stage 2: Web vulnerabilities (OWASP Top 10) + Python/Bash scripting.
+   - Stage 3: Practice on TryHackMe & PortSwigger Academy.
+   - Stage 4: Specialization (SOC Defense or Offensive Pentesting) & Bug Bounty.`;
+    }
+    // Buffer Overflow
+    else if (qLower.includes('buffer overflow') || qLower.includes('stack') || qLower.includes('eip')) {
+      coreAnswer = `### 💥 Buffer Overflow Vulnerability Deep Dive
+
+1. **How It Works**:
+   C language array boundaries automatically check nahi karti. Jab \`strcpy()\` ya \`gets()\` use hota hai aur user input buffer size se bada hota hai, tab extra bytes stack memory me adjacent areas ko overwrite kar dete hain.
+
+2. **Stack Layout**:
+   \`[Local Buffer Variables] -> [Saved EBP (4 bytes)] -> [Return Address EIP (4 bytes)]\`
+
+3. **Exploitation Mechanics**:
+   - Attacker buffer ko junk bytes se fill karta hai.
+   - Next 4 bytes EBP ko overwrite karte hain.
+   - Next 4 bytes **Return Address (EIP register)** ko overwrite kar dete hain!
+   - Attacker EIP me apne malicious Shellcode (e.g. \`/bin/sh\`) ka memory address daal deta hai.
+   - Function return hote hi CPU hacker ke shellcode par jump kar deta hai aur root shell mil jaati hai.
+
+4. **Defenses**:
+   - Use safe functions: \`strncpy()\`, \`fgets()\`, \`snprintf()\`.
+   - Compiler protections: Stack Canaries (\`-fstack-protector\`), ASLR, DEP/NX Bit.`;
+    }
+    // Nmap & Port Scanning
+    else if (qLower.includes('nmap') || qLower.includes('scan') || qLower.includes('syn')) {
+      coreAnswer = `### 🔍 Nmap Scanning Mechanics: SYN Scan vs Connect Scan
+
+1. **Full TCP Connect Scan (-sT)**:
+   - Complete 3-Way Handshake: SYN -> SYN-ACK -> ACK.
+   - Connection fully establish ho jata hai, jisse target web server application logs me scanner ka IP address store ho jata hai.
+
+2. **SYN Stealth Scan (-sS)**:
+   - Half-Open Scan: Scanner SYN packet bhejta hai -> Target SYN-ACK deta hai -> Scanner turant **RST (Reset)** bhej kar connection tod deta hai!
+   - Handshake complete nahi hota, isliye target application log create nahi karti.
+   - Requires root privilege (sudo) because it creates raw network packets.
+
+3. **Essential Practical Command**:
+   \`\`\`bash
+   sudo nmap -sS -sV -sC -O -T4 192.168.1.1
+   \`\`\`
+   (-sS: SYN scan, -sV: Version detection, -sC: Default scripts, -O: OS detection).`;
+    }
+    // C Programming & Pointers
+    else if (qLower.includes('pointer') || qLower.includes('c language') || qLower.includes('memory leak') || qLower.includes('c program')) {
+      coreAnswer = `### 💻 C Programming & Memory Pointers Masterclass
+
+1. **Pointer Definition**:
+   Pointer ek variable hai jo kisi doosre variable ka physical RAM address store karta hai.
+   \`\`\`c
+   int x = 50;
+   int *ptr = &x; // ptr stores address of x
+   *ptr = 100;    // Dereferencing updates x directly
+   \`\`\`
+
+2. **Memory Leak**:
+   Heap memory (\`malloc\`, \`calloc\`) allocate karne ke baad agar \`free()\` na ki jaye, toh memory leak hoti hai. Server run hone par RAM full ho jaati hai.
+   - Detection tool: \`valgrind --leak-check=full ./program\`
+
+3. **Dangling Pointer**:
+   Jab memory deallocate ho chuki ho par pointer abhi bhi purane address ko point kar raha ho.
+   - Fix: \`free(ptr); ptr = NULL;\``;
+    }
+    // General Technical Fallback (High Quality, Structured, Zero Cringe)
+    else {
+      coreAnswer = `### 🧠 JARVIS Deep Analysis: "${q}"
+
+1. **Core Concept Overview**:
+   Yeh vishay computer science aur systems engineering me fundamental importance rakhta hai. Iska primary objective reliability, performance, aur security architecture establish karna hai.
+
+2. **Technical Workflow & Underlying Mechanics**:
+   - Input/Trigger event register hota hai.
+   - Operating system kernel / protocol layer abstraction provide karti hai.
+   - Data structures ($O(1)$ ya $O(n)$ complexity) processing execute karte hain.
+   - Resource allocation (CPU context switch ya memory allocation) handle hota hai.
+
+3. **Industrial Best Practices & Real-World Application**:
+   - Hamesha input validation aur boundary checks implement karein.
+   - Network protocols me TLS 1.3 encryption aur Zero Trust access control use karein.
+   - Production deployments me automated logging aur SIEM monitoring ensure karein.
+
+📌 **Pro-Tip**: Aap mujhse is concept par specific code snippet, terminal command, ya viva examination question generate karne ke liye puch sakte hain.`;
     }
 
-    return `${prefix}\n\n${coreAnswer}\n\n${cringePunchline}`;
+    return coreAnswer;
   };
 
   type MessagePart =
@@ -433,7 +502,7 @@ printf("Value: %d\\n", a); // Prints 99
                     {
                       id: `welcome-${Date.now()}`,
                       sender: 'jarvis',
-                      text: `Aadab, Sarkar! Chat history clear kar di gayi hai. Naye jazbaat aur naye sawaal puchhiye — mai aapki khidmat me hazir hu! 🚀✨`,
+                      text: `Chat history clear kar di gayi hai. Naya technical question ya coding doubt puchhiye — 100% verified solution ready hai! 🚀`,
                       timestamp: 'Online'
                     }
                   ]);
@@ -456,19 +525,19 @@ printf("Value: %d\\n", a); // Prints 99
           </div>
         </div>
 
-        {/* Telemetry & Personality Control Ribbon */}
+        {/* Telemetry & Intelligence Control Ribbon */}
         <div className="border-t border-cyan-900/40 bg-[#080E1A]/80 py-2.5 px-4">
           <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
-            {/* Persona Selector */}
+            {/* Technical Persona Selector */}
             <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
-              <span className="text-[10px] font-mono uppercase text-cyan-500 font-bold mr-1 shrink-0">
-                Persona:
+              <span className="text-[10px] font-mono uppercase text-cyan-400 font-bold mr-1 shrink-0">
+                Mode:
               </span>
               {[
-                { id: 'ironman', label: '🦾 Iron Man AI' },
-                { id: 'bca_guru', label: '🎓 BCA Savvy' },
-                { id: 'bollywood', label: '🎬 Bollywood Cringe' },
-                { id: 'sarcastic', label: '😏 Sarcastic Genius' }
+                { id: 'cyber_expert', label: '🛡️ Cyber & Pentest' },
+                { id: 'code_architect', label: '💻 Systems Architect' },
+                { id: 'bca_guru', label: '🎓 CS Professor' },
+                { id: 'ironman', label: '🤖 Gemini High-IQ' }
               ].map((p) => (
                 <button
                   key={p.id}
@@ -484,23 +553,23 @@ printf("Value: %d\\n", a); // Prints 99
               ))}
             </div>
 
-            {/* Cringe Intensity Meter */}
+            {/* Gemini Intelligence Depth */}
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono uppercase text-amber-400 font-bold flex items-center gap-1">
-                <Flame className="w-3 h-3 text-amber-400" /> Cringe Meter:
+              <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-emerald-400" /> Intelligence Depth:
               </span>
               <div className="flex items-center bg-black/50 p-0.5 rounded-lg border border-zinc-800 text-[11px]">
                 {[
-                  { id: 'mild', label: '25% Mild' },
-                  { id: 'balanced', label: '60% Balanced' },
-                  { id: 'overdose', label: '100% OVERDOSE' }
+                  { id: 'mild', label: '⚡ Fast (Flash)' },
+                  { id: 'balanced', label: '🧠 Deep (Pro)' },
+                  { id: 'overdose', label: '🔬 Architecture Lab' }
                 ].map((lvl) => (
                   <button
                     key={lvl.id}
                     onClick={() => setCringeLevel(lvl.id as JarvisCringeLevel)}
-                    className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
+                    className={`px-2.5 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
                       cringeLevel === lvl.id
-                        ? 'bg-amber-500 text-black shadow-sm'
+                        ? 'bg-emerald-500 text-black shadow-sm'
                         : 'text-zinc-400 hover:text-zinc-200'
                     }`}
                   >
@@ -540,7 +609,7 @@ printf("Value: %d\\n", a); // Prints 99
                   {isAi && (
                     <div className="flex items-center justify-between mb-2 text-[10px] font-mono border-b border-cyan-900/40 pb-1.5">
                       <span className="text-cyan-400 font-bold flex items-center gap-1">
-                        <Sparkles className="w-3 h-3" /> JARVIS · Smart & Cringe Engine
+                        <Sparkles className="w-3 h-3" /> JARVIS · Gemini Technical Intelligence
                       </span>
                       <span className="text-zinc-500">{msg.timestamp}</span>
                     </div>
@@ -587,7 +656,7 @@ printf("Value: %d\\n", a); // Prints 99
                       </div>
 
                       <span className="text-[10px] text-cyan-500/70 font-mono hidden sm:inline">
-                        Simple · Light · Cringe
+                        100% Accurate · Verified · Gemini Core
                       </span>
                     </div>
                   )}
@@ -609,7 +678,7 @@ printf("Value: %d\\n", a); // Prints 99
               </div>
               <div className="p-3.5 rounded-2xl bg-[#0B1322] border border-cyan-500/30 text-xs text-cyan-300 font-mono flex items-center gap-2">
                 <span className="inline-block w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-                <span>JARVIS dimag ke processors chala raha hai... (Formulating Cringe)</span>
+                <span>JARVIS neural processor analysis in progress... (Gemini Reasoning)</span>
               </div>
             </div>
           )}
@@ -643,7 +712,7 @@ printf("Value: %d\\n", a); // Prints 99
               onKeyDown={(e) => {
                 if (e.key === 'Enter') sendMessage(inputText);
               }}
-              placeholder="JARVIS se kuch bhi pucho (e.g. Tough code logic, BCA tips, funny roast)..."
+              placeholder="JARVIS se koi bhi technical sawaal pucho (e.g. C Pointers, Buffer Overflow, Supercomputer, Cyber Cell, Career Scope)..."
               className="flex-1 bg-transparent px-3 py-2 text-sm text-cyan-100 placeholder:text-zinc-500 outline-none font-sans"
             />
             <button
