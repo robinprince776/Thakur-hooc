@@ -36,9 +36,6 @@ import {
   QuickQuestionPrompt
 } from '../data/techMasterData';
 import { TechCategory, TechLevel, TechQuestion } from '../types';
-import { CyberCellAssistant } from './CyberCellAssistant';
-import { CyberTerminalSimulator } from './CyberTerminalSimulator';
-import { OmnitrixLogo } from '../../components/OmnitrixLogo';
 
 interface TechMasterAppProps {
   onBackToBca?: () => void;
@@ -59,15 +56,8 @@ export const TechMasterApp: React.FC<TechMasterAppProps> = ({
   onOpenAppSwitcher,
   isOmnitrixTheme = false
 }) => {
-  // Navigation tabs: 2000+ Question Vault, Zero-to-Hero Roadmap, Flashcard Drill, Cyber Cell 1930 Assistant, Live Cyber Terminal, Ask AI Master
-  const [activeTab, setActiveTab] = useState<'vault' | 'roadmap' | 'drill' | 'cybercell' | 'terminal' | 'ask_ai'>(() => {
-    try {
-      const h = window.location.hash.toLowerCase();
-      if (h === '#cybercell' || h === '#fir' || h === '#1930') return 'cybercell';
-      if (h === '#terminal' || h === '#shell' || h === '#kali') return 'terminal';
-    } catch {}
-    return 'vault';
-  });
+  // Navigation tabs
+  const [activeTab, setActiveTab] = useState<'vault' | 'roadmap' | 'drill' | 'ask_ai'>('vault');
   const [selectedCategory, setSelectedCategory] = useState<TechCategory | 'all'>('all');
   const [selectedLevel, setSelectedLevel] = useState<TechLevel | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -214,26 +204,15 @@ Provide a crystal-clear, 100% verified, deeply authoritative, zero-cringe explan
           <div className="flex items-center gap-2.5 sm:gap-3">
             <button
               onClick={onBackToBca}
-              className="p-1 sm:p-1.5 rounded-xl border border-emerald-500/30 hover:bg-emerald-500/20 transition-all cursor-pointer shrink-0"
+              className="p-1.5 sm:p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all cursor-pointer"
               title="Return to BCA Verse"
             >
-              {isOmnitrixTheme ? (
-                <OmnitrixLogo size="sm" isGlowing={true} animated={true} />
-              ) : (
-                <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
-                  <Zap className="w-5 h-5 text-emerald-400 animate-pulse" />
-                </div>
-              )}
+              <Zap className="w-5 h-5 text-emerald-400 animate-pulse" />
             </button>
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-base sm:text-xl font-extrabold tracking-tight text-white flex items-center gap-1.5">
                   TechMaster <span className="text-emerald-400 font-mono">2000+</span>
-                  {isOmnitrixTheme && (
-                    <span className="hidden md:inline-flex px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-[#00FF66]/20 text-[#00FF66] border border-[#00FF66]/40 uppercase">
-                      Brainstorm Matrix
-                    </span>
-                  )}
                 </h1>
                 <span className="hidden xs:inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
                   Zero to Hero
@@ -290,30 +269,6 @@ Provide a crystal-clear, 100% verified, deeply authoritative, zero-cringe explan
           >
             <BookOpen className="w-3.5 h-3.5" />
             <span>2000+ Question Vault</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('cybercell')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
-              activeTab === 'cybercell'
-                ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                : 'bg-slate-900/80 text-slate-300 hover:bg-slate-800'
-            }`}
-          >
-            <Scale className="w-3.5 h-3.5 text-amber-300" />
-            <span>Cyber Cell 1930 &amp; FIR</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('terminal')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
-              activeTab === 'terminal'
-                ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                : 'bg-slate-900/80 text-slate-300 hover:bg-slate-800'
-            }`}
-          >
-            <Terminal className="w-3.5 h-3.5 text-cyan-300" />
-            <span>Live Cyber Terminal</span>
           </button>
 
           <button
@@ -863,21 +818,7 @@ Provide a crystal-clear, 100% verified, deeply authoritative, zero-cringe explan
           </div>
         )}
 
-        {/* TAB 4: CYBER CELL 1930 & FIR GENERATOR */}
-        {activeTab === 'cybercell' && (
-          <div className="space-y-4">
-            <CyberCellAssistant />
-          </div>
-        )}
-
-        {/* TAB 5: LIVE CYBER TERMINAL SIMULATOR */}
-        {activeTab === 'terminal' && (
-          <div className="space-y-4">
-            <CyberTerminalSimulator />
-          </div>
-        )}
-
-        {/* TAB 6: ASK AI MASTER */}
+        {/* TAB 4: ASK AI MASTER */}
         {activeTab === 'ask_ai' && (
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="text-center space-y-2">

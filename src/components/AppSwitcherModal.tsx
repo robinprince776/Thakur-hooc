@@ -15,7 +15,6 @@ import {
   BookOpen
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
-import { OmnitrixLogo } from './OmnitrixLogo';
 
 export type CurrentAppType = 'bca' | 'calc' | 'sukhan' | 'compiler' | 'cyber' | 'jarvis' | 'dev' | 'techmaster';
 
@@ -189,22 +188,19 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
 
         {/* Modal Header */}
         <div className="relative z-10 flex items-center justify-between border-b border-zinc-800 pb-4">
-          <div className="flex items-center gap-3">
-            <OmnitrixLogo size="md" isGlowing={true} animated={true} />
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-[#00FF66]/20 text-[#00FF66] border border-[#00FF66]/40 uppercase">
-                  8-Apps Master Suite
-                </span>
-                <span className="text-[11px] text-[#00FF66] font-mono">Alien Force Edition</span>
-              </div>
-              <h2 className="text-xl sm:text-2xl font-serif text-[#FFF5EA]">
-                Choose Your App Experience
-              </h2>
-              <p className="text-xs text-zinc-400">
-                Created by Prince Thakur · Sabhi aath (8) apps poori tarah functional aur offline ready hain.
-              </p>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 uppercase">
+                8-Apps Master Suite
+              </span>
+              <span className="text-[11px] text-zinc-400">Created by Prince Thakur</span>
             </div>
+            <h2 className="text-xl sm:text-2xl font-serif text-[#FFF5EA]">
+              Choose Your App Experience
+            </h2>
+            <p className="text-xs text-zinc-400">
+              Kisi bhi app ko chunein — sabhi aath (8) apps poori tarah functional aur offline chalte hain.
+            </p>
           </div>
 
           <button

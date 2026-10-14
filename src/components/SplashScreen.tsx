@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Sparkles, Terminal, Cpu, Layers, Heart, ArrowRight } from 'lucide-react';
-import { OmnitrixLogo } from './OmnitrixLogo';
 
 interface SplashScreenProps {
   onFinish?: () => void;
@@ -83,29 +82,31 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
 
       {/* Center Hero Content */}
       <div className="flex flex-col items-center text-center max-w-lg px-4 relative z-10 my-auto">
-        {/* Animated Ben 10 Omnitrix Hero Icon */}
-        <div className="relative mb-5 flex flex-col items-center">
-          <div className="relative p-2 rounded-full animate-float-soft">
-            <OmnitrixLogo size="hero" isGlowing={true} animated={true} />
+        {/* Animated App Icon Triad */}
+        <div className="relative mb-6">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 shadow-2xl shadow-indigo-500/40 flex items-center justify-center text-white ring-8 ring-white/10 animate-float-soft transition-transform">
+            <div className="relative flex items-center justify-center">
+              <Cpu className="w-12 h-12 sm:w-14 sm:h-14 text-white" />
+              <Terminal className="w-5 h-5 sm:w-6 sm:h-6 absolute -bottom-1 -right-1 text-pink-300" />
+            </div>
           </div>
-          <div className="mt-2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00FF66]/15 border border-[#00FF66]/40 text-[11px] font-mono font-bold text-[#00FF66]">
-            <Sparkles className="w-3.5 h-3.5 text-[#00FF66] animate-pulse" />
-            <span>BEN 10 ALIEN FORCE · RECALIBRATED EDITION</span>
+          <div className="absolute -top-1.5 -right-1.5 bg-gradient-to-tr from-amber-400 to-pink-500 p-1.5 rounded-full shadow-lg text-white">
+            <Sparkles className="w-4 h-4 fill-white" />
           </div>
         </div>
 
         {/* App Title */}
-        <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-2">
-          BCA Verse <span className="text-[#00FF66]">Alien Force</span>
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tight bg-gradient-to-r from-white via-indigo-100 to-pink-200 bg-clip-text text-transparent mb-2">
+          BCA Verse
         </h1>
 
         {/* 3 Core Subjects Tagline */}
-        <p className="text-xs sm:text-sm font-medium text-emerald-200/90 mb-5 leading-relaxed max-w-md font-mono">
-          8-Apps Master Suite · TechMaster 2000+ · JARVIS Gemini · C Compiler
+        <p className="text-xs sm:text-sm font-medium text-slate-300 mb-5 leading-relaxed max-w-md">
+          Logic Systems · 45+ C Programs · Fundamental of Computer
         </p>
 
-        {/* Subject Feature Tags */}
-        <div className="flex flex-wrap items-center justify-center gap-2 text-[11px] sm:text-xs text-slate-200 font-medium mb-6">
+        {/* 3 Subject Feature Tags */}
+        <div className="flex flex-wrap items-center justify-center gap-2 text-[11px] sm:text-xs text-slate-200 font-medium mb-7">
           <span className="px-3 py-1 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm">
             ⚡ Logic &amp; Numbers
           </span>

@@ -21,7 +21,6 @@ import {
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 import { OmnitrixDial } from './OmnitrixDial';
-import { OmnitrixLogo } from './OmnitrixLogo';
 
 export type ActiveTab =
   | 'home'
@@ -108,38 +107,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               className="flex items-center gap-2.5 group text-left cursor-pointer"
             >
-              {isOmnitrixActive ? (
-                <div className="relative group-hover:scale-105 transition-transform">
-                  <OmnitrixLogo size="sm" isGlowing={true} animated={true} />
-                </div>
-              ) : (
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-                  <Cpu className="w-5 h-5 text-white" />
-                </div>
-              )}
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                <Cpu className="w-5 h-5 text-white" />
+              </div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">
                     BCA Verse
-                    {isOmnitrixActive && (
-                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-[#00FF66]/20 text-[#00FF66] border border-[#00FF66]/40 uppercase tracking-wider">
-                        Alien Force
-                      </span>
-                    )}
                   </span>
                   {/* Made by Prince Thakur badge */}
-                  <span className={`hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${
-                    isOmnitrixActive
-                      ? 'bg-[#00FF66]/15 text-[#00FF66] border border-[#00FF66]/40'
-                      : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/60'
-                  }`}>
+                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/60">
                     By Prince Thakur
                   </span>
                 </div>
-                <span className={`text-[11px] font-medium hidden xs:block ${
-                  isOmnitrixActive ? 'text-[#00FF66]/80 font-mono' : 'text-slate-500 dark:text-slate-400'
-                }`}>
-                  {isOmnitrixActive ? 'Omnitrix Recalibrated · 8 Apps Suite' : 'Academic Suite + Offline Tools'}
+                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 hidden xs:block">
+                  Academic Suite + Offline Tools
                 </span>
               </div>
             </button>

@@ -66,10 +66,9 @@ export default function App() {
 
   const [isOmnitrix, setIsOmnitrix] = useState<boolean>(() => {
     try {
-      const saved = localStorage.getItem('bca_omnitrix_mode');
-      return saved !== 'false'; // Default to Ben 10 Alien Force Theme
+      return localStorage.getItem('bca_omnitrix_mode') === 'true';
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -167,7 +166,7 @@ export default function App() {
   useEffect(() => {
     const handleHash = () => {
       const h = window.location.hash.toLowerCase();
-      if (h === '#tech' || h === '#techmaster' || h === '#qna' || h === '#cybercell' || h === '#terminal' || h === '#shell' || h === '#fir') {
+      if (h === '#tech' || h === '#techmaster' || h === '#qna' || h === '#cybercell') {
         setIsTechMasterOpen(true);
         setIsDevForgeOpen(false);
         setIsJarvisOpen(false);

@@ -14,14 +14,9 @@ import {
   Terminal,
   Lock,
   Feather,
-  Layers,
-  Flame,
-  Activity,
-  Compass,
-  FileText
+  Layers
 } from 'lucide-react';
 import { CurrentAppType } from './AppSwitcherModal';
-import { OmnitrixLogo } from './OmnitrixLogo';
 
 interface OmnitrixDialProps {
   isOmnitrixActive: boolean;
@@ -30,15 +25,13 @@ interface OmnitrixDialProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-interface AlienForceAlien {
-  id: CurrentAppType | 'cybercell' | 'terminal';
+interface AlienForm {
+  id: CurrentAppType;
   alienName: string;
   species: string;
   role: string;
   power: string;
-  element: string;
   badgeColor: string;
-  accentHex: string;
   icon: React.ReactNode;
 }
 
@@ -48,40 +41,32 @@ export const OmnitrixDial: React.FC<OmnitrixDialProps> = ({
   onSelectApp,
   size = 'md'
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
   const [showMatrixModal, setShowMatrixModal] = useState(false);
   const [activeAlienIndex, setActiveAlienIndex] = useState(0);
 
-  // Synthesize futuristic mechanical Alien Force Omnitrix transform sound via Web Audio API
+  // Synthesize futuristic mechanical Omnitrix transform sound via Web Audio API
   const playOmnitrixTransformSound = () => {
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
       const osc = audioCtx.createOscillator();
-      const osc2 = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
 
       osc.type = 'sawtooth';
-      osc2.type = 'sine';
       const now = audioCtx.currentTime;
+      // Omnitrix transform pitch slide: 160Hz -> 740Hz -> 920Hz
+      osc.frequency.setValueAtTime(160, now);
+      osc.frequency.exponentialRampToValueAtTime(740, now + 0.12);
+      osc.frequency.exponentialRampToValueAtTime(920, now + 0.28);
 
-      // Alien Force Omnitrix beep & burst: 220Hz -> 880Hz -> 1200Hz
-      osc.frequency.setValueAtTime(220, now);
-      osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
-      osc.frequency.exponentialRampToValueAtTime(1320, now + 0.32);
-
-      osc2.frequency.setValueAtTime(440, now);
-      osc2.frequency.exponentialRampToValueAtTime(660, now + 0.2);
-
-      gain.gain.setValueAtTime(0.28, now);
+      gain.gain.setValueAtTime(0.25, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
 
       osc.connect(gain);
-      osc2.connect(gain);
       gain.connect(audioCtx.destination);
 
       osc.start(now);
-      osc2.start(now);
       osc.stop(now + 0.45);
-      osc2.stop(now + 0.45);
     } catch {
       // Audio fallback
     }
@@ -94,13 +79,13 @@ export const OmnitrixDial: React.FC<OmnitrixDialProps> = ({
       const gain = audioCtx.createGain();
       osc.type = 'sine';
       const now = audioCtx.currentTime;
-      osc.frequency.setValueAtTime(960, now);
+      osc.frequency.setValueAtTime(880, now);
       gain.gain.setValueAtTime(0.12, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start(now);
-      osc.stop(now + 0.09);
+      osc.stop(now + 0.08);
     } catch {}
   };
 
@@ -110,321 +95,269 @@ export const OmnitrixDial: React.FC<OmnitrixDialProps> = ({
     setShowMatrixModal(true);
   };
 
-  const alienForceMatrix: AlienForceAlien[] = [
+  const alienMatrix: AlienForm[] = [
     {
-      id: 'techmaster',
+      id: 'techmaster' as CurrentAppType,
       alienName: 'Brainstorm',
       species: 'Cerebrocrustacean',
       role: 'TechMaster 2000+',
       power: '2000+ Questions & Answers, Cyber Cell, Supercomputers, Hacking & Architecture',
-      element: 'Electric Neural Intelligence',
       badgeColor: 'border-emerald-400 text-emerald-300 shadow-emerald-500/50',
-      accentHex: '#00FF66',
       icon: <BookOpen className="w-6 h-6 text-emerald-400" />
     },
     {
-      id: 'jarvis',
-      alienName: 'Alien X',
-      species: 'Celestialsapien',
+      id: 'jarvis' as CurrentAppType,
+      alienName: 'Grey Matter',
+      species: 'Galvan',
       role: 'JARVIS AI Engine',
-      power: 'Omniscient AI assistant powered by Gemini. 100% accurate, zero cringe solutions',
-      element: 'Omnipresent Cosmic Intellect',
+      power: 'Ultra-high IQ AI assistant powered by Gemini. 100% accurate, zero cringe solutions',
       badgeColor: 'border-cyan-400 text-cyan-300 shadow-cyan-500/50',
-      accentHex: '#00F0FF',
       icon: <Bot className="w-6 h-6 text-cyan-400" />
     },
     {
-      id: 'cyber',
-      alienName: 'Chromastone',
-      species: 'Crystalsapien',
+      id: 'cyber' as CurrentAppType,
+      alienName: 'Diamondhead',
+      species: 'Petrosapien',
       role: 'CyberShield Academy',
       power: 'Impenetrable defense, SOC operations, Wireshark packet capture & ethical hacking',
-      element: 'Crystal Energy Absorption & Defense',
-      badgeColor: 'border-fuchsia-400 text-fuchsia-300 shadow-fuchsia-500/50',
-      accentHex: '#E056FD',
-      icon: <Shield className="w-6 h-6 text-fuchsia-400" />
+      badgeColor: 'border-teal-400 text-teal-300 shadow-teal-500/50',
+      icon: <Shield className="w-6 h-6 text-teal-400" />
     },
     {
-      id: 'dev',
-      alienName: 'Echo Echo',
-      species: 'Sonorosian',
+      id: 'dev' as CurrentAppType,
+      alienName: 'Upgrade',
+      species: 'Galvanic Mechamorph',
       role: 'DevForge Toolkit',
       power: 'JSON Studio, Regex Sandbox, JWT debugger, REST client & developer utilities',
-      element: 'Acoustic Signal Duplication',
       badgeColor: 'border-indigo-400 text-indigo-300 shadow-indigo-500/50',
-      accentHex: '#818CF8',
       icon: <Wrench className="w-6 h-6 text-indigo-400" />
     },
     {
-      id: 'compiler',
-      alienName: 'Jetray',
-      species: 'Aerophibian',
+      id: 'compiler' as CurrentAppType,
+      alienName: 'XLR8',
+      species: 'Kineceleran',
       role: 'Simple C Compiler',
       power: 'Lightning-fast client C code compilation, step-by-step logic tracing & templates',
-      element: 'Hypersonic Computation',
-      badgeColor: 'border-amber-400 text-amber-300 shadow-amber-500/50',
-      accentHex: '#FBBF24',
-      icon: <Terminal className="w-6 h-6 text-amber-400" />
+      badgeColor: 'border-blue-400 text-blue-300 shadow-blue-500/50',
+      icon: <Terminal className="w-6 h-6 text-blue-400" />
     },
     {
-      id: 'bca',
-      alienName: 'Humungousaur',
-      species: 'Vaxasaurian',
-      role: 'BCA Verse Portal',
-      power: 'Boolean Algebra, K-Map solver, 2s Complement & semester exam notes',
-      element: 'Titan Logic Strength',
+      id: 'bca' as CurrentAppType,
+      alienName: 'Four Arms',
+      species: 'Tetramand',
+      role: 'BCA Verse Core',
+      power: 'Heavy-duty Logic system conversions, 50+ C programs, and exam syllabus notes',
       badgeColor: 'border-rose-400 text-rose-300 shadow-rose-500/50',
-      accentHex: '#FB7185',
       icon: <Layers className="w-6 h-6 text-rose-400" />
     },
     {
-      id: 'calc',
-      alienName: 'Big Chill',
-      species: 'Necrofriggian',
+      id: 'calc' as CurrentAppType,
+      alienName: 'Ghostfreak',
+      species: 'Ectonurite',
       role: 'CalcVault Stealth',
       power: 'Stealth disguised calculator with encrypted peer-to-peer vanishing chat',
-      element: 'Cryo Invisibility & Camouflage',
-      badgeColor: 'border-sky-400 text-sky-300 shadow-sky-500/50',
-      accentHex: '#38BDF8',
-      icon: <Lock className="w-6 h-6 text-sky-400" />
+      badgeColor: 'border-amber-400 text-amber-300 shadow-amber-500/50',
+      icon: <Lock className="w-6 h-6 text-amber-400" />
     },
     {
-      id: 'sukhan',
-      alienName: 'Swampfire',
-      species: 'Methanosian',
+      id: 'sukhan' as CurrentAppType,
+      alienName: 'Ripjaws',
+      species: 'Piscciss Volann',
       role: 'SUKHAN Lounge',
       power: 'Deep emotional Urdu poetry, audio mehfil, ghazals and literary aesthetics',
-      element: 'Methane Flame & Rebirth',
-      badgeColor: 'border-emerald-500 text-emerald-300 shadow-emerald-500/50',
-      accentHex: '#10B981',
-      icon: <Feather className="w-6 h-6 text-emerald-400" />
-    },
-    {
-      id: 'cybercell',
-      alienName: 'Spidermonkey',
-      species: 'Arachnichimp',
-      role: 'Cyber Cell 1930 Assistant',
-      power: 'Step-by-step financial fraud recovery, Golden Hour rule, Section 66 FIR generator',
-      element: 'Neural Web Net & Tracing',
-      badgeColor: 'border-blue-400 text-blue-300 shadow-blue-500/50',
-      accentHex: '#60A5FA',
-      icon: <FileText className="w-6 h-6 text-blue-400" />
-    },
-    {
-      id: 'terminal',
-      alienName: 'Goop',
-      species: 'Polymorph',
-      role: 'Live Cyber Terminal',
-      power: 'Interactive Kali Linux shell simulator (nmap, whois, ping, param-siddhi, cybercell)',
-      element: 'Polymorphic Acid & Shell Injection',
-      badgeColor: 'border-lime-400 text-lime-300 shadow-lime-500/50',
-      accentHex: '#A3E635',
-      icon: <Terminal className="w-6 h-6 text-lime-400" />
+      badgeColor: 'border-purple-400 text-purple-300 shadow-purple-500/50',
+      icon: <Feather className="w-6 h-6 text-purple-400" />
     }
   ];
 
-  const handleTransform = (alien: AlienForceAlien) => {
+  const handleTransform = (appId: CurrentAppType) => {
     playOmnitrixTransformSound();
     setShowMatrixModal(false);
-
-    if (alien.id === 'cybercell' || alien.id === 'terminal') {
-      // Launch TechMaster with specific tab or hash
-      window.location.hash = alien.id === 'cybercell' ? 'cybercell' : 'techmaster';
-      if (onSelectApp) onSelectApp('techmaster');
-      return;
-    }
-
     if (onSelectApp) {
-      onSelectApp(alien.id as CurrentAppType);
+      onSelectApp(appId);
     }
   };
 
-  const activeAlien = alienForceMatrix[activeAlienIndex];
+  const dimensions =
+    size === 'sm' ? 'w-8 h-8' : size === 'lg' ? 'w-14 h-14' : 'w-10 h-10';
 
   return (
     <>
-      {/* Authentic Ben 10 Alien Force Omnitrix Button */}
       <button
         onClick={handleDialClick}
-        className="relative flex items-center justify-center cursor-pointer select-none group focus:outline-none shrink-0"
-        title="Ben 10 Alien Force Omnitrix (Click to Transform)"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={`relative ${dimensions} rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer select-none group focus:outline-none shrink-0`}
+        title="Ben 10 Omnitrix Alien Matrix (Tap to Transform)"
         aria-label="Ben 10 Omnitrix Dial"
       >
-        <OmnitrixLogo
-          size={size}
-          isGlowing={isOmnitrixActive}
-          animated={isOmnitrixActive}
+        {/* Outer Titanium Dial Bezel */}
+        <div
+          className={`absolute inset-0 rounded-full border-2 transition-all duration-300 ${
+            isOmnitrixActive
+              ? 'border-[#00FF66] shadow-[0_0_20px_#00FF66] bg-[#03150B]'
+              : 'border-emerald-600/70 dark:border-emerald-500/50 bg-slate-900/90 hover:border-[#00FF66]'
+          }`}
         />
-        {/* Subtle Green Pulse Dot when Active */}
-        {isOmnitrixActive && (
-          <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#00FF66] border border-black animate-ping pointer-events-none" />
-        )}
+
+        {/* 4 Titanium Screws / Notches on the Ring */}
+        <span className="absolute -top-0.5 w-1.5 h-1 bg-slate-400 rounded-xs shadow-xs" />
+        <span className="absolute -bottom-0.5 w-1.5 h-1 bg-slate-400 rounded-xs shadow-xs" />
+        <span className="absolute -left-0.5 h-1.5 w-1 bg-slate-400 rounded-xs shadow-xs" />
+        <span className="absolute -right-0.5 h-1.5 w-1 bg-slate-400 rounded-xs shadow-xs" />
+
+        {/* Dial Face / Glass Cover */}
+        <div
+          className={`relative w-[78%] h-[78%] rounded-full overflow-hidden flex items-center justify-center ${
+            isOmnitrixActive ? 'bg-black shadow-inner' : 'bg-slate-950'
+          }`}
+        >
+          {/* Pulsing Green Energy Ring */}
+          <div
+            className={`absolute inset-0 rounded-full transition-opacity duration-300 ${
+              isOmnitrixActive
+                ? 'opacity-100 bg-radial from-[#00FF66]/40 via-transparent to-transparent animate-pulse'
+                : 'opacity-40 group-hover:opacity-100'
+            }`}
+          />
+
+          {/* Authentic Ben 10 Omnitrix Hourglass Emblem */}
+          <svg
+            viewBox="0 0 100 100"
+            className={`w-[85%] h-[85%] transition-transform duration-300 ${
+              isOmnitrixActive
+                ? 'text-[#00FF66] filter drop-shadow-[0_0_8px_#00FF66]'
+                : 'text-[#00FF66]/80 group-hover:text-[#00FF66]'
+            } ${isHovered ? 'rotate-90 scale-105' : 'rotate-0'}`}
+          >
+            {/* Hourglass Silhouette Left and Right Wings */}
+            <polygon
+              points="10,12 50,50 10,88"
+              fill={isOmnitrixActive ? '#00FF66' : '#00dd55'}
+            />
+            <polygon
+              points="90,12 50,50 90,88"
+              fill={isOmnitrixActive ? '#00FF66' : '#00dd55'}
+            />
+            {/* Core Dark Insets */}
+            <polygon points="10,12 90,12 50,50" fill="#060C08" />
+            <polygon points="10,88 90,88 50,50" fill="#060C08" />
+            {/* Center Core Dot */}
+            <circle cx="50" cy="50" r="4" fill="#FFFFFF" />
+          </svg>
+        </div>
+
+        {/* Glowing Indicator Pill */}
+        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FF66] opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-[#00FF66] shadow-[0_0_8px_#00FF66]"></span>
+        </span>
       </button>
 
-      {/* Holographic Ben 10 Alien Force Matrix Modal */}
+      {/* BEN 10 OMNITRIX TRANSFORMATION MATRIX POPUP MODAL */}
       {showMatrixModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div
-            className="relative w-full max-w-xl rounded-3xl bg-[#030A05] border-2 border-[#00FF66]/80 text-[#E6FFF0] shadow-[0_0_50px_rgba(0,255,102,0.4)] overflow-hidden flex flex-col font-sans"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Holographic Alien Force Scanline Texture */}
-            <div
-              className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#00FF66_1px,transparent_1px)] [background-size:16px_16px]"
-            />
-
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200 select-none">
+          <div className="relative w-full max-w-lg bg-[#040e06] border-2 border-[#00FF66] rounded-3xl p-4 sm:p-6 shadow-[0_0_50px_rgba(0,255,102,0.35)] text-white space-y-4 max-h-[92vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="relative px-5 py-4 border-b border-[#00FF66]/30 bg-[#05150A]/90 flex items-center justify-between">
+            <div className="flex items-center justify-between border-b border-[#00FF66]/30 pb-3">
               <div className="flex items-center gap-3">
-                <OmnitrixLogo size="sm" isGlowing={true} />
+                <div className="w-9 h-9 rounded-full bg-black border-2 border-[#00FF66] flex items-center justify-center shadow-[0_0_12px_#00FF66]">
+                  <svg viewBox="0 0 100 100" className="w-6 h-6 text-[#00FF66]">
+                    <polygon points="10,12 50,50 10,88" fill="#00FF66" />
+                    <polygon points="90,12 50,50 90,88" fill="#00FF66" />
+                    <polygon points="10,12 90,12 50,50" fill="#000" />
+                    <polygon points="10,88 90,88 50,50" fill="#000" />
+                    <circle cx="50" cy="50" r="4" fill="#FFF" />
+                  </svg>
+                </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-base sm:text-lg font-black tracking-widest text-[#00FF66] font-mono uppercase">
-                      Omnitrix DNA Matrix
-                    </span>
-                    <span className="px-2 py-0.5 text-[10px] font-mono font-bold bg-[#00FF66]/20 border border-[#00FF66]/40 text-[#00FF66] rounded-full">
-                      Alien Force
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-emerald-400/80 font-mono">
-                    Azmuth Galvanic Prime · Level 20 Tech
+                  <h2 className="text-base sm:text-lg font-black tracking-wider text-[#00FF66] uppercase flex items-center gap-2">
+                    Omnitrix Alien Matrix
+                  </h2>
+                  <p className="text-[11px] text-emerald-300/80">
+                    Galvanic Tech DNA Selector · Tap Alien Form to Transform
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                {/* Omnitrix Theme Global Toggle */}
-                <button
-                  onClick={() => {
-                    playDialBeep();
-                    onToggleOmnitrix();
-                  }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
-                    isOmnitrixActive
-                      ? 'bg-[#00FF66] text-black border-[#00FF66] shadow-[0_0_12px_#00FF66]'
-                      : 'bg-zinc-900 text-[#00FF66] border-[#00FF66]/40 hover:bg-[#00FF66]/20'
-                  }`}
-                  title="Toggle Ben 10 Alien Force Theme"
-                >
-                  <Power className="w-3.5 h-3.5" />
-                  <span>{isOmnitrixActive ? 'AF Theme: ON' : 'AF Theme: OFF'}</span>
-                </button>
-
-                <button
-                  onClick={() => setShowMatrixModal(false)}
-                  className="p-1.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-700/60 cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+              <button
+                onClick={() => setShowMatrixModal(false)}
+                className="p-1.5 rounded-full hover:bg-emerald-950/60 text-emerald-400 border border-emerald-500/30 transition-all cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            {/* Modal Body: Active Alien Holographic Display */}
-            <div className="relative p-5 sm:p-6 space-y-5">
-              {/* Central Hologram Ring */}
-              <div className="relative rounded-2xl bg-gradient-to-b from-[#061C0D] to-[#030C06] border border-[#00FF66]/40 p-5 flex flex-col sm:flex-row items-center gap-5 shadow-inner">
-                {/* Alien Holographic Projection Visual */}
-                <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shrink-0">
-                  <div
-                    className="absolute inset-0 rounded-full border-2 border-dashed border-[#00FF66]/50 animate-spin"
-                    style={{ animationDuration: '14s' }}
-                  />
-                  <div className="absolute inset-2 rounded-full bg-[#00FF66]/15 blur-sm animate-pulse" />
-                  <div className="relative z-10 flex flex-col items-center">
-                    <div className="p-4 rounded-full bg-black/80 border-2 border-[#00FF66] shadow-[0_0_20px_#00FF66]">
-                      {activeAlien.icon}
-                    </div>
-                  </div>
-                </div>
+            {/* Omnitrix Theme Mode Toggle Banner */}
+            <div className="p-3 rounded-2xl bg-[#021307] border border-[#00FF66]/50 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <Power className="w-4 h-4 text-[#00FF66] animate-pulse" />
+                <span className="text-xs font-bold text-emerald-200">
+                  Ben 10 Omnitrix Theme Mode:
+                </span>
+                <span
+                  className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
+                    isOmnitrixActive
+                      ? 'bg-[#00FF66] text-black shadow-[0_0_10px_#00FF66]'
+                      : 'bg-slate-800 text-slate-400'
+                  }`}
+                >
+                  {isOmnitrixActive ? 'ONLINE' : 'STANDBY'}
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  playOmnitrixTransformSound();
+                  onToggleOmnitrix();
+                }}
+                className={`px-3 py-1 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                  isOmnitrixActive
+                    ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30'
+                    : 'bg-[#00FF66] text-black shadow-[0_0_12px_#00FF66] hover:bg-[#00dd55]'
+                }`}
+              >
+                {isOmnitrixActive ? 'Switch to Standard' : 'Activate Hero Mode'}
+              </button>
+            </div>
 
-                {/* Alien Telemetry Info */}
-                <div className="flex-1 text-center sm:text-left space-y-1.5">
-                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                    <h3 className="text-xl sm:text-2xl font-black text-white tracking-wide">
-                      {activeAlien.alienName}
-                    </h3>
-                    <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#00FF66]/20 text-[#00FF66] border border-[#00FF66]/40 uppercase">
-                      {activeAlien.species}
+            {/* Alien Form Grid */}
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+              {alienMatrix.map((alien, idx) => (
+                <button
+                  key={alien.id}
+                  onClick={() => handleTransform(alien.id)}
+                  onMouseEnter={playDialBeep}
+                  className={`p-3 rounded-2xl border text-left transition-all duration-200 group cursor-pointer flex flex-col justify-between ${alien.badgeColor} bg-black/60 hover:bg-emerald-950/40 hover:border-[#00FF66] hover:scale-[1.02]`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="p-2 rounded-xl bg-slate-950 border border-emerald-500/30 group-hover:border-[#00FF66]">
+                      {alien.icon}
+                    </div>
+                    <span className="text-[10px] font-mono text-[#00FF66] font-bold">
+                      DNA #{idx + 1}
                     </span>
                   </div>
 
-                  <div className="text-xs font-mono text-[#00FF66] font-semibold flex items-center justify-center sm:justify-start gap-1.5">
-                    <Zap className="w-3.5 h-3.5" />
-                    <span>Element: {activeAlien.element}</span>
+                  <div>
+                    <div className="text-xs sm:text-sm font-extrabold text-white group-hover:text-[#00FF66] transition-colors flex items-center gap-1.5">
+                      <span>{alien.alienName}</span>
+                    </div>
+                    <div className="text-[11px] font-bold text-emerald-400/90 truncate">
+                      {alien.role}
+                    </div>
+                    <p className="text-[10px] text-slate-400 line-clamp-2 mt-1 leading-snug">
+                      {alien.power}
+                    </p>
                   </div>
-
-                  <div className="text-xs text-zinc-300 leading-relaxed pt-1">
-                    <strong className="text-[#00FF66] font-semibold">{activeAlien.role}:</strong>{' '}
-                    {activeAlien.power}
-                  </div>
-
-                  <div className="pt-2">
-                    <button
-                      onClick={() => handleTransform(activeAlien)}
-                      className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00FF66] to-[#00CC52] hover:brightness-110 text-black font-black text-xs font-mono tracking-wider uppercase cursor-pointer shadow-[0_0_20px_rgba(0,255,102,0.6)] flex items-center justify-center gap-2 transition-transform active:scale-95"
-                    >
-                      <Sparkles className="w-4 h-4" />
-                      <span>Transform Into {activeAlien.alienName}</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Alien DNA Dial Selection Wheel */}
-              <div>
-                <div className="flex items-center justify-between text-xs font-mono text-emerald-400 mb-2">
-                  <span className="flex items-center gap-1.5">
-                    <Radio className="w-3.5 h-3.5 text-[#00FF66]" /> Select Alien DNA Sample (10 Forms)
-                  </span>
-                  <span className="text-zinc-500 text-[11px]">
-                    {activeAlienIndex + 1} of {alienForceMatrix.length}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                  {alienForceMatrix.map((alien, idx) => {
-                    const isSelected = idx === activeAlienIndex;
-                    return (
-                      <button
-                        key={alien.alienName}
-                        onClick={() => {
-                          playDialBeep();
-                          setActiveAlienIndex(idx);
-                        }}
-                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
-                          isSelected
-                            ? 'bg-[#00FF66]/20 border-[#00FF66] shadow-[0_0_12px_rgba(0,255,102,0.4)] text-white'
-                            : 'bg-black/50 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
-                        }`}
-                      >
-                        <div
-                          className={`p-1.5 rounded-lg shrink-0 ${
-                            isSelected ? 'bg-[#00FF66] text-black' : 'bg-zinc-900 text-zinc-400'
-                          }`}
-                        >
-                          {React.cloneElement(alien.icon as React.ReactElement<any>, {
-                            className: 'w-4 h-4'
-                          })}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="text-[11px] font-bold truncate">{alien.alienName}</div>
-                          <div className="text-[9px] font-mono text-[#00FF66] truncate">
-                            {alien.role.split(' ')[0]}
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+                </button>
+              ))}
             </div>
 
-            {/* Modal Footer */}
-            <div className="px-5 py-3 border-t border-[#00FF66]/30 bg-[#020904] flex items-center justify-between text-[11px] font-mono text-zinc-400">
-              <span className="text-[#00FF66] flex items-center gap-1">
-                <Activity className="w-3.5 h-3.5 animate-pulse" /> Recalibrated Omnitrix Ready
+            {/* Footer Hint */}
+            <div className="text-center pt-1 border-t border-[#00FF66]/20">
+              <span className="text-[11px] font-mono text-emerald-400/70">
+                Created by Prince Thakur · Level 10 Galvanic Technology
               </span>
-              <span>Made by Prince Thakur</span>
             </div>
           </div>
         </div>
