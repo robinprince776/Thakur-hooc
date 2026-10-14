@@ -14,6 +14,10 @@ import { SplashScreen } from './components/SplashScreen';
 import { OfflineNotesPad } from './components/OfflineNotesPad';
 import { SukhanApp } from './sukhan/components/SukhanApp';
 import { SukhanPenIcon } from './sukhan/components/SukhanPenIcon';
+import { SimpleCCompilerApp } from './compiler/components/SimpleCCompilerApp';
+import { CyberShieldApp } from './cyber/components/CyberShieldApp';
+import { JarvisApp } from './jarvis/components/JarvisApp';
+import { DevForgeApp } from './devforge/components/DevForgeApp';
 import { AppSwitcherModal, CurrentAppType } from './components/AppSwitcherModal';
 import { useDirectChat } from './hooks/useDirectChat';
 import { playUnlockSound, playLockSound, triggerHaptic } from './utils/sound';
@@ -25,7 +29,7 @@ import {
   UserSettings,
   NatureWallpaper,
 } from './types';
-import { Calculator as CalcIcon, Layers, Heart, Sparkles, FileText, RotateCw, Zap, Grid } from 'lucide-react';
+import { Calculator as CalcIcon, Layers, Heart, Sparkles, FileText, RotateCw, Zap, Grid, Shield, Bot } from 'lucide-react';
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
   secretPin: '1307',
@@ -96,25 +100,110 @@ export default function App() {
       return false;
     }
   });
+
+  // --- Simple C Compiler App State ---
+  const [isCompilerOpen, setIsCompilerOpen] = useState<boolean>(() => {
+    try {
+      const h = window.location.hash.toLowerCase();
+      return h === '#compiler' || h === '#c' || h === '#ccompiler' || h === '#run';
+    } catch {
+      return false;
+    }
+  });
+
+  // --- CyberShield Cybersecurity Academy State ---
+  const [isCyberOpen, setIsCyberOpen] = useState<boolean>(() => {
+    try {
+      const h = window.location.hash.toLowerCase();
+      return h === '#cyber' || h === '#security' || h === '#hack' || h === '#kali';
+    } catch {
+      return false;
+    }
+  });
+
+  // --- JARVIS AI Assistant State ---
+  const [isJarvisOpen, setIsJarvisOpen] = useState<boolean>(() => {
+    try {
+      const h = window.location.hash.toLowerCase();
+      return h === '#jarvis' || h === '#ai' || h === '#bot' || h === '#assistant';
+    } catch {
+      return false;
+    }
+  });
+
+  // --- DevForge Developer Toolkit State ---
+  const [isDevForgeOpen, setIsDevForgeOpen] = useState<boolean>(() => {
+    try {
+      const h = window.location.hash.toLowerCase();
+      return h === '#dev' || h === '#devforge' || h === '#tools' || h === '#forge';
+    } catch {
+      return false;
+    }
+  });
+
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState<boolean>(false);
 
-  // Sync URL hash with vault, sukhan & offline notes mode
+  // Sync URL hash with vault, sukhan, compiler, cyber, jarvis, dev & offline notes mode
   useEffect(() => {
     const handleHash = () => {
       const h = window.location.hash.toLowerCase();
-      if (h === '#sukhan' || h === '#shayar' || h === '#poetry') {
+      if (h === '#compiler' || h === '#c' || h === '#ccompiler' || h === '#run') {
+        setIsCompilerOpen(true);
+        setIsSukhanOpen(false);
+        setIsVaultOpen(false);
+        setIsCyberOpen(false);
+        setIsJarvisOpen(false);
+        setIsDevForgeOpen(false);
+      } else if (h === '#cyber' || h === '#security' || h === '#hack' || h === '#kali') {
+        setIsCyberOpen(true);
+        setIsCompilerOpen(false);
+        setIsSukhanOpen(false);
+        setIsVaultOpen(false);
+        setIsJarvisOpen(false);
+        setIsDevForgeOpen(false);
+      } else if (h === '#jarvis' || h === '#ai' || h === '#bot' || h === '#assistant') {
+        setIsJarvisOpen(true);
+        setIsCyberOpen(false);
+        setIsCompilerOpen(false);
+        setIsSukhanOpen(false);
+        setIsVaultOpen(false);
+        setIsDevForgeOpen(false);
+      } else if (h === '#dev' || h === '#devforge' || h === '#tools' || h === '#forge') {
+        setIsDevForgeOpen(true);
+        setIsJarvisOpen(false);
+        setIsCyberOpen(false);
+        setIsCompilerOpen(false);
+        setIsSukhanOpen(false);
+        setIsVaultOpen(false);
+      } else if (h === '#sukhan' || h === '#shayar' || h === '#poetry') {
         setIsSukhanOpen(true);
         setIsVaultOpen(false);
+        setIsCompilerOpen(false);
+        setIsCyberOpen(false);
+        setIsJarvisOpen(false);
+        setIsDevForgeOpen(false);
       } else if (h === '#calc' || h === '#vault' || h === '#chat') {
         setIsVaultOpen(true);
         setIsSukhanOpen(false);
+        setIsCompilerOpen(false);
+        setIsCyberOpen(false);
+        setIsJarvisOpen(false);
+        setIsDevForgeOpen(false);
       } else if (h === '#notes' || h === '#pad') {
         setIsVaultOpen(false);
         setIsSukhanOpen(false);
+        setIsCompilerOpen(false);
+        setIsCyberOpen(false);
+        setIsJarvisOpen(false);
+        setIsDevForgeOpen(false);
         setActiveTab('notes');
       } else if (h === '#bca' || h === '#home' || h === '') {
         setIsSukhanOpen(false);
         setIsVaultOpen(false);
+        setIsCompilerOpen(false);
+        setIsCyberOpen(false);
+        setIsJarvisOpen(false);
+        setIsDevForgeOpen(false);
       }
     };
     handleHash();
@@ -199,18 +288,78 @@ export default function App() {
   const handleOpenNotes = () => {
     setIsVaultOpen(false);
     setIsSukhanOpen(false);
+    setIsCompilerOpen(false);
     setActiveTab('notes');
     window.location.hash = 'notes';
   };
 
   const handleOpenSukhan = () => {
     setIsVaultOpen(false);
+    setIsCompilerOpen(false);
     setIsSukhanOpen(true);
     window.location.hash = 'sukhan';
   };
 
   const handleCloseSukhan = () => {
     setIsSukhanOpen(false);
+    window.location.hash = '';
+  };
+
+  const handleOpenCompiler = () => {
+    setIsVaultOpen(false);
+    setIsSukhanOpen(false);
+    setIsCyberOpen(false);
+    setIsJarvisOpen(false);
+    setIsCompilerOpen(true);
+    window.location.hash = 'compiler';
+  };
+
+  const handleCloseCompiler = () => {
+    setIsCompilerOpen(false);
+    window.location.hash = '';
+  };
+
+  const handleOpenCyber = () => {
+    setIsVaultOpen(false);
+    setIsSukhanOpen(false);
+    setIsCompilerOpen(false);
+    setIsJarvisOpen(false);
+    setIsCyberOpen(true);
+    window.location.hash = 'cyber';
+  };
+
+  const handleCloseCyber = () => {
+    setIsCyberOpen(false);
+    window.location.hash = '';
+  };
+
+  const handleOpenJarvis = () => {
+    setIsVaultOpen(false);
+    setIsSukhanOpen(false);
+    setIsCompilerOpen(false);
+    setIsCyberOpen(false);
+    setIsDevForgeOpen(false);
+    setIsJarvisOpen(true);
+    window.location.hash = 'jarvis';
+  };
+
+  const handleCloseJarvis = () => {
+    setIsJarvisOpen(false);
+    window.location.hash = '';
+  };
+
+  const handleOpenDevForge = () => {
+    setIsVaultOpen(false);
+    setIsSukhanOpen(false);
+    setIsCompilerOpen(false);
+    setIsCyberOpen(false);
+    setIsJarvisOpen(false);
+    setIsDevForgeOpen(true);
+    window.location.hash = 'dev';
+  };
+
+  const handleCloseDevForge = () => {
+    setIsDevForgeOpen(false);
     window.location.hash = '';
   };
 
@@ -223,15 +372,59 @@ export default function App() {
     if (app === 'bca') {
       setIsSukhanOpen(false);
       setIsVaultOpen(false);
+      setIsCompilerOpen(false);
+      setIsCyberOpen(false);
+      setIsJarvisOpen(false);
+      setIsDevForgeOpen(false);
       window.location.hash = '';
     } else if (app === 'calc') {
       setIsSukhanOpen(false);
+      setIsCompilerOpen(false);
+      setIsCyberOpen(false);
+      setIsJarvisOpen(false);
+      setIsDevForgeOpen(false);
       setIsVaultOpen(true);
       window.location.hash = 'calc';
     } else if (app === 'sukhan') {
       setIsVaultOpen(false);
+      setIsCompilerOpen(false);
+      setIsCyberOpen(false);
+      setIsJarvisOpen(false);
+      setIsDevForgeOpen(false);
       setIsSukhanOpen(true);
       window.location.hash = 'sukhan';
+    } else if (app === 'compiler') {
+      setIsVaultOpen(false);
+      setIsSukhanOpen(false);
+      setIsCyberOpen(false);
+      setIsJarvisOpen(false);
+      setIsDevForgeOpen(false);
+      setIsCompilerOpen(true);
+      window.location.hash = 'compiler';
+    } else if (app === 'cyber') {
+      setIsVaultOpen(false);
+      setIsSukhanOpen(false);
+      setIsCompilerOpen(false);
+      setIsJarvisOpen(false);
+      setIsDevForgeOpen(false);
+      setIsCyberOpen(true);
+      window.location.hash = 'cyber';
+    } else if (app === 'jarvis') {
+      setIsVaultOpen(false);
+      setIsSukhanOpen(false);
+      setIsCompilerOpen(false);
+      setIsCyberOpen(false);
+      setIsDevForgeOpen(false);
+      setIsJarvisOpen(true);
+      window.location.hash = 'jarvis';
+    } else if (app === 'dev') {
+      setIsVaultOpen(false);
+      setIsSukhanOpen(false);
+      setIsCompilerOpen(false);
+      setIsCyberOpen(false);
+      setIsJarvisOpen(false);
+      setIsDevForgeOpen(true);
+      window.location.hash = 'dev';
     }
   };
 
@@ -395,6 +588,7 @@ export default function App() {
             onBackToBca={handleCloseVault}
             onOpenNotes={handleOpenNotes}
             onOpenSukhan={handleOpenSukhan}
+            onOpenCompiler={handleOpenCompiler}
             soundEnabled={vaultSettings.soundEnabled}
             hapticsEnabled={vaultSettings.hapticsEnabled}
           />
@@ -455,7 +649,7 @@ export default function App() {
           onOpenAppSwitcher={handleOpenAppSwitcher}
         />
 
-        {/* 3-Apps Suite Switcher Modal */}
+        {/* 4-Apps Suite Switcher Modal */}
         <AppSwitcherModal
           isOpen={isAppSwitcherOpen}
           onClose={() => setIsAppSwitcherOpen(false)}
@@ -466,7 +660,140 @@ export default function App() {
     );
   }
 
-  // --- RENDER 2: BCA Verse Portal ---
+  // --- RENDER 3: Simple C Compiler (Made by Prince Thakur) ---
+  if (isCompilerOpen) {
+    return (
+      <>
+        <SimpleCCompilerApp
+          onBackToBca={handleCloseCompiler}
+          onOpenCalcVault={() => {
+            setIsCompilerOpen(false);
+            setIsVaultOpen(true);
+            window.location.hash = 'calc';
+          }}
+          onOpenSukhan={() => {
+            setIsCompilerOpen(false);
+            setIsSukhanOpen(true);
+            window.location.hash = 'sukhan';
+          }}
+          onOpenAppSwitcher={handleOpenAppSwitcher}
+        />
+
+        {/* 4-Apps Suite Switcher Modal */}
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp="compiler"
+          onSelectApp={handleSelectApp}
+        />
+      </>
+    );
+  }
+
+  // --- RENDER 4: CyberShield Academy (Zero to Hero) ---
+  if (isCyberOpen) {
+    return (
+      <>
+        <CyberShieldApp
+          onBackToBca={handleCloseCyber}
+          onOpenCalcVault={() => {
+            setIsCyberOpen(false);
+            setIsVaultOpen(true);
+            window.location.hash = 'calc';
+          }}
+          onOpenSukhan={() => {
+            setIsCyberOpen(false);
+            setIsSukhanOpen(true);
+            window.location.hash = 'sukhan';
+          }}
+          onOpenCompiler={() => {
+            setIsCyberOpen(false);
+            setIsCompilerOpen(true);
+            window.location.hash = 'compiler';
+          }}
+          onOpenJarvis={() => {
+            setIsCyberOpen(false);
+            setIsJarvisOpen(true);
+            window.location.hash = 'jarvis';
+          }}
+          onOpenAppSwitcher={handleOpenAppSwitcher}
+        />
+
+        {/* 6-Apps Suite Switcher Modal */}
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp="cyber"
+          onSelectApp={handleSelectApp}
+        />
+      </>
+    );
+  }
+
+  // --- RENDER 5: JARVIS AI Assistant ---
+  if (isJarvisOpen) {
+    return (
+      <>
+        <JarvisApp
+          onBackToBca={handleCloseJarvis}
+          onOpenCalcVault={() => {
+            setIsJarvisOpen(false);
+            setIsVaultOpen(true);
+            window.location.hash = 'calc';
+          }}
+          onOpenSukhan={() => {
+            setIsJarvisOpen(false);
+            setIsSukhanOpen(true);
+            window.location.hash = 'sukhan';
+          }}
+          onOpenCompiler={() => {
+            setIsJarvisOpen(false);
+            setIsCompilerOpen(true);
+            window.location.hash = 'compiler';
+          }}
+          onOpenCyber={() => {
+            setIsJarvisOpen(false);
+            setIsCyberOpen(true);
+            window.location.hash = 'cyber';
+          }}
+          onOpenAppSwitcher={handleOpenAppSwitcher}
+        />
+
+        {/* 7-Apps Suite Switcher Modal */}
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp="jarvis"
+          onSelectApp={handleSelectApp}
+        />
+      </>
+    );
+  }
+
+  // --- RENDER 6: DevForge (Developer Swiss-Army Knife) ---
+  if (isDevForgeOpen) {
+    return (
+      <>
+        <DevForgeApp
+          onSwitchApp={(target) => {
+            if (target === 'switcher') {
+              setIsAppSwitcherOpen(true);
+            }
+          }}
+        />
+
+        {/* 7-Apps Suite Switcher Modal */}
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp="dev"
+          onSelectApp={handleSelectApp}
+        />
+      </>
+    );
+  }
+
+  // --- RENDER 7: BCA Verse Portal ---
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
       {/* App Launch Splash Screen: "Made by Prince Thakur" */}
@@ -499,6 +826,10 @@ export default function App() {
         }}
         onOpenNotes={handleOpenNotes}
         onOpenSukhan={handleOpenSukhan}
+        onOpenCompiler={handleOpenCompiler}
+        onOpenCyber={handleOpenCyber}
+        onOpenJarvis={handleOpenJarvis}
+        onOpenDevForge={handleOpenDevForge}
         onOpenAppSwitcher={handleOpenAppSwitcher}
         onForceUpdateApp={handleForceUpdateApp}
         bookmarkCount={bookmarks.length}
@@ -507,7 +838,13 @@ export default function App() {
       {/* Main View Area */}
       <main className="flex-1">
         {activeTab === 'home' && (
-          <HomePage onNavigate={handleNavigate} />
+          <HomePage
+            onNavigate={handleNavigate}
+            onOpenCompiler={handleOpenCompiler}
+            onOpenCyber={handleOpenCyber}
+            onOpenJarvis={handleOpenJarvis}
+            onOpenDevForge={handleOpenDevForge}
+          />
         )}
 
         {activeTab === 'logic-solver' && (
@@ -545,6 +882,7 @@ export default function App() {
               window.location.hash = 'calc';
             }}
             onOpenSukhan={handleOpenSukhan}
+            onOpenCompiler={handleOpenCompiler}
             secretPin={vaultSettings.secretPin}
             soundEnabled={vaultSettings.soundEnabled}
             hapticsEnabled={vaultSettings.hapticsEnabled}
@@ -573,11 +911,23 @@ export default function App() {
         onClearRecentSearches={handleClearRecentSearches}
       />
 
-      {/* 3-Apps Suite Switcher Modal */}
+      {/* 6-Apps Suite Switcher Modal */}
       <AppSwitcherModal
         isOpen={isAppSwitcherOpen}
         onClose={() => setIsAppSwitcherOpen(false)}
-        currentApp={isVaultOpen ? 'calc' : isSukhanOpen ? 'sukhan' : 'bca'}
+        currentApp={
+          isJarvisOpen
+            ? 'jarvis'
+            : isCyberOpen
+            ? 'cyber'
+            : isCompilerOpen
+            ? 'compiler'
+            : isVaultOpen
+            ? 'calc'
+            : isSukhanOpen
+            ? 'sukhan'
+            : 'bca'
+        }
         onSelectApp={handleSelectApp}
       />
 
@@ -596,7 +946,7 @@ export default function App() {
               BCA Verse
             </span>
             <span className="hidden sm:inline text-slate-300">·</span>
-            <span>3 Core Subjects Academic Suite</span>
+            <span>6-in-1 Master Offline Suite</span>
             <span className="hidden sm:inline text-slate-300">·</span>
             <button
               onClick={() => setShowSplash(true)}
@@ -622,19 +972,27 @@ export default function App() {
               C Programs
             </button>
             <button
-              onClick={() => handleNavigate('fundamentals')}
-              className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+              onClick={handleOpenCompiler}
+              className="flex items-center gap-1 text-cyan-600 dark:text-cyan-400 font-semibold hover:underline cursor-pointer"
+              title="Open Simple C Compiler"
             >
-              <Layers className="w-3.5 h-3.5" />
-              <span>Fundamental Notes</span>
+              <span>C Compiler (#compiler)</span>
             </button>
             <button
-              onClick={handleOpenNotes}
+              onClick={handleOpenCyber}
               className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold hover:underline cursor-pointer"
-              title="Open Offline Notes Pad"
+              title="Open CyberShield Academy"
             >
-              <FileText className="w-3.5 h-3.5" />
-              <span>Notes Pad (#notes)</span>
+              <Shield className="w-3.5 h-3.5" />
+              <span>CyberShield (#cyber)</span>
+            </button>
+            <button
+              onClick={handleOpenJarvis}
+              className="flex items-center gap-1 text-cyan-500 dark:text-cyan-300 font-semibold hover:underline cursor-pointer"
+              title="Open JARVIS AI Assistant"
+            >
+              <Bot className="w-3.5 h-3.5" />
+              <span>JARVIS AI (#jarvis)</span>
             </button>
             <button
               onClick={handleOpenSukhan}
@@ -658,10 +1016,10 @@ export default function App() {
             <button
               onClick={handleOpenAppSwitcher}
               className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer"
-              title="Switch Between 3 Apps"
+              title="Switch Between 6 Apps"
             >
               <Grid className="w-3.5 h-3.5" />
-              <span>3-Apps Suite</span>
+              <span>6-Apps Suite</span>
             </button>
             <button
               onClick={handleForceUpdateApp}

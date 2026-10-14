@@ -9,11 +9,13 @@ import {
   Shield,
   Layers,
   Heart,
-  Grid
+  Grid,
+  Bot,
+  Wrench
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 
-export type CurrentAppType = 'bca' | 'calc' | 'sukhan';
+export type CurrentAppType = 'bca' | 'calc' | 'sukhan' | 'compiler' | 'cyber' | 'jarvis' | 'dev';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;
@@ -71,9 +73,9 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
       id: 'sukhan' as CurrentAppType,
       title: 'SUKHAN',
       subtitle: 'Alfaaz, Ehsaas Aur Adab',
-      tagline: 'Writing Studio · 12 Master Poets · Card Designer',
+      tagline: 'Mood Shayari Library · Writing Studio · Card Designer',
       description:
-        'Premium literary universe for shayari, ghazals, and songwriting. Features verified poet archives, mood discovery, and Sher Card art.',
+        'Premium literary universe with mood-based shayari library (Ishq, Dard, Josh, Tanhai, Dosti), poet archives, and Sher Card art.',
       badge: 'Premium App 3',
       badgeColor: 'bg-[#59263C] text-[#C6A66B] border-[#C6A66B]/40',
       gradient: 'from-[#59263C] via-[#3C1425] to-[#0B0B0F]',
@@ -82,6 +84,78 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
       icon: (
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#59263C] via-[#3C1425] to-[#15151C] border border-[#C6A66B]/50 flex items-center justify-center text-[#C6A66B] shadow-lg shadow-[#59263C]/40">
           <SukhanPenIcon size={26} />
+        </div>
+      )
+    },
+    {
+      id: 'compiler' as CurrentAppType,
+      title: 'Simple C Compiler',
+      subtitle: 'Code, Compile, Execute',
+      tagline: 'Instant C Interpreter · Interactive Terminal · Memory Watch',
+      description:
+        'Fast in-browser C execution environment. Run programs with interactive scanf inputs, watch variables in live memory, and explore 12+ preloaded templates.',
+      badge: 'Coding App 4',
+      badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+      gradient: 'from-cyan-600 via-blue-600 to-indigo-700',
+      borderHover: 'hover:border-cyan-500/60',
+      accentGlow: 'bg-cyan-500/10',
+      icon: (
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-700 border border-cyan-400/40 flex items-center justify-center text-white shadow-lg shadow-cyan-600/30 font-mono font-black text-xl">
+          C
+        </div>
+      )
+    },
+    {
+      id: 'cyber' as CurrentAppType,
+      title: 'CyberShield',
+      subtitle: 'Cybersecurity Zero to Hero',
+      tagline: 'Kali Terminal · OWASP Labs · Bug Bounty Roadmap',
+      description:
+        'Complete hands-on cybersecurity academy in Hinglish. Master networking, SQLi/XSS labs, hash cracking, ethical hacking, and claim your Cyber Hero Certificate.',
+      badge: 'Security App 5',
+      badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+      gradient: 'from-emerald-600 via-teal-600 to-cyan-700',
+      borderHover: 'hover:border-emerald-500/60',
+      accentGlow: 'bg-emerald-500/10',
+      icon: (
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-500 border border-emerald-400/40 flex items-center justify-center text-black shadow-lg shadow-emerald-500/30 font-black">
+          <Shield className="w-6 h-6 text-black" />
+        </div>
+      )
+    },
+    {
+      id: 'jarvis' as CurrentAppType,
+      title: 'JARVIS AI',
+      subtitle: 'Smart, Light & Cringe AI Companion',
+      tagline: 'Stark Tech HUD · Simple Answers · Dramatic Cringe Humor',
+      description:
+        'Ultra-intelligent AI model with voice TTS. Answers any tough question simply and lightly, wrapped in impressive sci-fi swagger and delightfully cringe Bollywood flair.',
+      badge: 'AI App 6',
+      badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+      gradient: 'from-cyan-600 via-blue-600 to-indigo-800',
+      borderHover: 'hover:border-cyan-400/60',
+      accentGlow: 'bg-cyan-500/10',
+      icon: (
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-900 border border-cyan-300/50 flex items-center justify-center text-cyan-200 shadow-lg shadow-cyan-500/40">
+          <Bot className="w-6 h-6 text-cyan-200" />
+        </div>
+      )
+    },
+    {
+      id: 'dev' as CurrentAppType,
+      title: 'DevForge',
+      subtitle: 'Developer Swiss-Army Knife',
+      tagline: 'JSON Studio · Regex Sandbox · JWT Inspector · REST Client',
+      description:
+        'All-in-one super toolkit for developers: JSON formatter & validator, live regex sandbox, Base64 & SHA-256 hashes, JWT debugger, REST API scratchpad, Git commands generator, and port references.',
+      badge: 'Dev App 7',
+      badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+      gradient: 'from-indigo-600 via-violet-600 to-cyan-500',
+      borderHover: 'hover:border-indigo-400/60',
+      accentGlow: 'bg-indigo-500/10',
+      icon: (
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-cyan-500 border border-indigo-400/40 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+          <Wrench className="w-6 h-6 text-white" />
         </div>
       )
     }
@@ -97,8 +171,8 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
         <div className="relative z-10 flex items-center justify-between border-b border-zinc-800 pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-[#59263C]/40 text-[#C6A66B] border border-[#C6A66B]/30 uppercase">
-                Triple App Experience
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-indigo-950/80 text-indigo-300 border border-indigo-800/60 uppercase">
+                7-Apps Master Suite
               </span>
               <span className="text-[11px] text-zinc-400">Created by Prince Thakur</span>
             </div>
@@ -106,7 +180,7 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
               Choose Your App Experience
             </h2>
             <p className="text-xs text-zinc-400">
-              Kisi bhi app ko chunein — sabhi teen apps poori tarah functional aur offline chalte hain.
+              Kisi bhi app ko chunein — sabhi saat (7) apps poori tarah functional aur offline chalte hain.
             </p>
           </div>
 
@@ -188,7 +262,7 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
           </div>
 
           <span className="text-[11px] text-zinc-500">
-            Switch anytime via header icon or URL hash (#sukhan, #bca, #calc)
+            Switch anytime via header icon or URL hash (#dev, #jarvis, #cyber, #compiler, #sukhan, #bca, #calc)
           </span>
         </div>
       </div>

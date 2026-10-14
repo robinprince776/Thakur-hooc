@@ -23,6 +23,7 @@ import { SukhanMoodExplorer } from './SukhanMoodExplorer';
 import { SukhanPersonalVault } from './SukhanPersonalVault';
 import { SukhanCardDesigner } from './SukhanCardDesigner';
 import { SukhanResources } from './SukhanResources';
+import { SukhanShayariLibrary } from './SukhanShayariLibrary';
 
 interface SukhanAppProps {
   onBackToSuite?: () => void;
@@ -59,6 +60,7 @@ export const SukhanApp: React.FC<SukhanAppProps> = ({
 
   const navItems = [
     { id: 'home' as SukhanAppTab, label: 'Lounge', icon: Home },
+    { id: 'library' as SukhanAppTab, label: 'Shayari Library', icon: Sparkles },
     { id: 'studio' as SukhanAppTab, label: 'Writing Studio', icon: PenTool },
     { id: 'poets' as SukhanAppTab, label: 'Shayaron Ki Duniya', icon: BookOpen },
     { id: 'moods' as SukhanAppTab, label: 'Mood Explorer', icon: Compass },
@@ -170,10 +172,10 @@ export const SukhanApp: React.FC<SukhanAppProps> = ({
                 <button
                   onClick={onOpenAppSwitcher}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#15151C] hover:bg-[#1f1b26] border border-[#C6A66B]/30 hover:border-[#C6A66B] text-xs font-semibold text-[#F2E9DC] transition-all cursor-pointer shadow-xs"
-                  title="Switch between BCA Verse, CalcVault & SUKHAN"
+                  title="Switch between BCA Verse, CalcVault, SUKHAN & C Compiler"
                 >
                   <Grid className="w-3.5 h-3.5 text-[#C6A66B]" />
-                  <span className="hidden sm:inline">3-Apps Suite</span>
+                  <span className="hidden sm:inline">4-Apps Suite</span>
                 </button>
               )}
 
@@ -269,6 +271,13 @@ export const SukhanApp: React.FC<SukhanAppProps> = ({
             onOpenCardDesigner={handleOpenCardDesigner}
             onSelectPoet={handleSelectPoet}
             onSelectMood={handleSelectMood}
+          />
+        )}
+
+        {activeTab === 'library' && (
+          <SukhanShayariLibrary
+            onOpenCardDesigner={handleOpenCardDesigner}
+            onSelectMoodForStudio={handleSelectMoodForStudio}
           />
         )}
 

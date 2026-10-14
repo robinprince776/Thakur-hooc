@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { MOODS_DATA } from '../data/moodsData';
 import { POETS_DATA } from '../data/poetsData';
+import { SHAYARI_LIBRARY_DATA } from '../data/shayariLibraryData';
 import { Couplet, MoodCategory } from '../types';
 
 interface SukhanMoodExplorerProps {
@@ -43,6 +44,24 @@ export const SukhanMoodExplorer: React.FC<SukhanMoodExplorerProps> = ({
         }
       });
     });
+
+    // Also include couplets from the extended Shayari Library
+    SHAYARI_LIBRARY_DATA.forEach((item) => {
+      if (item.mood.toLowerCase() === activeMood.nameRoman.toLowerCase()) {
+        list.push({
+          id: item.id,
+          poetId: item.poetId,
+          poetName: item.poetName,
+          linesRoman: item.linesRoman,
+          hinglishMeaning: item.hinglishMeaning,
+          moods: [item.mood],
+          form: 'Sher',
+          tags: item.tags,
+          difficultWords: item.difficultWords
+        });
+      }
+    });
+
     return list;
   }, [activeMood]);
 

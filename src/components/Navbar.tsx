@@ -14,7 +14,10 @@ import {
   Layers,
   FileText,
   RotateCw,
-  Grid
+  Grid,
+  Shield,
+  Bot,
+  Wrench
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 
@@ -36,6 +39,10 @@ interface NavbarProps {
   onOpenCalculatorVault?: () => void;
   onOpenNotes?: () => void;
   onOpenSukhan?: () => void;
+  onOpenCompiler?: () => void;
+  onOpenCyber?: () => void;
+  onOpenJarvis?: () => void;
+  onOpenDevForge?: () => void;
   onOpenAppSwitcher?: () => void;
   onForceUpdateApp?: () => void;
   bookmarkCount: number;
@@ -50,6 +57,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenCalculatorVault,
   onOpenNotes,
   onOpenSukhan,
+  onOpenCompiler,
+  onOpenCyber,
+  onOpenJarvis,
+  onOpenDevForge,
   onOpenAppSwitcher,
   onForceUpdateApp,
   bookmarkCount,
@@ -176,6 +187,56 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
+            {/* Simple C Compiler Button */}
+            {onOpenCompiler && (
+              <button
+                onClick={onOpenCompiler}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+                title="Open Simple C Compiler (#compiler)"
+              >
+                <span className="w-4 h-4 rounded bg-cyan-600 text-white font-mono font-black text-[10px] flex items-center justify-center">
+                  C
+                </span>
+                <span className="hidden sm:inline">C Compiler</span>
+              </button>
+            )}
+
+            {/* CyberShield Cybersecurity Button */}
+            {onOpenCyber && (
+              <button
+                onClick={onOpenCyber}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+                title="Open CyberShield (#cyber)"
+              >
+                <Shield className="w-3.5 h-3.5 text-emerald-500" />
+                <span className="hidden sm:inline">CyberShield</span>
+              </button>
+            )}
+
+            {/* JARVIS AI Button */}
+            {onOpenJarvis && (
+              <button
+                onClick={onOpenJarvis}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+                title="Open JARVIS AI (#jarvis)"
+              >
+                <Bot className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="hidden sm:inline">JARVIS AI</span>
+              </button>
+            )}
+
+            {/* DevForge Developer Toolkit Button */}
+            {onOpenDevForge && (
+              <button
+                onClick={onOpenDevForge}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+                title="Open DevForge Toolkit (#dev)"
+              >
+                <Wrench className="w-3.5 h-3.5 text-indigo-400" />
+                <span className="hidden sm:inline">DevForge</span>
+              </button>
+            )}
+
             {/* Calculator Vault Stealth Button */}
             {onOpenCalculatorVault && (
               <button
@@ -188,15 +249,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
-            {/* 3-Apps Suite Switcher */}
+            {/* 6-Apps Suite Switcher */}
             {onOpenAppSwitcher && (
               <button
                 onClick={onOpenAppSwitcher}
                 className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                title="Open 3-Apps Suite Switcher"
+                title="Open 6-Apps Suite Switcher"
                 aria-label="App Suite Switcher"
               >
-                <Grid className="w-4 h-4 text-indigo-500" />
+                <Grid className="w-4 h-4 text-cyan-500" />
               </button>
             )}
 
@@ -310,6 +371,84 @@ export const Navbar: React.FC<NavbarProps> = ({
               </span>
             </button>
 
+            {/* Direct button to Simple C Compiler */}
+            {onOpenCompiler && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenCompiler();
+                }}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="w-5 h-5 rounded-md bg-cyan-600 text-white font-mono font-black text-xs flex items-center justify-center">
+                    C
+                  </span>
+                  <span>Simple C Compiler &amp; Runner</span>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 font-bold">
+                  #compiler
+                </span>
+              </button>
+            )}
+
+            {/* Direct button to CyberShield */}
+            {onOpenCyber && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenCyber();
+                }}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <Shield className="w-4 h-4 text-emerald-500" />
+                  <span>CyberShield (Zero to Hero)</span>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 font-bold">
+                  #cyber
+                </span>
+              </button>
+            )}
+
+            {/* Direct button to JARVIS AI */}
+            {onOpenJarvis && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenJarvis();
+                }}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <Bot className="w-4 h-4 text-cyan-400" />
+                  <span>JARVIS AI (Smart &amp; Cringe)</span>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 font-bold">
+                  #jarvis
+                </span>
+              </button>
+            )}
+
+            {/* Direct button to DevForge */}
+            {onOpenDevForge && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenDevForge();
+                }}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <Wrench className="w-4 h-4 text-indigo-400" />
+                  <span>DevForge (Developer Swiss-Army Knife)</span>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-bold">
+                  #dev
+                </span>
+              </button>
+            )}
+
             {/* Direct button to Calculator */}
             {onOpenCalculatorVault && (
               <button
@@ -329,21 +468,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
-            {/* 3-Apps Suite Launcher Button */}
+            {/* 7-Apps Suite Launcher Button */}
             {onOpenAppSwitcher && (
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   onOpenAppSwitcher();
                 }}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20 transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20 transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <Grid className="w-4 h-4 text-indigo-500" />
-                  <span>Triple-Apps Suite Switcher</span>
+                  <Grid className="w-4 h-4 text-cyan-500" />
+                  <span>7-Apps Master Suite Switcher</span>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-bold">
-                  3 Apps
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 font-bold">
+                  7 Apps
                 </span>
               </button>
             )}

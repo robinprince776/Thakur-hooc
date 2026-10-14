@@ -30,6 +30,7 @@ interface OfflineNotesPadProps {
   onBackToBca?: () => void;
   onOpenCalculator?: () => void;
   onOpenSukhan?: () => void;
+  onOpenCompiler?: () => void;
   secretPin?: string;
   soundEnabled?: boolean;
   hapticsEnabled?: boolean;
@@ -169,6 +170,7 @@ export const OfflineNotesPad: React.FC<OfflineNotesPadProps> = ({
   onBackToBca,
   onOpenCalculator,
   onOpenSukhan,
+  onOpenCompiler,
   secretPin = '1307',
   soundEnabled = true,
   hapticsEnabled = true,
@@ -454,6 +456,19 @@ export const OfflineNotesPad: React.FC<OfflineNotesPadProps> = ({
             >
               <SukhanPenIcon size={14} />
               <span className="font-serif hidden sm:inline">SUKHAN</span>
+            </button>
+          )}
+
+          {onOpenCompiler && (
+            <button
+              onClick={onOpenCompiler}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-semibold transition-all cursor-pointer shadow-xs"
+              title="Switch to Simple C Compiler"
+            >
+              <span className="w-3.5 h-3.5 rounded bg-cyan-600 text-white font-mono font-black text-[9px] flex items-center justify-center">
+                C
+              </span>
+              <span className="hidden sm:inline">C Compiler</span>
             </button>
           )}
 

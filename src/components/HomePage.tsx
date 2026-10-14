@@ -1,13 +1,17 @@
 import React from 'react';
-import { Cpu, Terminal, ArrowRight, Zap, CheckCircle2, BookOpen, Sparkles, Layers, GraduationCap, FileText, Calculator as CalcIcon } from 'lucide-react';
+import { Cpu, Terminal, ArrowRight, Zap, CheckCircle2, BookOpen, Sparkles, Layers, GraduationCap, FileText, Calculator as CalcIcon, Shield, Bot, Wrench } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 import { ActiveTab } from './Navbar';
 
 interface HomePageProps {
   onNavigate: (tab: ActiveTab, prefill?: { type?: string; input?: string; cProgramId?: string }) => void;
+  onOpenCompiler?: () => void;
+  onOpenCyber?: () => void;
+  onOpenJarvis?: () => void;
+  onOpenDevForge?: () => void;
 }
 
-export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
+export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenCompiler, onOpenCyber, onOpenJarvis, onOpenDevForge }) => {
   const quickSolvers = [
     { label: '25.625 to Binary (Point)', type: 'dec-to-bin', input: '25.625' },
     { label: '11001.101 to Decimal', type: 'bin-to-dec', input: '11001.101' },
@@ -324,23 +328,23 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* NEW: 2 Integrated Offline Apps Suite (Calculator & Notes Pad) */}
+      {/* Integrated 7-Apps Master Suite */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-              <span>Integrated Offline Mini-Apps</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-                100% Offline
+              <span>Integrated 7-Apps Master Suite</span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-800">
+                7 Apps Suite
               </span>
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Browser &amp; mobile me bina internet ke fast chalne wale do integrated tools
+              BCA Verse, CalcVault, SUKHAN, Simple C Compiler, CyberShield, JARVIS AI aur DevForge Toolkit.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* OFFLINE APP 1: Scientific Calculator Vault */}
           <div
             onClick={() => {
@@ -424,13 +428,145 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-                  Poetry writing studio, 12 master poets, mood explorer &amp; card designer.
+                  Mood Shayari Library (Dard, Ishq, Josh, Tanhai), Studio &amp; Card Designer.
                 </p>
               </div>
             </div>
 
             <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-[#C6A66B]">
               <span>Launch SUKHAN</span>
+              <span className="group-hover:translate-x-1 transition-transform">➔</span>
+            </div>
+          </div>
+
+          {/* OFFLINE APP 4: Simple C Compiler & Execution Engine */}
+          <div
+            onClick={() => {
+              if (onOpenCompiler) onOpenCompiler();
+              else window.location.hash = 'compiler';
+            }}
+            className="group cursor-pointer rounded-2xl bg-gradient-to-br from-cyan-500/10 via-slate-50 to-blue-500/10 dark:from-cyan-950/30 dark:via-slate-900/80 dark:to-[#070A12] p-5 border border-cyan-400/40 dark:border-cyan-700/50 shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 text-white font-mono font-black text-sm flex items-center justify-center shrink-0 border border-cyan-400/40 group-hover:scale-105 transition-transform shadow-xs">
+                C
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-1">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors">
+                    C Compiler
+                  </h3>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 font-bold shrink-0">
+                    #compiler
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                  In-browser C runner with interactive scanf, memory watcher &amp; 12+ programs.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-cyan-600 dark:text-cyan-400">
+              <span>Launch Compiler</span>
+              <span className="group-hover:translate-x-1 transition-transform">➔</span>
+            </div>
+          </div>
+
+          {/* OFFLINE APP 5: CyberShield (Cybersecurity Zero to Hero) */}
+          <div
+            onClick={() => {
+              if (onOpenCyber) onOpenCyber();
+              else window.location.hash = 'cyber';
+            }}
+            className="group cursor-pointer rounded-2xl bg-gradient-to-br from-emerald-500/10 via-slate-50 to-teal-500/10 dark:from-emerald-950/30 dark:via-slate-900/80 dark:to-[#070A12] p-5 border border-emerald-400/40 dark:border-emerald-700/50 shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-600 text-black font-black text-sm flex items-center justify-center shrink-0 border border-emerald-400/40 group-hover:scale-105 transition-transform shadow-xs">
+                <Shield className="w-5 h-5 text-black" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-1">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors">
+                    CyberShield
+                  </h3>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-bold shrink-0">
+                    #cyber
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                  Cybersecurity Zero to Hero in Hinglish, Kali terminal, OWASP labs &amp; certificate.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+              <span>Start Cyber Training</span>
+              <span className="group-hover:translate-x-1 transition-transform">➔</span>
+            </div>
+          </div>
+
+          {/* OFFLINE APP 6: JARVIS AI (Smart, Light & Cringe) */}
+          <div
+            onClick={() => {
+              if (onOpenJarvis) onOpenJarvis();
+              else window.location.hash = 'jarvis';
+            }}
+            className="group cursor-pointer rounded-2xl bg-gradient-to-br from-cyan-500/10 via-slate-50 to-indigo-500/10 dark:from-cyan-950/30 dark:via-slate-900/80 dark:to-[#070A12] p-5 border border-cyan-400/40 dark:border-cyan-700/50 shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-700 text-cyan-200 flex items-center justify-center shrink-0 border border-cyan-400/40 group-hover:scale-105 transition-transform shadow-xs">
+                <Bot className="w-5 h-5 text-cyan-200" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-1">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors">
+                    JARVIS AI
+                  </h3>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 font-bold shrink-0">
+                    #jarvis
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                  Super intelligent AI companion, answers simply &amp; lightly with impressive cringe humor!
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-cyan-600 dark:text-cyan-400">
+              <span>Talk to JARVIS</span>
+              <span className="group-hover:translate-x-1 transition-transform">➔</span>
+            </div>
+          </div>
+
+          {/* OFFLINE APP 7: DevForge (Developer Swiss-Army Knife) */}
+          <div
+            onClick={() => {
+              if (onOpenDevForge) onOpenDevForge();
+              else window.location.hash = 'dev';
+            }}
+            className="group cursor-pointer rounded-2xl bg-gradient-to-br from-indigo-500/10 via-slate-50 to-violet-500/10 dark:from-indigo-950/30 dark:via-slate-900/80 dark:to-[#070A12] p-5 border border-indigo-400/40 dark:border-indigo-700/50 shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center shrink-0 border border-indigo-400/40 group-hover:scale-105 transition-transform shadow-xs">
+                <Wrench className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-1">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors">
+                    DevForge
+                  </h3>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 font-bold shrink-0">
+                    #dev
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                  JSON Studio, live regex tester, Base64/hashes, JWT debugger, REST client &amp; Git lab.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
+              <span>Launch DevForge</span>
               <span className="group-hover:translate-x-1 transition-transform">➔</span>
             </div>
           </div>

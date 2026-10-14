@@ -10,6 +10,7 @@ interface CalculatorProps {
   onBackToBca?: () => void;
   onOpenNotes?: () => void;
   onOpenSukhan?: () => void;
+  onOpenCompiler?: () => void;
   soundEnabled: boolean;
   hapticsEnabled: boolean;
 }
@@ -20,6 +21,7 @@ export const Calculator: React.FC<CalculatorProps> = ({
   onBackToBca,
   onOpenNotes,
   onOpenSukhan,
+  onOpenCompiler,
   soundEnabled,
   hapticsEnabled,
 }) => {
@@ -320,6 +322,19 @@ export const Calculator: React.FC<CalculatorProps> = ({
             >
               <SukhanPenIcon size={12} />
               <span className="font-serif">SUKHAN</span>
+            </button>
+          )}
+
+          {onOpenCompiler && (
+            <button
+              onClick={onOpenCompiler}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-cyan-500/40 text-cyan-300 hover:text-white text-[11px] font-medium transition-colors cursor-pointer"
+              title="Open Simple C Compiler"
+            >
+              <span className="w-3.5 h-3.5 rounded bg-cyan-600 text-white font-mono font-black text-[9px] flex items-center justify-center">
+                C
+              </span>
+              <span>Compiler</span>
             </button>
           )}
         </div>

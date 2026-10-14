@@ -2027,5 +2027,137 @@ int main() {
     sampleOutput: "Character 'a' : 3 baar\nCharacter 'b' : 1 baar\nCharacter 'n' : 2 baar",
     timeComplexity: 'O(n)',
     spaceComplexity: 'O(1) fixed 256 array'
+  },
+  {
+    id: 'swap-without-temp-c',
+    title: 'Swap Two Numbers Without Third Variable',
+    category: 'Basic',
+    difficulty: 'Easy',
+    tags: ['swap', 'arithmetic', 'logic', 'basic'],
+    description: 'Swaps the values of two variables using pure arithmetic addition and subtraction without creating any temporary storage.',
+    code: `#include <stdio.h>
+
+int main() {
+    int a, b;
+    printf("Do numbers enter karein (a aur b): ");
+    scanf("%d %d", &a, &b);
+
+    printf("Swap se pehle: a = %d, b = %d\\n", a, b);
+
+    // Arithmetic swap logic
+    a = a + b; // a ke paas dono ka total
+    b = a - b; // b ke paas original a
+    a = a - b; // a ke paas original b
+
+    printf("Swap ke baad:  a = %d, b = %d\\n", a, b);
+    return 0;
+}`,
+    hinglishExplanation: 'Pehle step me a = a + b kiya jisse total store ho gaya. Fir b = a - b karne se b me original a aa gaya. Aakhri me a = a - b karne se a me original b aa gaya. Zero extra memory use hui.',
+    keyLogicPoints: [
+      'a = a + b',
+      'b = a - b',
+      'a = a - b',
+      'XOR method (a^=b; b^=a; a^=b) se bhi swap kiya ja sakta hai'
+    ],
+    sampleInput: '10 20',
+    sampleOutput: 'Swap ke baad: a = 20, b = 10',
+    timeComplexity: 'O(1)',
+    spaceComplexity: 'O(1)'
+  },
+  {
+    id: 'temperature-celsius-fahrenheit',
+    title: 'Temperature Converter (Celsius to Fahrenheit)',
+    category: 'Basic',
+    difficulty: 'Easy',
+    tags: ['temperature', 'conversion', 'formula', 'basic'],
+    description: 'Converts temperature from Celsius scale to Fahrenheit scale using standard thermodynamic conversion formula.',
+    code: `#include <stdio.h>
+
+int main() {
+    float celsius, fahrenheit;
+
+    printf("Temperature in Celsius (°C) dalein: ");
+    scanf("%f", &celsius);
+
+    // Formula: (Celsius * 9/5) + 32
+    fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
+
+    printf("\\n%.2f°C = %.2f°F\\n", celsius, fahrenheit);
+    return 0;
+}`,
+    hinglishExplanation: 'Celsius se Fahrenheit ka scientific formula (C * 9/5) + 32 hai. Division me 9.0/5.0 float values use kiye taaki integer truncation na ho.',
+    keyLogicPoints: [
+      'Formula: (C * 9.0 / 5.0) + 32.0',
+      'Float data type precision ke liye zaroori hai'
+    ],
+    sampleInput: '37.0',
+    sampleOutput: '37.00°C = 98.60°F',
+    timeComplexity: 'O(1)',
+    spaceComplexity: 'O(1)'
+  },
+  {
+    id: 'leap-year-checker-c',
+    title: 'Leap Year Checker',
+    category: 'Basic',
+    difficulty: 'Easy',
+    tags: ['leap year', 'calendar', 'conditional', 'modulo'],
+    description: 'Checks if a given calendar year is a Leap Year (366 days with Feb 29) or a normal year using Gregorian rules.',
+    code: `#include <stdio.h>
+
+int main() {
+    int year;
+    printf("Saal (Year) enter karein: ");
+    scanf("%d", &year);
+
+    if ((year % 400 == 0) || (year % 4 == 0 && year % 100 != 0)) {
+        printf("%d ek Leap Year hai (366 days).\\n", year);
+    } else {
+        printf("%d ek Normal Common Year hai (365 days).\\n", year);
+    }
+
+    return 0;
+}`,
+    hinglishExplanation: 'Leap year ka rule hai: Agar century year hai (divisible by 100) to 400 se divide hona zaroori hai (jaise 2000 leap year tha, par 1900 nahi tha). Normal years ke liye 4 se divide hona kaafi hai.',
+    keyLogicPoints: [
+      'Divisible by 400 -> Always Leap Year',
+      'Divisible by 4 AND NOT divisible by 100 -> Leap Year'
+    ],
+    sampleInput: '2024',
+    sampleOutput: '2024 ek Leap Year hai (366 days).',
+    timeComplexity: 'O(1)',
+    spaceComplexity: 'O(1)'
+  },
+  {
+    id: 'circle-area-perimeter-c',
+    title: 'Area and Circumference of Circle',
+    category: 'Basic',
+    difficulty: 'Easy',
+    tags: ['circle', 'geometry', 'pi', 'area'],
+    description: 'Calculates the 2D surface area (PI * r * r) and outer circumference (2 * PI * r) of a circle from user input radius.',
+    code: `#include <stdio.h>
+
+int main() {
+    float r, area, circum;
+    const float PI = 3.14159;
+
+    printf("Circle ka radius (r) enter karein: ");
+    scanf("%f", &r);
+
+    area = PI * r * r;
+    circum = 2 * PI * r;
+
+    printf("Area of Circle:          %.2f\\n", area);
+    printf("Circumference of Circle: %.2f\\n", circum);
+    return 0;
+}`,
+    hinglishExplanation: 'Circle ka area nikalne ke liye PI * r * r aur perimeter/circumference ke liye 2 * PI * r formula use kiya gaya hai.',
+    keyLogicPoints: [
+      'const float PI = 3.14159 constant define karta hai',
+      'Radius square calculation: r * r'
+    ],
+    sampleInput: '7',
+    sampleOutput: 'Area of Circle: 153.94\nCircumference of Circle: 43.98',
+    timeComplexity: 'O(1)',
+    spaceComplexity: 'O(1)'
   }
 ];

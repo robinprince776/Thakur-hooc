@@ -96,6 +96,14 @@ export const SukhanHome: React.FC<SukhanHomeProps> = ({
               </button>
 
               <button
+                onClick={() => onNavigateTab('library')}
+                className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-[#59263C]/60 hover:bg-[#59263C] border border-[#C6A66B]/50 hover:border-[#C6A66B] text-xs font-bold text-[#FFF5EA] transition-all cursor-pointer shadow-lg shadow-[#59263C]/20"
+              >
+                <Sparkles className="w-4 h-4 text-[#C6A66B]" />
+                <span>Mood Shayari Library</span>
+              </button>
+
+              <button
                 onClick={() => onNavigateTab('poets')}
                 className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-[#0B0B0F]/80 hover:bg-[#15151C] border border-[#C6A66B]/30 hover:border-[#C6A66B] text-xs font-semibold text-[#F2E9DC] transition-all cursor-pointer"
               >
@@ -189,8 +197,39 @@ export const SukhanHome: React.FC<SukhanHomeProps> = ({
         </div>
       </section>
 
-      {/* CORE 4 PORTAL CARDS GRID */}
+      {/* CORE PORTAL CARDS GRID */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {/* CARD 0: Shayari Library (Mood Ke Hisaab Se) */}
+        <div
+          onClick={() => onNavigateTab('library')}
+          className="md:col-span-2 group cursor-pointer rounded-3xl p-6 sm:p-7 bg-gradient-to-r from-[#59263C]/40 via-[#1C1724] to-[#15151C]/90 hover:from-[#59263C]/60 border border-[#C6A66B]/50 hover:border-[#C6A66B] transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl relative overflow-hidden"
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#59263C] to-[#C6A66B]/30 border border-[#C6A66B]/60 flex items-center justify-center text-[#C6A66B] shrink-0 group-hover:scale-105 transition-transform">
+              <Sparkles className="w-7 h-7" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <h3 className="text-xl sm:text-2xl font-serif text-[#FFF5EA] group-hover:text-[#C6A66B] transition-colors">
+                  Shayari Ki Dastgah &amp; Library
+                </h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#C6A66B]/20 text-[#C6A66B] border border-[#C6A66B]/30">
+                  New Feature
+                </span>
+              </div>
+              <p className="text-xs text-zinc-300 leading-relaxed max-w-2xl">
+                Ishq, Judai, Dard, Yaadein, Khuddaari aur Falsafa ke 60+ verified sher. Real-time search, audio pronunciation, aur Sher Card export ke sath.
+              </p>
+            </div>
+          </div>
+          <div className="self-end sm:self-center shrink-0">
+            <div className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#C6A66B] hover:bg-[#D4B87D] text-slate-950 text-xs font-bold transition-all shadow-md">
+              <span>Shayari Padhein</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </div>
+
         {/* CARD 1: Writing Studio */}
         <div
           onClick={() => onNavigateTab('studio')}

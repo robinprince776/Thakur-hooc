@@ -1,5 +1,6 @@
 export type SukhanAppTab =
   | 'home'
+  | 'library'
   | 'studio'
   | 'poets'
   | 'moods'
