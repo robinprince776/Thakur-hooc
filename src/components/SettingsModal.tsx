@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 import { UserSettings } from '../types';
 import { X, KeyRound, User, Volume2, Shield, Hash, Save } from 'lucide-react';
 
-interface SettingsModalProps {
+export interface SettingsModalProps {
+  isOpen?: boolean;
   settings: UserSettings;
-  onUpdateSettings: (newSettings: UserSettings) => void;
+  onUpdateSettings?: (newSettings: UserSettings) => void;
+  onSave?: (newSettings: UserSettings) => void;
   onClose: () => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
+  isOpen = true,
   settings,
   onUpdateSettings,
+  onSave,
   onClose,
 }) => {
+  if (!isOpen) return null;
   const [pin, setPin] = useState(settings.secretPin);
   const [displayName, setDisplayName] = useState(settings.displayName);
   const [roomId, setRoomId] = useState(settings.roomId || '');
@@ -26,14 +31,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     const cleanName = displayName.trim() || 'Dost';
     const cleanRoom = roomId.trim().toLowerCase() || 'direct';
 
-    onUpdateSettings({
+    const updated = {
       ...settings,
       secretPin: cleanPin,
       displayName: cleanName,
       roomId: cleanRoom,
       soundEnabled,
       hapticsEnabled,
-    });
+    };
+    if (onUpdateSettings) onUpdateSettings(updated);
+    if (onSave) onSave(updated);
 
     setSavedSuccess(true);
     setTimeout(() => {

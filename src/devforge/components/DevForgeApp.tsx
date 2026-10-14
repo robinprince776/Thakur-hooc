@@ -29,9 +29,25 @@ import {
 } from 'lucide-react';
 import { DevForgeTab, RegexPatternPreset, PortReference } from '../types';
 
-export const DevForgeApp: React.FC<{
+export interface DevForgeAppProps {
+  onBackToBca?: () => void;
+  onOpenCalcVault?: () => void;
+  onOpenSukhan?: () => void;
+  onOpenCompiler?: () => void;
+  onOpenCyber?: () => void;
+  onOpenAppSwitcher?: () => void;
   onSwitchApp?: (appId: string) => void;
-}> = ({ onSwitchApp }) => {
+}
+
+export const DevForgeApp: React.FC<DevForgeAppProps> = ({
+  onBackToBca,
+  onOpenCalcVault: _onOpenCalcVault,
+  onOpenSukhan: _onOpenSukhan,
+  onOpenCompiler: _onOpenCompiler,
+  onOpenCyber: _onOpenCyber,
+  onOpenAppSwitcher,
+  onSwitchApp
+}) => {
   const [activeTab, setActiveTab] = useState<DevForgeTab>('json');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 

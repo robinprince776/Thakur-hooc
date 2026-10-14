@@ -3,9 +3,15 @@ import { playKeySound, playUnlockSound, triggerHaptic } from '../utils/sound';
 import { Delete, ArrowLeft, GraduationCap, FileText, Feather } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 
-interface CalculatorProps {
+export interface CalculatorProps {
   secretPin: string;
-  onUnlockVault: () => void;
+  onUnlockVault?: () => void;
+  onUnlock?: () => void;
+  onClose?: () => void;
+  onOpenSettings?: () => void;
+  hasSecretCode?: boolean;
+  onlineCount?: number;
+  friendStatus?: any;
   onOpenInstall?: () => void;
   onBackToBca?: () => void;
   onOpenNotes?: () => void;
@@ -18,6 +24,12 @@ interface CalculatorProps {
 export const Calculator: React.FC<CalculatorProps> = ({
   secretPin,
   onUnlockVault,
+  onUnlock,
+  onClose,
+  onOpenSettings,
+  hasSecretCode: _hasSecretCode,
+  onlineCount: _onlineCount,
+  friendStatus: _friendStatus,
   onBackToBca,
   onOpenNotes,
   onOpenSukhan,
@@ -62,7 +74,8 @@ export const Calculator: React.FC<CalculatorProps> = ({
         if (hapticsEnabled) triggerHaptic([30, 60, 30]);
 
         setTimeout(() => {
-          onUnlockVault();
+          if (onUnlockVault) onUnlockVault();
+          else if (onUnlock) onUnlock();
           setUnlockingAnim(false);
           isUnlockingRef.current = false;
           setDisplay('0');

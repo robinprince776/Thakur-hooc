@@ -17,41 +17,25 @@
 
   html.dark {
     color-scheme: dark;
-    background-color: #020617;
+    background-color: #0f172a;
     color: #f8fafc;
   }
 
-  /* Ben 10 Omnitrix Master Theme */
-  html.theme-omnitrix {
-    color-scheme: dark;
-    background-color: #030704;
-    color: #e6fff0;
-  }
-
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
     width: 100%;
     max-width: 100vw;
     overflow-x: hidden;
     background-color: #f8fafc;
     color: #0f172a;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
     touch-action: manipulation;
   }
 
   html.dark body {
-    background-color: #020617;
+    background-color: #0f172a;
     color: #f8fafc;
-  }
-
-  html.theme-omnitrix body {
-    background-color: #030704;
-    background-image: 
-      radial-gradient(circle at 50% 0%, rgba(0, 255, 102, 0.12) 0%, transparent 60%),
-      radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
-      linear-gradient(to bottom, #030704 0%, #051208 100%);
-    color: #e6fff0;
   }
 
   .font-mono, pre, code {
@@ -71,7 +55,7 @@
     display: block;
   }
 
-  /* Mobile viewport & input sizing fix to eliminate pinch-to-zoom requirement */
+  /* Mobile viewport & input sizing fix */
   @media (max-width: 640px) {
     html, body {
       font-size: 15px;
@@ -82,34 +66,6 @@
     }
   }
 }
-
-/* Ben 10 Omnitrix Theme Global Styling */
-html.theme-omnitrix ::selection {
-  background-color: rgba(0, 255, 102, 0.35);
-  color: #00FF66;
-}
-
-html.theme-omnitrix .dark\:bg-slate-900,
-html.theme-omnitrix .dark\:bg-slate-950,
-html.theme-omnitrix .dark\:bg-slate-900\/90,
-html.theme-omnitrix .dark\:bg-slate-900\/80 {
-  background-color: #040e06 !important;
-}
-
-html.theme-omnitrix .dark\:border-slate-800,
-html.theme-omnitrix .dark\:border-slate-700 {
-  border-color: rgba(0, 255, 102, 0.28) !important;
-}
-
-html.theme-omnitrix .dark\:border-slate-800\/80 {
-  border-color: rgba(0, 255, 102, 0.2) !important;
-}
-
-html.theme-omnitrix header {
-  border-bottom-color: rgba(0, 255, 102, 0.35) !important;
-  box-shadow: 0 4px 20px rgba(0, 255, 102, 0.08);
-}
-
 
 /* Custom subtle scrollbar */
 ::-webkit-scrollbar {
@@ -134,42 +90,7 @@ html.theme-omnitrix header {
   background: #475569;
 }
 
-/* Splash Screen animations */
-@keyframes splashFade {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  85% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1.02);
-    pointer-events: none;
-    visibility: hidden;
-  }
-}
-
-.animate-splash-fadeout {
-  animation: splashFade 2s ease-in-out forwards;
-}
-
-@keyframes floatSoft {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-.animate-float-soft {
-  animation: floatSoft 3.5s ease-in-out infinite;
-}
-
-/* Subtle, smooth UI animations */
+/* Subtle, smooth UI animations using CSS transforms & opacity only */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -182,13 +103,13 @@ html.theme-omnitrix header {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -197,40 +118,12 @@ html.theme-omnitrix header {
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes scaleInSubtle {
-  from {
-    opacity: 0;
-    transform: scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.animate-scale-in {
-  animation: scaleInSubtle 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes pulseSoft {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.65;
-  }
-}
-
-.animate-pulse-soft {
-  animation: pulseSoft 2.5s ease-in-out infinite;
+  animation: fadeInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Micro-interaction utilities */
 .hover-lift {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .hover-lift:hover {
   transform: translateY(-2px);
@@ -240,43 +133,10 @@ html.theme-omnitrix header {
   transition: transform 0.1s ease;
 }
 .active-press:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 .glass-panel {
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-/* Ben 10 Omnitrix Glow & Dial FX */
-@keyframes omnitrixPulse {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(0, 255, 102, 0.45), 0 0 30px rgba(0, 255, 102, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(0, 255, 102, 0.8), 0 0 50px rgba(0, 255, 102, 0.45);
-  }
-}
-
-.animate-omnitrix-glow {
-  animation: omnitrixPulse 2.4s ease-in-out infinite;
-}
-
-@keyframes dialRotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-dial-spin {
-  animation: dialRotate 20s linear infinite;
-}
-
-.omnitrix-badge {
-  background: linear-gradient(135deg, #052614 0%, #03150b 50%, #083b1f 100%);
-  border: 1.5px solid #00ff66;
-  box-shadow: 0 0 12px rgba(0, 255, 102, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }

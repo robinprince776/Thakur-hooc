@@ -30,12 +30,12 @@ import { CyberTerminal } from './CyberTerminal';
 import { InteractiveLabs } from './InteractiveLabs';
 import { CyberModule, CyberQuizQuestion } from '../types';
 
-interface CyberShieldAppProps {
+export interface CyberShieldAppProps {
   onBackToBca?: () => void;
   onOpenCalcVault?: () => void;
   onOpenSukhan?: () => void;
   onOpenCompiler?: () => void;
-  onOpenJarvis?: () => void;
+  onOpenDevForge?: () => void;
   onOpenAppSwitcher?: () => void;
 }
 
@@ -44,7 +44,7 @@ export const CyberShieldApp: React.FC<CyberShieldAppProps> = ({
   onOpenCalcVault,
   onOpenSukhan,
   onOpenCompiler,
-  onOpenJarvis,
+  onOpenDevForge: _onOpenDevForge,
   onOpenAppSwitcher
 }) => {
   const [activeTab, setActiveTab] = useState<'modules' | 'terminal' | 'labs' | 'quiz' | 'bounty'>('modules');

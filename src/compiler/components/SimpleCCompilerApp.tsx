@@ -30,10 +30,12 @@ import { TerminalOutput } from './TerminalOutput';
 import { MemoryWatcher } from './MemoryWatcher';
 import { CReferenceCheatSheet } from './CReferenceCheatSheet';
 
-interface SimpleCCompilerAppProps {
+export interface SimpleCCompilerAppProps {
   onBackToBca?: () => void;
   onOpenCalcVault?: () => void;
   onOpenSukhan?: () => void;
+  onOpenCyber?: () => void;
+  onOpenDevForge?: () => void;
   onOpenAppSwitcher?: () => void;
 }
 
@@ -41,6 +43,8 @@ export const SimpleCCompilerApp: React.FC<SimpleCCompilerAppProps> = ({
   onBackToBca,
   onOpenCalcVault,
   onOpenSukhan,
+  onOpenCyber: _onOpenCyber,
+  onOpenDevForge: _onOpenDevForge,
   onOpenAppSwitcher
 }) => {
   // Current active template

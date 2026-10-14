@@ -11,26 +11,26 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Smooth progress bar increment
+    // Fast smooth progress bar increment
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           return 100;
         }
-        return prev + 4;
+        return prev + 15;
       });
-    }, 80);
+    }, 40);
 
-    // Auto transition after 2.3 seconds
+    // Auto transition fast (max 750ms)
     const fadeTimer = setTimeout(() => {
       setFading(true);
-    }, 2300);
+    }, 550);
 
     const finishTimer = setTimeout(() => {
       setHidden(true);
       if (onFinish) onFinish();
-    }, 2700);
+    }, 750);
 
     return () => {
       clearInterval(interval);

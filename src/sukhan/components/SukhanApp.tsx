@@ -25,17 +25,23 @@ import { SukhanCardDesigner } from './SukhanCardDesigner';
 import { SukhanResources } from './SukhanResources';
 import { SukhanShayariLibrary } from './SukhanShayariLibrary';
 
-interface SukhanAppProps {
+export interface SukhanAppProps {
   onBackToSuite?: () => void;
+  onBackToBca?: () => void;
   onOpenCalcVault?: () => void;
   onOpenBcaVerse?: () => void;
+  onOpenCompiler?: () => void;
+  onOpenCyber?: () => void;
   onOpenAppSwitcher?: () => void;
 }
 
 export const SukhanApp: React.FC<SukhanAppProps> = ({
   onBackToSuite,
+  onBackToBca,
   onOpenCalcVault,
   onOpenBcaVerse,
+  onOpenCompiler: _onOpenCompiler,
+  onOpenCyber: _onOpenCyber,
   onOpenAppSwitcher
 }) => {
   const [activeTab, setActiveTab] = useState<SukhanAppTab>('home');

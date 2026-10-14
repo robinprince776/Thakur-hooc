@@ -12,6 +12,29 @@ interface UseDirectChatProps {
   onRoomBurned?: () => void;
 }
 
+const STORAGE_PREFIX = 'calcvault_messages_';
+
+function loadStoredMessages(room: string): Message[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_PREFIX + room);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (e) {
+    console.warn('Failed to load stored messages', e);
+  }
+  return [];
+}
+
+function saveStoredMessages(room: string, msgs: Message[]) {
+  try {
+    localStorage.setItem(STORAGE_PREFIX + room, JSON.stringify(msgs));
+  } catch (e) {
+    console.warn('Failed to save stored messages', e);
+  }
+}
+
 export function useDirectChat({
   peerId,
   peerName,
@@ -21,7 +44,8 @@ export function useDirectChat({
   hapticsEnabled,
   onRoomBurned,
 }: UseDirectChatProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
+  // Initialize messages directly from permanent localStorage
+  const [messages, setMessages] = useState<Message[]>(() => loadStoredMessages(roomId));
   const [onlineCount, setOnlineCount] = useState<number>(1);
   const [peers, setPeers] = useState<PeerPresence[]>([]);
   const [isPeerTyping, setIsPeerTyping] = useState<boolean>(false);
@@ -32,32 +56,34 @@ export function useDirectChat({
   const typingTimerRef = useRef<number | null>(null);
   const hasInitializedRef = useRef<boolean>(false);
 
-  // Clean up any old wipe timestamps from storage so all chat history is restored
+  // Sync to localStorage on every messages state update
   useEffect(() => {
-    try {
-      localStorage.removeItem(`calcvault_wiped_${roomId}`);
-    } catch {}
+    saveStoredMessages(roomId, messages);
+  }, [messages, roomId]);
+
+  // When roomId changes, load messages for the new room
+  useEffect(() => {
+    setMessages(loadStoredMessages(roomId));
   }, [roomId]);
 
-  const filterExpired = useCallback((list: Message[]): Message[] => {
-    const now = Date.now();
-    const seen = new Set<string>();
-    const result: Message[] = [];
-
-    for (const m of list) {
-      if (seen.has(m.id)) continue;
-      seen.add(m.id);
-
-      // Filter out only expired vanishing messages
-      if (m.vanishesAfter && m.vanishesAfter > 0) {
-        if (now >= m.timestamp + m.vanishesAfter * 1000) continue;
+  // Merge messages: keep all existing, add new ones without duplicates, never auto-delete
+  const mergeMessages = useCallback((incoming: Message[]) => {
+    setMessages((prev) => {
+      const existingMap = new Map<string, Message>();
+      for (const m of prev) {
+        existingMap.set(m.id, m);
       }
-      result.push(m);
-    }
-    return result;
+      for (const m of incoming) {
+        if (!existingMap.has(m.id)) {
+          existingMap.set(m.id, m);
+        }
+      }
+      const sorted = Array.from(existingMap.values()).sort((a, b) => a.timestamp - b.timestamp);
+      return sorted;
+    });
   }, []);
 
-  // Fetch latest messages & presence from HTTP endpoint (Guaranteed fallback)
+  // Fetch latest messages & presence from HTTP endpoint
   const fetchMessages = useCallback(async () => {
     try {
       const res = await fetch(
@@ -66,30 +92,23 @@ export function useDirectChat({
       if (!res.ok) return;
       const data = await res.json();
 
-      // Check if room was burned on server
-      if (data.lastBurnTimestamp && data.lastBurnTimestamp > lastBurnRef.current) {
-        lastBurnRef.current = data.lastBurnTimestamp;
-        setMessages([]);
-        if (hasInitializedRef.current && onRoomBurned) {
-          onRoomBurned();
-        }
-      }
-
       if (Array.isArray(data.messages)) {
         setMessages((prev) => {
-          const visibleMessages = filterExpired(data.messages);
           const prevIds = new Set(prev.map((m) => m.id));
-          const newRemote = visibleMessages.filter(
+          const newRemote = data.messages.filter(
             (m: Message) => !prevIds.has(m.id) && m.senderId !== peerId
           );
 
-          // ONLY play sound & vibration if user is ACTIVELY in chat (STEALTH PROTECTION)
           if (newRemote.length > 0 && hasInitializedRef.current && isActiveChat) {
             if (soundEnabled) playReceiveSound();
             if (hapticsEnabled) triggerHaptic([30, 40]);
           }
 
-          return visibleMessages;
+          // Merge without losing any local messages
+          const map = new Map<string, Message>();
+          for (const m of prev) map.set(m.id, m);
+          for (const m of data.messages) map.set(m.id, m);
+          return Array.from(map.values()).sort((a, b) => a.timestamp - b.timestamp);
         });
       }
 
@@ -103,34 +122,16 @@ export function useDirectChat({
     } catch (e) {
       console.warn('Direct chat fetch error:', e);
     }
-  }, [roomId, peerId, peerName, isActiveChat, soundEnabled, hapticsEnabled, onRoomBurned, filterExpired]);
+  }, [roomId, peerId, peerName, isActiveChat, soundEnabled, hapticsEnabled]);
 
-  // Initial fetch and regular polling interval (every 1.5 seconds)
+  // Initial fetch and regular polling interval (every 2.5 seconds)
   useEffect(() => {
     fetchMessages();
-    const interval = setInterval(fetchMessages, 1500);
+    const interval = setInterval(fetchMessages, 2500);
     return () => clearInterval(interval);
   }, [fetchMessages]);
 
-  // Periodic local tick to purge expired vanishing messages
-  useEffect(() => {
-    const expireInterval = setInterval(() => {
-      setMessages((prev) => {
-        const now = Date.now();
-        const hasExpired = prev.some(
-          (m) => m.vanishesAfter && m.vanishesAfter > 0 && now >= m.timestamp + m.vanishesAfter * 1000
-        );
-        if (!hasExpired) return prev;
-        return prev.filter(
-          (m) => !m.vanishesAfter || m.vanishesAfter <= 0 || now < m.timestamp + m.vanishesAfter * 1000
-        );
-      });
-    }, 1000);
-
-    return () => clearInterval(expireInterval);
-  }, []);
-
-  // Sync presence state to WebSocket whenever room, peer or inChat changes
+  // Sync presence state to WebSocket
   useEffect(() => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(
@@ -175,16 +176,14 @@ export function useDirectChat({
           if (!isMounted) return;
           try {
             const data = JSON.parse(event.data);
-            if (data.type === 'server_heartbeat') {
-              return;
-            }
+            if (data.type === 'server_heartbeat') return;
+
             if (data.type === 'init') {
               if (Array.isArray(data.messages)) {
-                setMessages(filterExpired(data.messages));
+                mergeMessages(data.messages);
               }
               if (data.onlineCount) setOnlineCount(data.onlineCount);
               if (Array.isArray(data.peers)) setPeers(data.peers);
-              if (data.lastBurnTimestamp) lastBurnRef.current = data.lastBurnTimestamp;
             } else if (data.type === 'new_message') {
               const msg: Message = data.message;
               if (msg.roomId && msg.roomId !== roomId) return;
@@ -214,14 +213,7 @@ export function useDirectChat({
               if (data.onlineCount) setOnlineCount(data.onlineCount);
             } else if (data.type === 'presence_update') {
               if (data.roomId && data.roomId !== roomId) return;
-              if (Array.isArray(data.peers)) {
-                setPeers(data.peers);
-              }
-            } else if (data.type === 'room_burned') {
-              if (data.roomId && data.roomId !== roomId) return;
-              setMessages([]);
-              lastBurnRef.current = data.timestamp || Date.now();
-              if (onRoomBurned) onRoomBurned();
+              if (Array.isArray(data.peers)) setPeers(data.peers);
             } else if (data.type === 'message_burned') {
               setMessages((prev) => prev.filter((m) => m.id !== data.messageId));
             }
@@ -232,7 +224,7 @@ export function useDirectChat({
 
         ws.onclose = () => {
           if (isMounted) {
-            reconnectTimeout = window.setTimeout(connectWs, 3000);
+            reconnectTimeout = window.setTimeout(connectWs, 3500);
           }
         };
 
@@ -252,7 +244,7 @@ export function useDirectChat({
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
       if (ws) ws.close();
     };
-  }, [roomId, peerId, peerName, isActiveChat, soundEnabled, hapticsEnabled, onRoomBurned, filterExpired]);
+  }, [roomId, peerId, peerName, isActiveChat, soundEnabled, hapticsEnabled, mergeMessages]);
 
   // Derive Friend Status
   const otherPeers = useMemo(() => peers.filter((p) => p.peerId !== peerId), [peers, peerId]);
@@ -264,7 +256,7 @@ export function useDirectChat({
 
   // Send Text Message
   const sendMessage = useCallback(
-    async (text: string, vanishesAfter?: number) => {
+    async (text: string) => {
       if (!text.trim()) return false;
 
       const newMsg: Message = {
@@ -274,10 +266,8 @@ export function useDirectChat({
         roomId,
         text: text.trim(),
         timestamp: Date.now(),
-        vanishesAfter,
       };
 
-      // Optimistic update (deduplicated)
       setMessages((prev) => {
         if (prev.some((m) => m.id === newMsg.id)) return prev;
         return [...prev, newMsg];
@@ -285,7 +275,6 @@ export function useDirectChat({
       if (soundEnabled && isActiveChat) playSendSound();
       if (hapticsEnabled && isActiveChat) triggerHaptic(15);
 
-      // Send via WebSocket if open, else fallback to HTTP
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         wsRef.current.send(JSON.stringify({ type: 'message', ...newMsg }));
       } else {
@@ -307,7 +296,7 @@ export function useDirectChat({
 
   // Send Voice Audio Note
   const sendAudio = useCallback(
-    async (audioDataUrl: string, duration?: number, vanishesAfter?: number) => {
+    async (audioDataUrl: string, duration?: number) => {
       const newMsg: Message = {
         id: `aud_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
         senderId: peerId,
@@ -316,7 +305,6 @@ export function useDirectChat({
         audioData: audioDataUrl,
         audioDuration: duration,
         timestamp: Date.now(),
-        vanishesAfter,
       };
 
       setMessages((prev) => {
@@ -347,7 +335,7 @@ export function useDirectChat({
 
   // Send Photo
   const sendImage = useCallback(
-    async (imageDataUrl: string, vanishesAfter?: number) => {
+    async (imageDataUrl: string) => {
       const newMsg: Message = {
         id: `img_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
         senderId: peerId,
@@ -355,7 +343,6 @@ export function useDirectChat({
         roomId,
         imageData: imageDataUrl,
         timestamp: Date.now(),
-        vanishesAfter,
       };
 
       setMessages((prev) => {
@@ -402,17 +389,18 @@ export function useDirectChat({
     [peerId, peerName, roomId]
   );
 
-  // Burn entire chat on server & both phones (Manual user action)
+  // Clear all messages (Manual action with user confirmation)
   const burnEntireChat = useCallback(async () => {
     setMessages([]);
     try {
+      localStorage.removeItem(STORAGE_PREFIX + roomId);
       await fetch('/api/burn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ byName: peerName, roomId }),
       });
     } catch (e) {
-      console.error('Burn error:', e);
+      console.error('Clear chat error:', e);
     }
 
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -426,9 +414,14 @@ export function useDirectChat({
     }
   }, [peerName, roomId]);
 
-  // Burn single message
+  // Delete single message (Manual action)
   const burnSingleMessage = useCallback(async (messageId: string) => {
-    setMessages((prev) => prev.filter((m) => m.id !== messageId));
+    setMessages((prev) => {
+      const filtered = prev.filter((m) => m.id !== messageId);
+      saveStoredMessages(roomId, filtered);
+      return filtered;
+    });
+
     try {
       await fetch(`/api/messages/${messageId}`, { method: 'DELETE' });
     } catch (e) {

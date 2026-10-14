@@ -45,14 +45,6 @@ interface SecretChatProps {
   onChangeWallpaper: (wallpaper: NatureWallpaper) => void;
 }
 
-const VANISH_OPTIONS = [
-  { label: 'Off', value: 0 },
-  { label: '10s', value: 10 },
-  { label: '30s', value: 30 },
-  { label: '1m', value: 60 },
-  { label: '5m', value: 300 },
-];
-
 const QUICK_EMOJIS = ['❤️', '😂', '🤫', '🔥', '👍', '🙈', '👀', '💯'];
 
 function formatLastSeen(timestamp: number): string {
@@ -108,8 +100,6 @@ export const SecretChat: React.FC<SecretChatProps> = ({
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [confirmBurnOpen, setConfirmBurnOpen] = useState(false);
   const [wallpaperMenuOpen, setWallpaperMenuOpen] = useState(false);
-  const [vanishMenuOpen, setVanishMenuOpen] = useState(false);
-  const [vanishSeconds, setVanishSeconds] = useState<number>(settings.vanishDuration || 0);
   const [toastText, setToastText] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -139,13 +129,13 @@ export const SecretChat: React.FC<SecretChatProps> = ({
     }, 1500);
   };
 
-  // Send text
+  // Send text (Permanent)
   const handleSendText = async () => {
     if (!inputText.trim()) return;
     const textToSend = inputText;
     setInputText('');
     onSendTyping(false);
-    await onSendMessage(textToSend, vanishSeconds > 0 ? vanishSeconds : undefined);
+    await onSendMessage(textToSend);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -175,7 +165,7 @@ export const SecretChat: React.FC<SecretChatProps> = ({
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64Data = reader.result as string;
-          onSendAudio(base64Data, recordingSeconds, vanishSeconds > 0 ? vanishSeconds : undefined);
+          onSendAudio(base64Data, recordingSeconds);
         };
         reader.readAsDataURL(audioBlob);
 
@@ -218,7 +208,7 @@ export const SecretChat: React.FC<SecretChatProps> = ({
     const reader = new FileReader();
     reader.onload = (event) => {
       const base64 = event.target?.result as string;
-      onSendImage(base64, vanishSeconds > 0 ? vanishSeconds : undefined);
+      onSendImage(base64);
     };
     reader.readAsDataURL(file);
     e.target.value = '';
@@ -321,60 +311,7 @@ export const SecretChat: React.FC<SecretChatProps> = ({
         </div>
 
         {/* Header Actions */}
-        <div className="flex items-center gap-1">
-          {/* Disappearing Messages Timer Button */}
-          <div className="relative">
-            <button
-              onClick={() => setVanishMenuOpen(!vanishMenuOpen)}
-              className={`p-2 rounded-full transition-colors cursor-pointer flex items-center gap-1 ${
-                vanishSeconds > 0
-                  ? 'bg-amber-500 text-black font-bold'
-                  : 'text-zinc-300 hover:text-white hover:bg-white/10'
-              }`}
-              title="Disappearing Messages Timer"
-            >
-              <Clock size={16} />
-              {vanishSeconds > 0 && (
-                <span className="text-[10px] pr-0.5">
-                  {VANISH_OPTIONS.find((v) => v.value === vanishSeconds)?.label}
-                </span>
-              )}
-            </button>
-
-            {vanishMenuOpen && (
-              <div className="absolute right-0 top-10 w-44 bg-zinc-900/95 border border-zinc-700/80 rounded-2xl p-2 shadow-2xl z-50 backdrop-blur-md">
-                <p className="text-[10px] text-zinc-400 px-2 py-1 font-semibold uppercase tracking-wider flex items-center gap-1">
-                  <Flame size={12} className="text-amber-400" />
-                  <span>Self-Destruct Timer</span>
-                </p>
-                <div className="space-y-1">
-                  {VANISH_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => {
-                        setVanishSeconds(opt.value);
-                        setVanishMenuOpen(false);
-                        showToast(
-                          opt.value > 0
-                            ? `Messages ${opt.label} baad delete ho jayenge`
-                            : 'Self-destruct timer off kar diya'
-                        );
-                      }}
-                      className={`w-full text-left px-2.5 py-1.5 rounded-xl text-xs transition-colors flex items-center justify-between ${
-                        vanishSeconds === opt.value
-                          ? 'bg-amber-500 text-black font-bold'
-                          : 'text-zinc-200 hover:bg-zinc-800'
-                      }`}
-                    >
-                      <span>{opt.label === 'Off' ? 'Off (Normal)' : opt.label}</span>
-                      {vanishSeconds === opt.value && <Check size={12} />}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
+        <div className="flex items-center gap-1.5">
           {/* Nature Wallpaper Switcher */}
           <div className="relative">
             <button
@@ -413,13 +350,13 @@ export const SecretChat: React.FC<SecretChatProps> = ({
             )}
           </div>
 
-          {/* Panic Burn Chat */}
+          {/* Clear All Messages Button */}
           <button
             onClick={() => setConfirmBurnOpen(true)}
-            className="p-2 text-amber-400 hover:text-red-400 rounded-full hover:bg-red-500/10 transition-colors cursor-pointer"
-            title="Dono phones se chat clear karein"
+            className="p-2 text-zinc-400 hover:text-red-400 rounded-full hover:bg-red-500/10 transition-colors cursor-pointer"
+            title="Clear all messages"
           >
-            <Flame size={17} />
+            <Trash2 size={17} />
           </button>
 
           {/* Settings */}
@@ -524,12 +461,6 @@ export const SecretChat: React.FC<SecretChatProps> = ({
         ) : (
           messages.map((msg) => {
             const isSelf = msg.senderId === peerId;
-            const now = Date.now();
-            let vanishSecondsLeft: number | null = null;
-            if (msg.vanishesAfter && msg.vanishesAfter > 0) {
-              const expiresAt = msg.timestamp + msg.vanishesAfter * 1000;
-              vanishSecondsLeft = Math.max(0, Math.ceil((expiresAt - now) / 1000));
-            }
 
             return (
               <div
@@ -579,13 +510,6 @@ export const SecretChat: React.FC<SecretChatProps> = ({
                         : 'bg-zinc-900/90 text-zinc-100 rounded-bl-xs border border-white/10'
                     }`}
                   >
-                    {/* Disappearing countdown badge */}
-                    {vanishSecondsLeft !== null && (
-                      <div className="flex items-center gap-1 text-[10px] text-amber-300 font-mono mb-1 pb-1 border-b border-white/10">
-                        <Flame size={11} className="text-amber-400 animate-pulse" />
-                        <span>Vanish: {vanishSecondsLeft}s</span>
-                      </div>
-                    )}
 
                     {/* Text Message */}
                     {msg.text && (
@@ -639,7 +563,7 @@ export const SecretChat: React.FC<SecretChatProps> = ({
         {QUICK_EMOJIS.map((emoji) => (
           <button
             key={emoji}
-            onClick={() => onSendMessage(emoji, vanishSeconds > 0 ? vanishSeconds : undefined)}
+            onClick={() => onSendMessage(emoji)}
             className="p-1 text-base hover:scale-125 transition-transform active:scale-95 cursor-pointer"
           >
             {emoji}
@@ -723,16 +647,16 @@ export const SecretChat: React.FC<SecretChatProps> = ({
         </div>
       )}
 
-      {/* Panic Burn Confirmation Modal */}
+      {/* Clear All Messages Confirmation Modal */}
       {confirmBurnOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-xs rounded-3xl bg-zinc-950 border border-red-900/80 p-5 shadow-2xl text-white text-center">
-            <div className="w-12 h-12 rounded-2xl bg-red-950/80 border border-red-800 flex items-center justify-center text-red-400 mx-auto mb-3 shadow-lg">
-              <Flame size={24} />
+          <div className="relative w-full max-w-xs rounded-3xl bg-zinc-950 border border-zinc-800 p-5 shadow-2xl text-white text-center">
+            <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-700 flex items-center justify-center text-red-400 mx-auto mb-3 shadow-lg">
+              <Trash2 size={22} />
             </div>
-            <h3 className="text-base font-bold text-white mb-1">Clear Entire Chat?</h3>
+            <h3 className="text-base font-bold text-white mb-1">Clear All Messages?</h3>
             <p className="text-xs text-zinc-400 mb-4 leading-relaxed">
-              Dono doston ke phone aur server se saari chat turant permanently delete ho jayegi.
+              Kya aap sach me saare messages delete karna chahte hain? Yeh messages permanently remove ho jayenge.
             </p>
             <div className="flex gap-2">
               <button
@@ -745,11 +669,11 @@ export const SecretChat: React.FC<SecretChatProps> = ({
                 onClick={() => {
                   setConfirmBurnOpen(false);
                   onBurnEntireChat();
-                  showToast('Dono devices se chat clear kar di gayi');
+                  showToast('Saare messages delete kar diye gaye');
                 }}
                 className="flex-1 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-xs font-bold text-white transition-colors cursor-pointer shadow-lg shadow-red-600/30"
               >
-                Delete All
+                Clear Messages
               </button>
             </div>
           </div>

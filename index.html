@@ -27,9 +27,14 @@
     <script>
       (function() {
         try {
-          var saved = localStorage.getItem('bca_buddy_theme');
-          if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
+          var omni = localStorage.getItem('bca_omnitrix_mode');
+          if (omni !== 'false') {
+            document.documentElement.classList.add('dark', 'theme-omnitrix');
+          } else {
+            var saved = localStorage.getItem('bca_buddy_theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+              document.documentElement.classList.add('dark');
+            }
           }
         } catch (e) {}
       })();

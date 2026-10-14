@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   X,
   Cpu,
@@ -10,13 +10,32 @@ import {
   Layers,
   Heart,
   Grid,
-  Bot,
   Wrench,
-  BookOpen
+  BookOpen,
+  Search,
+  Server,
+  Cloud,
+  FileText,
+  GitBranch,
+  Globe,
+  Code2
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 
-export type CurrentAppType = 'bca' | 'calc' | 'sukhan' | 'compiler' | 'cyber' | 'jarvis' | 'dev' | 'techmaster';
+export type CurrentAppType =
+  | 'bca'
+  | 'techmaster'
+  | 'compiler'
+  | 'dev'
+  | 'docucraft'
+  | 'gitstudio'
+  | 'cyber'
+  | 'netsec'
+  | 'apix'
+  | 'cloudops'
+  | 'promptcraft'
+  | 'calc'
+  | 'sukhan';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;
@@ -25,264 +44,374 @@ interface AppSwitcherModalProps {
   onSelectApp: (app: CurrentAppType) => void;
 }
 
+interface AppItem {
+  id: CurrentAppType;
+  category: 'Education' | 'Development' | 'Security' | 'DevOps & AI' | 'Privacy & Life';
+  title: string;
+  subtitle: string;
+  tagline: string;
+  description: string;
+  badge: string;
+  badgeColor: string;
+  hash: string;
+  icon: React.ReactNode;
+}
+
+const ALL_APPS: AppItem[] = [
+  // 📚 Education
+  {
+    id: 'bca',
+    category: 'Education',
+    title: 'BCA Verse',
+    subtitle: 'Academic Solvers & Code Lab',
+    tagline: 'Logic Systems · 60+ C Programs · Fundamentals',
+    description: 'Complete academic portal with step-by-step number system converters, verified C programs, and exam notes.',
+    badge: 'Core Academic',
+    badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+    hash: '#bcaverse',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md">
+        <Cpu className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'techmaster',
+    category: 'Education',
+    title: 'TechMaster 2000+',
+    subtitle: 'Zero to Hero Knowledge Vault',
+    tagline: '2,000+ Q&A · Hacking · Supercomputers · Cyber Laws',
+    description: 'Comprehensive tech mastery vault covering Kali Linux, Indian Cyber Cell 1930 Helpline, Supercomputers, and Career Roadmaps.',
+    badge: 'Master Vault',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#techmaster',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-700 flex items-center justify-center text-white shadow-md">
+        <BookOpen className="w-5 h-5 text-cyan-200" />
+      </div>
+    )
+  },
+
+  // 💻 Development
+  {
+    id: 'compiler',
+    category: 'Development',
+    title: 'C Compiler',
+    subtitle: 'In-Browser Execution',
+    tagline: 'Fast C Engine · Live Terminal · Preloaded Templates',
+    description: 'Instant C execution environment. Run programs with interactive input and examine output metrics.',
+    badge: 'Compiler',
+    badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    hash: '#compiler',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-md font-mono font-bold text-lg">
+        C
+      </div>
+    )
+  },
+  {
+    id: 'dev',
+    category: 'Development',
+    title: 'DevForge',
+    subtitle: 'Developer Swiss-Army Knife',
+    tagline: 'Base64 · Hashing · JWT · Regex · Formatter',
+    description: 'Essential utility suite with JSON formatting, SHA-256 hashing, JWT debugging, and color palettes.',
+    badge: 'Dev Suite',
+    badgeColor: 'bg-violet-500/20 text-violet-300 border-violet-500/30',
+    hash: '#dev',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
+        <Wrench className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'docucraft',
+    category: 'Development',
+    title: 'DocuCraft Studio',
+    subtitle: 'Markdown, Regex & README',
+    tagline: 'Live HTML Preview · Regex Matcher · Formatter',
+    description: 'Live Markdown to HTML renderer, regex testing sandbox with match extraction, and README generator.',
+    badge: 'Docs & Regex',
+    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    hash: '#docucraft',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-600 flex items-center justify-center text-white shadow-md">
+        <FileText className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'gitstudio',
+    category: 'Development',
+    title: 'Git & CI/CD Studio',
+    subtitle: 'Undo Assistant & Pipelines',
+    tagline: 'Conflict Fixer · Emergency Undo · Actions Builder',
+    description: 'Step-by-step visual problem solver for Git emergencies, detached HEAD, merge conflicts, and GitHub Actions builder.',
+    badge: 'Git Tool',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    hash: '#gitstudio',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-600 to-orange-600 flex items-center justify-center text-white shadow-md">
+        <GitBranch className="w-5 h-5" />
+      </div>
+    )
+  },
+
+  // 🛡️ Security
+  {
+    id: 'cyber',
+    category: 'Security',
+    title: 'CyberShield Academy',
+    subtitle: 'Hands-on Cyber Defense',
+    tagline: 'Kali Tools · OWASP Labs · Bug Bounty Roadmap',
+    description: 'Comprehensive cybersecurity academy. Master networking, SQLi/XSS defense, and ethical hacking fundamentals.',
+    badge: 'Academy',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    hash: '#cyber',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-white shadow-md">
+        <Shield className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'netsec',
+    category: 'Security',
+    title: 'NetSec Sandbox',
+    subtitle: 'Live Network & Security Analyzer',
+    tagline: 'Security Headers · DNS Auditing · OWASP Hardening',
+    description: 'Audit CSP, HSTS, CORS security headers, run DNS queries (dig, whois), and inspect OWASP Top 10 remediation.',
+    badge: 'Security Lab',
+    badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    hash: '#netsec',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-600 to-red-600 flex items-center justify-center text-white shadow-md">
+        <Globe className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'apix',
+    category: 'Security',
+    title: 'API-X Lab',
+    subtitle: 'API Testing & Mocking',
+    tagline: 'cURL Converter · HTTP Codes · JSON Mocking',
+    description: 'Convert cURL commands to Fetch/Axios/Python/Go/C code, inspect HTTP status codes, and test JSON schemas.',
+    badge: 'API Testing',
+    badgeColor: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+    hash: '#apix',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-600 to-emerald-600 flex items-center justify-center text-white shadow-md">
+        <Server className="w-5 h-5" />
+      </div>
+    )
+  },
+
+  // 🚀 DevOps & AI
+  {
+    id: 'cloudops',
+    category: 'DevOps & AI',
+    title: 'CloudOps Shell',
+    subtitle: 'DevOps Playbook',
+    tagline: 'Docker Multi-Stage · K8s YAML · Linux One-Liners',
+    description: 'Generate production multi-stage Dockerfiles, docker-compose.yml, Kubernetes manifests, and search Linux commands.',
+    badge: 'DevOps',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#cloudops',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
+        <Cloud className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'promptcraft',
+    category: 'DevOps & AI',
+    title: 'PromptCraft Pro',
+    subtitle: 'AI & LLM Prompting Studio',
+    tagline: 'System Prompt Generator · Token Estimator · Library',
+    description: 'Craft role-based system prompts, estimate token counts & model costs, and access 30+ production prompts.',
+    badge: 'AI Studio',
+    badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    hash: '#promptcraft',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white shadow-md">
+        <Sparkles className="w-5 h-5 text-cyan-200" />
+      </div>
+    )
+  },
+
+  // 🔐 Privacy & Life
+  {
+    id: 'calc',
+    category: 'Privacy & Life',
+    title: 'CalcVault',
+    subtitle: 'Calculator & Stealth Chat',
+    tagline: 'Standard & Scientific · Permanent Encrypted Storage',
+    description: 'Fully functional mathematical calculator with tactile haptics. Secret PIN (1307) opens private P2P encrypted chat with permanent storage.',
+    badge: 'Utility & Chat',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    hash: '#calc',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-600 to-zinc-900 border border-amber-500/40 flex items-center justify-center text-amber-300 shadow-md">
+        <CalcIcon className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'sukhan',
+    category: 'Privacy & Life',
+    title: 'SUKHAN',
+    subtitle: 'Alfaaz, Ehsaas Aur Adab',
+    tagline: 'Urdu & Hindi Poetry · Audio · Sher Designer',
+    description: 'Premium literary universe with mood-based poetry library, classical typography, audio recitations, and card exporter.',
+    badge: 'Literature',
+    badgeColor: 'bg-[#59263C] text-[#C6A66B] border-[#C6A66B]/40',
+    hash: '#sukhan',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#59263C] to-[#15151C] border border-[#C6A66B]/50 flex items-center justify-center text-[#C6A66B] shadow-md">
+        <SukhanPenIcon size={22} />
+      </div>
+    )
+  }
+];
+
+const CATEGORIES = ['All', 'Education', 'Development', 'Security', 'DevOps & AI', 'Privacy & Life'] as const;
+
 export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
   isOpen,
   onClose,
   currentApp,
   onSelectApp
 }) => {
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState('');
+
   if (!isOpen) return null;
 
-  const apps = [
-    {
-      id: 'bca' as CurrentAppType,
-      title: 'BCA Verse',
-      subtitle: 'Academic Suite & Solvers',
-      tagline: 'Logic Systems · 45+ C Programs · Fundamentals',
-      description:
-        'Complete academic portal for BCA students with step-by-step number system converters, tested C code, and full notes.',
-      badge: 'Academic App 1',
-      badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
-      gradient: 'from-indigo-600 via-purple-600 to-pink-500',
-      borderHover: 'hover:border-indigo-500/60',
-      accentGlow: 'bg-indigo-500/10',
-      icon: (
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
-          <Cpu className="w-6 h-6" />
-        </div>
-      )
-    },
-    {
-      id: 'calc' as CurrentAppType,
-      title: 'CalcVault',
-      subtitle: 'Calculator & Stealth Chat',
-      tagline: 'Standard & Scientific · Secret Passcode Vault',
-      description:
-        'Authentic mathematical calculator with tactile haptics and sounds. Hidden PIN trigger opens a private direct P2P messaging lounge.',
-      badge: 'Utility App 2',
-      badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-      gradient: 'from-amber-600 via-orange-600 to-amber-700',
-      borderHover: 'hover:border-amber-500/60',
-      accentGlow: 'bg-amber-500/10',
-      icon: (
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-600 via-orange-600 to-zinc-900 border border-amber-500/40 flex items-center justify-center text-white shadow-lg shadow-amber-500/20">
-          <CalcIcon className="w-6 h-6 text-amber-300" />
-        </div>
-      )
-    },
-    {
-      id: 'sukhan' as CurrentAppType,
-      title: 'SUKHAN',
-      subtitle: 'Alfaaz, Ehsaas Aur Adab',
-      tagline: 'Mood Shayari Library · Writing Studio · Card Designer',
-      description:
-        'Premium literary universe with mood-based shayari library (Ishq, Dard, Josh, Tanhai, Dosti), poet archives, and Sher Card art.',
-      badge: 'Premium App 3',
-      badgeColor: 'bg-[#59263C] text-[#C6A66B] border-[#C6A66B]/40',
-      gradient: 'from-[#59263C] via-[#3C1425] to-[#0B0B0F]',
-      borderHover: 'hover:border-[#C6A66B]',
-      accentGlow: 'bg-[#59263C]/30',
-      icon: (
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#59263C] via-[#3C1425] to-[#15151C] border border-[#C6A66B]/50 flex items-center justify-center text-[#C6A66B] shadow-lg shadow-[#59263C]/40">
-          <SukhanPenIcon size={26} />
-        </div>
-      )
-    },
-    {
-      id: 'compiler' as CurrentAppType,
-      title: 'Simple C Compiler',
-      subtitle: 'Code, Compile, Execute',
-      tagline: 'Instant C Interpreter · Interactive Terminal · Memory Watch',
-      description:
-        'Fast in-browser C execution environment. Run programs with interactive scanf inputs, watch variables in live memory, and explore 12+ preloaded templates.',
-      badge: 'Coding App 4',
-      badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
-      gradient: 'from-cyan-600 via-blue-600 to-indigo-700',
-      borderHover: 'hover:border-cyan-500/60',
-      accentGlow: 'bg-cyan-500/10',
-      icon: (
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-700 border border-cyan-400/40 flex items-center justify-center text-white shadow-lg shadow-cyan-600/30 font-mono font-black text-xl">
-          C
-        </div>
-      )
-    },
-    {
-      id: 'cyber' as CurrentAppType,
-      title: 'CyberShield',
-      subtitle: 'Cybersecurity Zero to Hero',
-      tagline: 'Kali Terminal · OWASP Labs · Bug Bounty Roadmap',
-      description:
-        'Complete hands-on cybersecurity academy in Hinglish. Master networking, SQLi/XSS labs, hash cracking, ethical hacking, and claim your Cyber Hero Certificate.',
-      badge: 'Security App 5',
-      badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-      gradient: 'from-emerald-600 via-teal-600 to-cyan-700',
-      borderHover: 'hover:border-emerald-500/60',
-      accentGlow: 'bg-emerald-500/10',
-      icon: (
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-500 border border-emerald-400/40 flex items-center justify-center text-black shadow-lg shadow-emerald-500/30 font-black">
-          <Shield className="w-6 h-6 text-black" />
-        </div>
-      )
-    },
-    {
-      id: 'jarvis' as CurrentAppType,
-      title: 'JARVIS AI',
-      subtitle: 'Smart, Light & Cringe AI Companion',
-      tagline: 'Stark Tech HUD · Simple Answers · Dramatic Cringe Humor',
-      description:
-        'Ultra-intelligent AI model with voice TTS. Answers any tough question simply and lightly, wrapped in impressive sci-fi swagger and delightfully cringe Bollywood flair.',
-      badge: 'AI App 6',
-      badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
-      gradient: 'from-cyan-600 via-blue-600 to-indigo-800',
-      borderHover: 'hover:border-cyan-400/60',
-      accentGlow: 'bg-cyan-500/10',
-      icon: (
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-900 border border-cyan-300/50 flex items-center justify-center text-cyan-200 shadow-lg shadow-cyan-500/40">
-          <Bot className="w-6 h-6 text-cyan-200" />
-        </div>
-      )
-    },
-    {
-      id: 'dev' as CurrentAppType,
-      title: 'DevForge',
-      subtitle: 'Developer Swiss-Army Knife',
-      tagline: 'JSON Studio · Regex Sandbox · JWT Inspector · REST Client',
-      description:
-        'All-in-one super toolkit for developers: JSON formatter & validator, live regex sandbox, Base64 & SHA-256 hashes, JWT debugger, REST API scratchpad, Git commands generator, and port references.',
-      badge: 'Dev App 7',
-      badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
-      gradient: 'from-indigo-600 via-violet-600 to-cyan-500',
-      borderHover: 'hover:border-indigo-400/60',
-      accentGlow: 'bg-indigo-500/10',
-      icon: (
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-cyan-500 border border-indigo-400/40 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
-          <Wrench className="w-6 h-6 text-white" />
-        </div>
-      )
-    },
-    {
-      id: 'techmaster' as CurrentAppType,
-      title: 'TechMaster 2000+',
-      subtitle: 'Zero to Hero Technical Encyclopedia',
-      tagline: '2000+ Questions · Hacking · Cyber Cell · Supercomputers · Scope',
-      description:
-        'Complete zero-to-hero mastery vault covering ethical hacking, cyber defense, Indian cyber laws, supercomputer architecture, career roadmap, and interview drills.',
-      badge: 'Flagship 8',
-      badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-      gradient: 'from-emerald-600 via-teal-600 to-cyan-500',
-      borderHover: 'hover:border-emerald-400/60',
-      accentGlow: 'bg-emerald-500/10',
-      icon: (
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-500 border border-emerald-400/40 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
-          <BookOpen className="w-6 h-6 text-emerald-200" />
-        </div>
-      )
-    }
-  ];
+  const filteredApps = ALL_APPS.filter((app) => {
+    const matchesCategory = selectedCategory === 'All' || app.category === selectedCategory;
+    const matchesSearch =
+      app.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.tagline.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 select-none">
-      <div className="relative w-full max-w-2xl bg-[#0B0B0F] border border-[#C6A66B]/40 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col justify-between">
-        {/* Ambient Top Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-[#59263C]/30 rounded-full blur-3xl pointer-events-none" />
-
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-[80] flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-fade-in"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-4xl max-h-[90vh] rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl flex flex-col overflow-hidden text-slate-100"
+      >
         {/* Modal Header */}
-        <div className="relative z-10 flex items-center justify-between border-b border-zinc-800 pb-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 uppercase">
-                8-Apps Master Suite
-              </span>
-              <span className="text-[11px] text-zinc-400">Created by Prince Thakur</span>
+        <div className="p-4 sm:p-6 border-b border-slate-800 bg-slate-900/90 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+              <Grid className="w-5 h-5" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-serif text-[#FFF5EA]">
-              Choose Your App Experience
-            </h2>
-            <p className="text-xs text-zinc-400">
-              Kisi bhi app ko chunein — sabhi aath (8) apps poori tarah functional aur offline chalte hain.
-            </p>
+            <div>
+              <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                TechMaster Master Suite
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-950 text-blue-400 border border-blue-800">
+                  13 Apps
+                </span>
+              </h2>
+              <p className="text-xs text-slate-400">Switch seamlessly between all 13 integrated tools</p>
+            </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-2xl bg-[#15151C] border border-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X size={18} />
           </button>
         </div>
 
-        {/* 3 Apps Cards List */}
-        <div className="relative z-10 py-5 space-y-3.5 overflow-y-auto max-h-[60vh] pr-1">
-          {apps.map((app) => {
+        {/* Search & Category Filter */}
+        <div className="px-4 sm:px-6 py-3 border-b border-slate-800 bg-slate-900/50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer shrink-0 ${
+                  selectedCategory === cat
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'bg-slate-800 text-slate-400 hover:text-white'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search apps..."
+              className="pl-9 pr-4 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-500 outline-none focus:border-blue-500 w-full sm:w-56"
+            />
+          </div>
+        </div>
+
+        {/* Apps Grid */}
+        <div className="p-4 sm:p-6 overflow-y-auto max-h-[60vh] grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          {filteredApps.map((app) => {
             const isCurrent = currentApp === app.id;
             return (
               <div
                 key={app.id}
-                onClick={() => {
-                  onSelectApp(app.id);
-                  onClose();
-                }}
-                className={`group cursor-pointer p-5 rounded-2xl border transition-all duration-300 relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+                onClick={() => onSelectApp(app.id)}
+                className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
                   isCurrent
-                    ? 'bg-[#15151C] border-[#C6A66B] ring-1 ring-[#C6A66B]/40 shadow-xl'
-                    : `bg-[#15151C]/70 border-zinc-800/90 ${app.borderHover} hover:bg-[#1a1722]`
+                    ? 'bg-blue-950/40 border-blue-500/80 shadow-lg shadow-blue-500/10'
+                    : 'bg-slate-800/60 hover:bg-slate-800 border-slate-700/80 hover:border-slate-600'
                 }`}
               >
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3.5">
                   {app.icon}
-
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-base sm:text-lg font-serif font-bold text-[#FFF5EA] group-hover:text-[#C6A66B] transition-colors">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <h3 className="font-bold text-sm text-white truncate flex items-center gap-2">
                         {app.title}
+                        {isCurrent && (
+                          <span className="text-[10px] text-blue-400 font-mono font-bold">● Active</span>
+                        )}
                       </h3>
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${app.badgeColor}`}>
+                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${app.badgeColor}`}>
                         {app.badge}
                       </span>
-                      {isCurrent && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">
-                          Active
-                        </span>
-                      )}
                     </div>
-
-                    <div className="text-xs font-serif italic text-[#C6A66B]">
-                      {app.subtitle}
-                    </div>
-
-                    <p className="text-[11px] text-zinc-400 leading-relaxed max-w-md pt-0.5">
-                      {app.description}
-                    </p>
+                    <p className="text-xs font-semibold text-slate-300 mb-1">{app.subtitle}</p>
+                    <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">{app.description}</p>
                   </div>
                 </div>
 
-                <div className="self-end sm:self-center shrink-0">
-                  <div
-                    className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                      isCurrent
-                        ? 'bg-[#C6A66B] text-slate-950 shadow-md'
-                        : 'bg-[#0B0B0F] border border-zinc-800 text-zinc-300 group-hover:border-[#C6A66B] group-hover:text-[#C6A66B]'
-                    }`}
-                  >
+                <div className="mt-3 pt-2.5 border-t border-slate-700/60 flex items-center justify-between text-[11px]">
+                  <span className="font-mono text-slate-500">{app.hash}</span>
+                  <span className="font-semibold text-blue-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                     <span>{isCurrent ? 'Current App' : 'Launch'}</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </div>
+                    <ArrowRight size={12} />
+                  </span>
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* Modal Footer with Creator Watermark */}
-        <div className="relative z-10 pt-4 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-400">
-          <div className="flex items-center gap-1.5">
-            <Heart className="w-3.5 h-3.5 text-[#C6A66B] fill-[#C6A66B]" />
-            <span className="font-semibold text-[#FFF5EA]">Made by Prince Thakur</span>
-          </div>
-
-          <span className="text-[11px] text-zinc-500">
-            Switch anytime via header icon or URL hash (#techmaster, #tech, #dev, #jarvis, #cyber, #compiler, #sukhan, #bca, #calc)
-          </span>
+        {/* Footer */}
+        <div className="p-3.5 px-6 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between text-xs text-slate-500">
+          <span>Engineered by Prince Thakur</span>
+          <span>Switch anytime via URL hash or header menu</span>
         </div>
       </div>
     </div>

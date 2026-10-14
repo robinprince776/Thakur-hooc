@@ -7,7 +7,6 @@ interface HomePageProps {
   onNavigate: (tab: ActiveTab, prefill?: { type?: string; input?: string; cProgramId?: string }) => void;
   onOpenCompiler?: () => void;
   onOpenCyber?: () => void;
-  onOpenJarvis?: () => void;
   onOpenDevForge?: () => void;
   onOpenTechMaster?: () => void;
 }
@@ -16,7 +15,6 @@ export const HomePage: React.FC<HomePageProps> = ({
   onNavigate,
   onOpenCompiler,
   onOpenCyber,
-  onOpenJarvis,
   onOpenDevForge,
   onOpenTechMaster
 }) => {
@@ -341,13 +339,13 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-              <span>Integrated 7-Apps Master Suite</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-800">
-                7 Apps Suite
+              <span>Integrated 13-Apps Master Suite</span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-800">
+                13 Apps Suite
               </span>
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              BCA Verse, CalcVault, SUKHAN, Simple C Compiler, CyberShield, JARVIS AI aur DevForge Toolkit.
+              BCA Verse, TechMaster 2000+, C Compiler, DevForge, DocuCraft, Git Studio, CyberShield, NetSec, API-X, CloudOps, PromptCraft, CalcVault aur SUKHAN.
             </p>
           </div>
         </div>
@@ -513,35 +511,34 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
           </div>
 
-          {/* OFFLINE APP 6: JARVIS AI (Smart, Light & Cringe) */}
+          {/* OFFLINE APP 6: PromptCraft Pro */}
           <div
             onClick={() => {
-              if (onOpenJarvis) onOpenJarvis();
-              else window.location.hash = 'jarvis';
+              window.location.hash = 'promptcraft';
             }}
-            className="group cursor-pointer rounded-2xl bg-gradient-to-br from-cyan-500/10 via-slate-50 to-indigo-500/10 dark:from-cyan-950/30 dark:via-slate-900/80 dark:to-[#070A12] p-5 border border-cyan-400/40 dark:border-cyan-700/50 shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between"
+            className="group cursor-pointer rounded-2xl bg-gradient-to-br from-blue-500/10 via-slate-50 to-indigo-500/10 dark:from-blue-950/30 dark:via-slate-900/80 dark:to-[#070A12] p-5 border border-blue-400/40 dark:border-blue-700/50 shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between"
           >
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-700 text-cyan-200 flex items-center justify-center shrink-0 border border-cyan-400/40 group-hover:scale-105 transition-transform shadow-xs">
-                <Bot className="w-5 h-5 text-cyan-200" />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500 via-indigo-600 to-purple-700 text-blue-200 flex items-center justify-center shrink-0 border border-blue-400/40 group-hover:scale-105 transition-transform shadow-xs">
+                <Sparkles className="w-5 h-5 text-blue-200" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-1">
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors">
-                    JARVIS AI
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+                    PromptCraft Pro
                   </h3>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 font-bold shrink-0">
-                    #jarvis
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-700 dark:text-blue-300 font-bold shrink-0">
+                    #promptcraft
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-                  Super intelligent AI assistant powered by Gemini. 100% accurate, verified solutions with zero cringe!
+                  Role-based system prompts, token estimator, prompt optimizer &amp; 30+ prompt templates.
                 </p>
               </div>
             </div>
 
-            <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-cyan-600 dark:text-cyan-400">
-              <span>Talk to JARVIS</span>
+            <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-blue-600 dark:text-blue-400">
+              <span>Launch PromptCraft</span>
               <span className="group-hover:translate-x-1 transition-transform">➔</span>
             </div>
           </div>

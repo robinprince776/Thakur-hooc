@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, Component, ReactNode, ErrorInfo } from 'react';
 import { ActiveTab, Navbar } from './components/Navbar';
 import { HomePage } from './components/HomePage';
 import { LogicSolver } from './components/LogicSolver';
@@ -12,13 +12,6 @@ import { SecretChat } from './components/SecretChat';
 import { SettingsModal } from './components/SettingsModal';
 import { SplashScreen } from './components/SplashScreen';
 import { OfflineNotesPad } from './components/OfflineNotesPad';
-import { SukhanApp } from './sukhan/components/SukhanApp';
-import { SukhanPenIcon } from './sukhan/components/SukhanPenIcon';
-import { SimpleCCompilerApp } from './compiler/components/SimpleCCompilerApp';
-import { CyberShieldApp } from './cyber/components/CyberShieldApp';
-import { JarvisApp } from './jarvis/components/JarvisApp';
-import { DevForgeApp } from './devforge/components/DevForgeApp';
-import { TechMasterApp } from './techmaster/components/TechMasterApp';
 import { AppSwitcherModal, CurrentAppType } from './components/AppSwitcherModal';
 import { useDirectChat } from './hooks/useDirectChat';
 import { playUnlockSound, playLockSound, triggerHaptic } from './utils/sound';
@@ -30,7 +23,42 @@ import {
   UserSettings,
   NatureWallpaper,
 } from './types';
-import { Calculator as CalcIcon, Layers, Heart, Sparkles, FileText, RotateCw, Zap, Grid, Shield, Bot } from 'lucide-react';
+import { Sparkles, Zap, ShieldAlert, ArrowLeft } from 'lucide-react';
+
+// Lazy-loaded App Bundles for Maximum Performance & Zero Lag
+const TechMasterApp = React.lazy(() =>
+  import('./techmaster/components/TechMasterApp').then((m) => ({ default: m.TechMasterApp }))
+);
+const SimpleCCompilerApp = React.lazy(() =>
+  import('./compiler/components/SimpleCCompilerApp').then((m) => ({ default: m.SimpleCCompilerApp }))
+);
+const CyberShieldApp = React.lazy(() =>
+  import('./cyber/components/CyberShieldApp').then((m) => ({ default: m.CyberShieldApp }))
+);
+const DevForgeApp = React.lazy(() =>
+  import('./devforge/components/DevForgeApp').then((m) => ({ default: m.DevForgeApp }))
+);
+const SukhanApp = React.lazy(() =>
+  import('./sukhan/components/SukhanApp').then((m) => ({ default: m.SukhanApp }))
+);
+const PromptCraftApp = React.lazy(() =>
+  import('./promptcraft/PromptCraftApp').then((m) => ({ default: m.PromptCraftApp }))
+);
+const ApiXApp = React.lazy(() =>
+  import('./apix/ApiXApp').then((m) => ({ default: m.ApiXApp }))
+);
+const CloudOpsApp = React.lazy(() =>
+  import('./cloudops/CloudOpsApp').then((m) => ({ default: m.CloudOpsApp }))
+);
+const NetSecApp = React.lazy(() =>
+  import('./netsec/NetSecApp').then((m) => ({ default: m.NetSecApp }))
+);
+const GitStudioApp = React.lazy(() =>
+  import('./gitstudio/GitStudioApp').then((m) => ({ default: m.GitStudioApp }))
+);
+const DocuCraftApp = React.lazy(() =>
+  import('./docucraft/DocuCraftApp').then((m) => ({ default: m.DocuCraftApp }))
+);
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
   secretPin: '1307',
@@ -50,6 +78,79 @@ function getOrCreatePeerId(): string {
   return id;
 }
 
+// Lightweight Loading Spinner
+function AppLoadingSpinner({ appName }: { appName: string }) {
+  return (
+    <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-slate-200">
+      <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white shadow-xl shadow-blue-500/20 animate-pulse mb-3">
+        <Sparkles className="w-6 h-6 animate-spin text-white" />
+      </div>
+      <div className="text-sm font-bold text-white tracking-wide">
+        Loading {appName}...
+      </div>
+      <div className="text-[11px] text-slate-400 mt-1 font-mono">
+        Optimizing bundle · Zero lag
+      </div>
+    </div>
+  );
+}
+
+// Error Boundary for Individual App Fault Tolerance
+interface ErrorBoundaryProps {
+  children: ReactNode;
+  appName: string;
+  onReset: () => void;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+}
+
+class AppErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error(`ErrorBoundary caught error in ${this.props.appName}:`, error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6 text-white text-center">
+          <div className="p-6 rounded-3xl bg-slate-800 border border-rose-800/80 max-w-md space-y-4 shadow-2xl">
+            <div className="w-12 h-12 rounded-2xl bg-rose-950 border border-rose-700 flex items-center justify-center text-rose-400 mx-auto">
+              <ShieldAlert className="w-6 h-6" />
+            </div>
+            <h2 className="text-base font-bold text-white">Something went wrong in {this.props.appName}</h2>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              {this.state.error?.message || 'An unexpected error occurred while loading this application.'}
+            </p>
+            <button
+              onClick={() => {
+                this.setState({ hasError: false });
+                this.props.onReset();
+              }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Return to BCA Verse</span>
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   const [showSplash, setShowSplash] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
@@ -60,27 +161,33 @@ export default function App() {
       if (saved) return saved === 'dark';
       return typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
     } catch {
-      return false; // Default light theme
+      return true; // Default dark
     }
   });
 
-  const [isOmnitrix, setIsOmnitrix] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem('bca_omnitrix_mode') === 'true';
-    } catch {
-      return false;
-    }
-  });
-
-  // --- CalcVault State ---
-  const [isVaultOpen, setIsVaultOpen] = useState<boolean>(() => {
+  // Current Active Application (out of 13 apps)
+  const [currentApp, setCurrentApp] = useState<CurrentAppType>(() => {
     try {
       const h = window.location.hash.toLowerCase();
-      return h === '#calc' || h === '#vault' || h === '#chat';
+      if (h === '#techmaster' || h === '#tech' || h === '#qna') return 'techmaster';
+      if (h === '#compiler' || h === '#c' || h === '#ccompiler' || h === '#run') return 'compiler';
+      if (h === '#dev' || h === '#devforge' || h === '#tools' || h === '#forge') return 'dev';
+      if (h === '#docucraft' || h === '#doc' || h === '#markdown' || h === '#regex') return 'docucraft';
+      if (h === '#gitstudio' || h === '#git' || h === '#cicd') return 'gitstudio';
+      if (h === '#cyber' || h === '#security' || h === '#hack' || h === '#kali') return 'cyber';
+      if (h === '#netsec' || h === '#headers' || h === '#cors') return 'netsec';
+      if (h === '#apix' || h === '#api' || h === '#curl') return 'apix';
+      if (h === '#cloudops' || h === '#devops' || h === '#docker' || h === '#k8s') return 'cloudops';
+      if (h === '#promptcraft' || h === '#prompt' || h === '#ai') return 'promptcraft';
+      if (h === '#calc' || h === '#vault' || h === '#chat') return 'calc';
+      if (h === '#sukhan' || h === '#shayar' || h === '#poetry') return 'sukhan';
+      return 'bca';
     } catch {
-      return false;
+      return 'bca';
     }
   });
+
+  // CalcVault State
   const [vaultView, setVaultView] = useState<CalcVaultView>('calculator');
   const [peerId] = useState<string>(getOrCreatePeerId);
   const [vaultSettings, setVaultSettings] = useState<UserSettings>(() => {
@@ -98,147 +205,41 @@ export default function App() {
     return DEFAULT_VAULT_SETTINGS;
   });
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [burnToast, setBurnToast] = useState(false);
-
-  // --- SUKHAN Literary Lounge State ---
-  const [isSukhanOpen, setIsSukhanOpen] = useState<boolean>(() => {
-    try {
-      const h = window.location.hash.toLowerCase();
-      return h === '#sukhan' || h === '#shayar' || h === '#poetry';
-    } catch {
-      return false;
-    }
-  });
-
-  // --- Simple C Compiler App State ---
-  const [isCompilerOpen, setIsCompilerOpen] = useState<boolean>(() => {
-    try {
-      const h = window.location.hash.toLowerCase();
-      return h === '#compiler' || h === '#c' || h === '#ccompiler' || h === '#run';
-    } catch {
-      return false;
-    }
-  });
-
-  // --- CyberShield Cybersecurity Academy State ---
-  const [isCyberOpen, setIsCyberOpen] = useState<boolean>(() => {
-    try {
-      const h = window.location.hash.toLowerCase();
-      return h === '#cyber' || h === '#security' || h === '#hack' || h === '#kali';
-    } catch {
-      return false;
-    }
-  });
-
-  // --- JARVIS AI Assistant State ---
-  const [isJarvisOpen, setIsJarvisOpen] = useState<boolean>(() => {
-    try {
-      const h = window.location.hash.toLowerCase();
-      return h === '#jarvis' || h === '#ai' || h === '#bot' || h === '#assistant';
-    } catch {
-      return false;
-    }
-  });
-
-  // --- DevForge Developer Toolkit State ---
-  const [isDevForgeOpen, setIsDevForgeOpen] = useState<boolean>(() => {
-    try {
-      const h = window.location.hash.toLowerCase();
-      return h === '#dev' || h === '#devforge' || h === '#tools' || h === '#forge';
-    } catch {
-      return false;
-    }
-  });
-
-  // --- TechMaster 2000+ Zero-to-Hero State ---
-  const [isTechMasterOpen, setIsTechMasterOpen] = useState<boolean>(() => {
-    try {
-      const h = window.location.hash.toLowerCase();
-      return h === '#tech' || h === '#techmaster' || h === '#qna' || h === '#cybercell';
-    } catch {
-      return false;
-    }
-  });
-
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState<boolean>(false);
 
-  // Sync URL hash with vault, sukhan, compiler, cyber, jarvis, dev, techmaster & offline notes mode
+  // Sync URL hash with 13-App Suite
   useEffect(() => {
     const handleHash = () => {
       const h = window.location.hash.toLowerCase();
-      if (h === '#tech' || h === '#techmaster' || h === '#qna' || h === '#cybercell') {
-        setIsTechMasterOpen(true);
-        setIsDevForgeOpen(false);
-        setIsJarvisOpen(false);
-        setIsCyberOpen(false);
-        setIsCompilerOpen(false);
-        setIsSukhanOpen(false);
-        setIsVaultOpen(false);
+      if (h === '#techmaster' || h === '#tech' || h === '#qna') {
+        setCurrentApp('techmaster');
       } else if (h === '#compiler' || h === '#c' || h === '#ccompiler' || h === '#run') {
-        setIsCompilerOpen(true);
-        setIsTechMasterOpen(false);
-        setIsSukhanOpen(false);
-        setIsVaultOpen(false);
-        setIsCyberOpen(false);
-        setIsJarvisOpen(false);
-        setIsDevForgeOpen(false);
-      } else if (h === '#cyber' || h === '#security' || h === '#hack' || h === '#kali') {
-        setIsCyberOpen(true);
-        setIsTechMasterOpen(false);
-        setIsCompilerOpen(false);
-        setIsSukhanOpen(false);
-        setIsVaultOpen(false);
-        setIsJarvisOpen(false);
-        setIsDevForgeOpen(false);
-      } else if (h === '#jarvis' || h === '#ai' || h === '#bot' || h === '#assistant') {
-        setIsJarvisOpen(true);
-        setIsTechMasterOpen(false);
-        setIsCyberOpen(false);
-        setIsCompilerOpen(false);
-        setIsSukhanOpen(false);
-        setIsVaultOpen(false);
-        setIsDevForgeOpen(false);
+        setCurrentApp('compiler');
       } else if (h === '#dev' || h === '#devforge' || h === '#tools' || h === '#forge') {
-        setIsDevForgeOpen(true);
-        setIsTechMasterOpen(false);
-        setIsJarvisOpen(false);
-        setIsCyberOpen(false);
-        setIsCompilerOpen(false);
-        setIsSukhanOpen(false);
-        setIsVaultOpen(false);
-      } else if (h === '#sukhan' || h === '#shayar' || h === '#poetry') {
-        setIsSukhanOpen(true);
-        setIsTechMasterOpen(false);
-        setIsVaultOpen(false);
-        setIsCompilerOpen(false);
-        setIsCyberOpen(false);
-        setIsJarvisOpen(false);
-        setIsDevForgeOpen(false);
+        setCurrentApp('dev');
+      } else if (h === '#docucraft' || h === '#doc' || h === '#markdown' || h === '#regex') {
+        setCurrentApp('docucraft');
+      } else if (h === '#gitstudio' || h === '#git' || h === '#cicd') {
+        setCurrentApp('gitstudio');
+      } else if (h === '#cyber' || h === '#security' || h === '#hack' || h === '#kali') {
+        setCurrentApp('cyber');
+      } else if (h === '#netsec' || h === '#headers' || h === '#cors') {
+        setCurrentApp('netsec');
+      } else if (h === '#apix' || h === '#api' || h === '#curl') {
+        setCurrentApp('apix');
+      } else if (h === '#cloudops' || h === '#devops' || h === '#docker' || h === '#k8s') {
+        setCurrentApp('cloudops');
+      } else if (h === '#promptcraft' || h === '#prompt' || h === '#ai') {
+        setCurrentApp('promptcraft');
       } else if (h === '#calc' || h === '#vault' || h === '#chat') {
-        setIsVaultOpen(true);
-        setIsTechMasterOpen(false);
-        setIsSukhanOpen(false);
-        setIsCompilerOpen(false);
-        setIsCyberOpen(false);
-        setIsJarvisOpen(false);
-        setIsDevForgeOpen(false);
+        setCurrentApp('calc');
+      } else if (h === '#sukhan' || h === '#shayar' || h === '#poetry') {
+        setCurrentApp('sukhan');
       } else if (h === '#notes' || h === '#pad') {
-        setIsVaultOpen(false);
-        setIsTechMasterOpen(false);
-        setIsSukhanOpen(false);
-        setIsCompilerOpen(false);
-        setIsCyberOpen(false);
-        setIsJarvisOpen(false);
-        setIsDevForgeOpen(false);
+        setCurrentApp('bca');
         setActiveTab('notes');
-      } else if (h === '#bca' || h === '#home' || h === '') {
-        setIsTechMasterOpen(false);
-        setIsSukhanOpen(false);
-        setIsVaultOpen(false);
-        setIsCompilerOpen(false);
-        setIsCyberOpen(false);
-        setIsJarvisOpen(false);
-        setIsDevForgeOpen(false);
+      } else if (h === '#bcaverse' || h === '#bca' || h === '#home' || h === '') {
+        setCurrentApp('bca');
       }
     };
     handleHash();
@@ -246,256 +247,45 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
-  // Listen for Service Worker updates to show instant update button
+  // Theme Sync
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistration().then((reg) => {
-        if (reg) {
-          reg.addEventListener('updatefound', () => {
-            const installing = reg.installing;
-            if (installing) {
-              installing.addEventListener('statechange', () => {
-                if (installing.state === 'installed' && navigator.serviceWorker.controller) {
-                  setUpdateAvailable(true);
-                }
-              });
-            }
-          });
-        }
-      });
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add('dark');
+      localStorage.setItem('bca_buddy_theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('bca_buddy_theme', 'light');
     }
-  }, []);
+  }, [isDark]);
 
-  const handleForceUpdateApp = async () => {
-    try {
-      // Clear CacheStorage
-      if ('caches' in window) {
-        const keys = await caches.keys();
-        await Promise.all(keys.map((k) => caches.delete(k)));
-      }
-      // Unregister service worker so next reload gets fresh SW & assets
-      if ('serviceWorker' in navigator) {
-        const regs = await navigator.serviceWorker.getRegistrations();
-        for (const reg of regs) {
-          await reg.unregister();
-        }
-      }
-    } catch (e) {
-      console.warn('Cache clear error:', e);
-    }
-    window.location.reload();
-  };
+  const toggleTheme = () => setIsDark((prev) => !prev);
 
-  const handleUpdateVaultSettings = (newSettings: UserSettings) => {
-    setVaultSettings(newSettings);
-    localStorage.setItem('calcvault_settings', JSON.stringify(newSettings));
-  };
-
-  const handleChangeWallpaper = (wallpaper: NatureWallpaper) => {
-    const updated = { ...vaultSettings, wallpaper };
-    setVaultSettings(updated);
-    localStorage.setItem('calcvault_settings', JSON.stringify(updated));
-  };
-
-  const handleRoomBurnedNotification = useCallback(() => {
-    setBurnToast(true);
-    setTimeout(() => setBurnToast(false), 2500);
-  }, []);
-
-  const handleUnlockVault = () => {
-    if (vaultSettings.soundEnabled) playUnlockSound();
-    if (vaultSettings.hapticsEnabled) triggerHaptic([30, 60, 30]);
-    setVaultView('chat');
-  };
-
-  const handleBackToCalculator = () => {
-    if (vaultSettings.soundEnabled) playLockSound();
-    setVaultView('calculator');
-  };
-
-  const handleCloseVault = () => {
-    if (vaultSettings.soundEnabled) playLockSound();
-    setIsVaultOpen(false);
-    setVaultView('calculator');
-    window.location.hash = '';
-  };
-
-  const handleOpenNotes = () => {
-    setIsVaultOpen(false);
-    setIsSukhanOpen(false);
-    setIsCompilerOpen(false);
-    setActiveTab('notes');
-    window.location.hash = 'notes';
-  };
-
-  const handleOpenSukhan = () => {
-    setIsVaultOpen(false);
-    setIsCompilerOpen(false);
-    setIsSukhanOpen(true);
-    window.location.hash = 'sukhan';
-  };
-
-  const handleCloseSukhan = () => {
-    setIsSukhanOpen(false);
-    window.location.hash = '';
-  };
-
-  const handleOpenCompiler = () => {
-    setIsVaultOpen(false);
-    setIsSukhanOpen(false);
-    setIsCyberOpen(false);
-    setIsJarvisOpen(false);
-    setIsCompilerOpen(true);
-    window.location.hash = 'compiler';
-  };
-
-  const handleCloseCompiler = () => {
-    setIsCompilerOpen(false);
-    window.location.hash = '';
-  };
-
-  const handleOpenCyber = () => {
-    setIsVaultOpen(false);
-    setIsSukhanOpen(false);
-    setIsCompilerOpen(false);
-    setIsJarvisOpen(false);
-    setIsCyberOpen(true);
-    window.location.hash = 'cyber';
-  };
-
-  const handleCloseCyber = () => {
-    setIsCyberOpen(false);
-    window.location.hash = '';
-  };
-
-  const handleOpenJarvis = () => {
-    setIsVaultOpen(false);
-    setIsSukhanOpen(false);
-    setIsCompilerOpen(false);
-    setIsCyberOpen(false);
-    setIsDevForgeOpen(false);
-    setIsJarvisOpen(true);
-    window.location.hash = 'jarvis';
-  };
-
-  const handleCloseJarvis = () => {
-    setIsJarvisOpen(false);
-    window.location.hash = '';
-  };
-
-  const handleOpenDevForge = () => {
-    setIsVaultOpen(false);
-    setIsSukhanOpen(false);
-    setIsCompilerOpen(false);
-    setIsCyberOpen(false);
-    setIsJarvisOpen(false);
-    setIsDevForgeOpen(true);
-    window.location.hash = 'dev';
-  };
-
-  const handleCloseDevForge = () => {
-    setIsDevForgeOpen(false);
-    window.location.hash = '';
-  };
-
-  const handleOpenTechMaster = () => {
-    setIsVaultOpen(false);
-    setIsSukhanOpen(false);
-    setIsCompilerOpen(false);
-    setIsCyberOpen(false);
-    setIsJarvisOpen(false);
-    setIsDevForgeOpen(false);
-    setIsTechMasterOpen(true);
-    window.location.hash = 'techmaster';
-  };
-
-  const handleCloseTechMaster = () => {
-    setIsTechMasterOpen(false);
-    window.location.hash = '';
-  };
-
-  const handleOpenAppSwitcher = () => {
-    setIsAppSwitcherOpen(true);
-  };
-
+  // App Selector Handler
   const handleSelectApp = (app: CurrentAppType) => {
     setIsAppSwitcherOpen(false);
-    if (app === 'bca') {
-      setIsSukhanOpen(false);
-      setIsVaultOpen(false);
-      setIsCompilerOpen(false);
-      setIsCyberOpen(false);
-      setIsJarvisOpen(false);
-      setIsDevForgeOpen(false);
-      setIsTechMasterOpen(false);
-      window.location.hash = '';
-    } else if (app === 'calc') {
-      setIsSukhanOpen(false);
-      setIsCompilerOpen(false);
-      setIsCyberOpen(false);
-      setIsJarvisOpen(false);
-      setIsDevForgeOpen(false);
-      setIsTechMasterOpen(false);
-      setIsVaultOpen(true);
-      window.location.hash = 'calc';
-    } else if (app === 'sukhan') {
-      setIsVaultOpen(false);
-      setIsCompilerOpen(false);
-      setIsCyberOpen(false);
-      setIsJarvisOpen(false);
-      setIsDevForgeOpen(false);
-      setIsTechMasterOpen(false);
-      setIsSukhanOpen(true);
-      window.location.hash = 'sukhan';
-    } else if (app === 'compiler') {
-      setIsVaultOpen(false);
-      setIsSukhanOpen(false);
-      setIsCyberOpen(false);
-      setIsJarvisOpen(false);
-      setIsDevForgeOpen(false);
-      setIsTechMasterOpen(false);
-      setIsCompilerOpen(true);
-      window.location.hash = 'compiler';
-    } else if (app === 'cyber') {
-      setIsVaultOpen(false);
-      setIsSukhanOpen(false);
-      setIsCompilerOpen(false);
-      setIsJarvisOpen(false);
-      setIsDevForgeOpen(false);
-      setIsTechMasterOpen(false);
-      setIsCyberOpen(true);
-      window.location.hash = 'cyber';
-    } else if (app === 'jarvis') {
-      setIsVaultOpen(false);
-      setIsSukhanOpen(false);
-      setIsCompilerOpen(false);
-      setIsCyberOpen(false);
-      setIsDevForgeOpen(false);
-      setIsTechMasterOpen(false);
-      setIsJarvisOpen(true);
-      window.location.hash = 'jarvis';
-    } else if (app === 'dev') {
-      setIsVaultOpen(false);
-      setIsSukhanOpen(false);
-      setIsCompilerOpen(false);
-      setIsCyberOpen(false);
-      setIsJarvisOpen(false);
-      setIsTechMasterOpen(false);
-      setIsDevForgeOpen(true);
-      window.location.hash = 'dev';
-    } else if (app === 'techmaster') {
-      setIsVaultOpen(false);
-      setIsSukhanOpen(false);
-      setIsCompilerOpen(false);
-      setIsCyberOpen(false);
-      setIsJarvisOpen(false);
-      setIsDevForgeOpen(false);
-      setIsTechMasterOpen(true);
-      window.location.hash = 'techmaster';
-    }
+    setCurrentApp(app);
+    if (app === 'bca') window.location.hash = 'bcaverse';
+    else if (app === 'techmaster') window.location.hash = 'techmaster';
+    else if (app === 'compiler') window.location.hash = 'compiler';
+    else if (app === 'dev') window.location.hash = 'dev';
+    else if (app === 'docucraft') window.location.hash = 'docucraft';
+    else if (app === 'gitstudio') window.location.hash = 'gitstudio';
+    else if (app === 'cyber') window.location.hash = 'cyber';
+    else if (app === 'netsec') window.location.hash = 'netsec';
+    else if (app === 'apix') window.location.hash = 'apix';
+    else if (app === 'cloudops') window.location.hash = 'cloudops';
+    else if (app === 'promptcraft') window.location.hash = 'promptcraft';
+    else if (app === 'calc') window.location.hash = 'calc';
+    else if (app === 'sukhan') window.location.hash = 'sukhan';
   };
 
-  // Direct Peer-to-Peer Chat Hook (only active when room is connected)
+  const handleReturnToBca = () => {
+    setCurrentApp('bca');
+    window.location.hash = '';
+  };
+
+  // CalcVault Direct Chat Hook
   const {
     messages,
     onlineCount,
@@ -512,35 +302,34 @@ export default function App() {
     roomId: vaultSettings.roomId,
     peerId,
     peerName: vaultSettings.displayName,
-    isActiveChat: isVaultOpen && vaultView === 'chat',
+    isActiveChat: currentApp === 'calc' && vaultView === 'chat',
     soundEnabled: vaultSettings.soundEnabled,
     hapticsEnabled: vaultSettings.hapticsEnabled,
-    onRoomBurned: handleRoomBurnedNotification,
   });
 
-  // --- Theme Management (Light, Dark, and Ben 10 Omnitrix Theme) ---
-  useEffect(() => {
-    const root = document.documentElement;
-    if (isOmnitrix) {
-      root.classList.add('dark', 'theme-omnitrix');
-      localStorage.setItem('bca_omnitrix_mode', 'true');
-    } else {
-      root.classList.remove('theme-omnitrix');
-      localStorage.setItem('bca_omnitrix_mode', 'false');
-      if (isDark) {
-        root.classList.add('dark');
-        localStorage.setItem('bca_buddy_theme', 'dark');
-      } else {
-        root.classList.remove('dark');
-        localStorage.setItem('bca_buddy_theme', 'light');
-      }
-    }
-  }, [isDark, isOmnitrix]);
+  const handleUnlockVault = () => {
+    if (vaultSettings.soundEnabled) playUnlockSound();
+    if (vaultSettings.hapticsEnabled) triggerHaptic([30, 60, 30]);
+    setVaultView('chat');
+  };
 
-  const toggleTheme = () => setIsDark((prev) => !prev);
-  const handleToggleOmnitrix = () => setIsOmnitrix((prev) => !prev);
+  const handleBackToCalculator = () => {
+    if (vaultSettings.soundEnabled) playLockSound();
+    setVaultView('calculator');
+  };
 
-  // --- Bookmarks State ---
+  const handleUpdateVaultSettings = (newSettings: UserSettings) => {
+    setVaultSettings(newSettings);
+    localStorage.setItem('calcvault_settings', JSON.stringify(newSettings));
+  };
+
+  const handleChangeWallpaper = (wallpaper: NatureWallpaper) => {
+    const updated = { ...vaultSettings, wallpaper };
+    setVaultSettings(updated);
+    localStorage.setItem('calcvault_settings', JSON.stringify(updated));
+  };
+
+  // BCA Verse State (Bookmarks & Search)
   const [bookmarks, setBookmarks] = useState<BookmarkItem[]>(() => {
     try {
       const saved = localStorage.getItem('bca_buddy_bookmarks');
@@ -549,41 +338,6 @@ export default function App() {
       return [];
     }
   });
-
-  const handleSaveBookmark = (item: {
-    type: 'logic' | 'c-program' | 'fundamentals';
-    title: string;
-    subtitle: string;
-    data: any;
-  }) => {
-    const newItem: BookmarkItem = {
-      ...item,
-      id: `${item.type}_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-      timestamp: Date.now(),
-    };
-    const updated = [newItem, ...bookmarks.filter((b) => b.title !== newItem.title)];
-    setBookmarks(updated);
-    localStorage.setItem('bca_buddy_bookmarks', JSON.stringify(updated));
-    showToast('Saved to Bookmarks!');
-  };
-
-  const handleRemoveBookmark = (id: string) => {
-    const updated = bookmarks.filter((b) => b.id !== id);
-    setBookmarks(updated);
-    localStorage.setItem('bca_buddy_bookmarks', JSON.stringify(updated));
-    showToast('Removed from Bookmarks');
-  };
-
-  const handleClearBookmarks = () => {
-    setBookmarks([]);
-    localStorage.removeItem('bca_buddy_bookmarks');
-    showToast('All bookmarks cleared');
-  };
-
-  const isBookmarked = (idOrTitle: string) =>
-    bookmarks.some((b) => b.id === idOrTitle || b.title === idOrTitle);
-
-  // --- Recent Searches State ---
   const [recentSearches, setRecentSearches] = useState<RecentSearchItem[]>(() => {
     try {
       const saved = localStorage.getItem('bca_buddy_recent_searches');
@@ -592,43 +346,56 @@ export default function App() {
       return [];
     }
   });
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [prefilledSolverType, setPrefilledSolverType] = useState<NumberSystemType | null>(null);
+  const [prefilledProgramId, setPrefilledProgramId] = useState<string | null>(null);
+  const [prefilledTopicId, setPrefilledTopicId] = useState<string | null>(null);
 
-  const handleAddRecentSearch = (
-    query: string,
-    type: 'logic' | 'c-program' | 'fundamentals',
-    targetId?: string
-  ) => {
+  const handleAddBookmark = (item: Omit<BookmarkItem, 'id' | 'timestamp'>) => {
+    const newItem: BookmarkItem = {
+      ...item,
+      id: `${item.type}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      timestamp: Date.now(),
+    };
+    setBookmarks((prev) => {
+      const updated = [newItem, ...prev.filter((b) => b.title !== item.title)];
+      localStorage.setItem('bca_buddy_bookmarks', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const handleRemoveBookmark = (id: string) => {
+    setBookmarks((prev) => {
+      const updated = prev.filter((b) => b.id !== id);
+      localStorage.setItem('bca_buddy_bookmarks', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const handleAddSearch = (query: string, type: RecentSearchItem['type'], targetId?: string) => {
     const newItem: RecentSearchItem = {
-      id: `${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      id: `search-${Date.now()}`,
       query,
       type,
       targetId,
       timestamp: Date.now(),
     };
-    const updated = [newItem, ...recentSearches.filter((s) => s.query !== query)].slice(0, 8);
-    setRecentSearches(updated);
-    localStorage.setItem('bca_buddy_recent_searches', JSON.stringify(updated));
+    setRecentSearches((prev) => {
+      const updated = [newItem, ...prev.filter((s) => s.query !== query)].slice(0, 8);
+      localStorage.setItem('bca_buddy_recent_searches', JSON.stringify(updated));
+      return updated;
+    });
   };
 
-  const handleClearRecentSearches = () => {
+  const handleClearSearches = () => {
     setRecentSearches([]);
     localStorage.removeItem('bca_buddy_recent_searches');
   };
 
-  // --- Toast Feedback State ---
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 2500);
-  };
-
-  // --- Global Search Modal State ---
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  // Keyboard shortcut Ctrl+K / Cmd+K for search
+  // Keyboard shortcut Ctrl+K
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         setIsSearchOpen((prev) => !prev);
       }
@@ -637,292 +404,292 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // --- Deep Link / Prefill state for Solvers ---
-  const [prefillLogic, setPrefillLogic] = useState<{ type?: NumberSystemType; input?: string }>({});
-  const [prefillCProgramId, setPrefillCProgramId] = useState<string | undefined>();
-
-  const handleNavigate = (tab: ActiveTab, params?: any) => {
-    setActiveTab(tab);
-    if (tab === 'logic-solver' && params) {
-      setPrefillLogic(params);
-    }
-    if (tab === 'c-generator' && params?.programId) {
-      setPrefillCProgramId(params.programId);
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // --- RENDER 1: CalcVault (Calculator & Secret Chat) ---
-  if (isVaultOpen) {
+  // --- RENDER APP 1: TechMaster 2000+ ---
+  if (currentApp === 'techmaster') {
     return (
-      <main className="fixed inset-0 w-full h-full bg-black flex flex-col justify-center items-center overflow-hidden z-50">
-        {vaultView === 'calculator' ? (
-          <Calculator
-            secretPin={vaultSettings.secretPin}
-            onUnlockVault={handleUnlockVault}
-            onBackToBca={handleCloseVault}
-            onOpenNotes={handleOpenNotes}
-            onOpenSukhan={handleOpenSukhan}
-            onOpenCompiler={handleOpenCompiler}
-            soundEnabled={vaultSettings.soundEnabled}
-            hapticsEnabled={vaultSettings.hapticsEnabled}
+      <AppErrorBoundary appName="TechMaster 2000+" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="TechMaster 2000+" />}>
+          <TechMasterApp
+            onBackToBca={handleReturnToBca}
+            onOpenCalcVault={() => handleSelectApp('calc')}
+            onOpenSukhan={() => handleSelectApp('sukhan')}
+            onOpenCompiler={() => handleSelectApp('compiler')}
+            onOpenCyber={() => handleSelectApp('cyber')}
+            onOpenDevForge={() => handleSelectApp('dev')}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
           />
-        ) : (
-          <SecretChat
-            peerId={peerId}
-            settings={vaultSettings}
-            messages={messages}
-            onlineCount={onlineCount}
-            isPeerTyping={isPeerTyping}
-            peerTypingName={peerTypingName}
-            friendStatus={friendStatus}
-            onSendMessage={sendMessage}
-            onSendAudio={sendAudio}
-            onSendImage={sendImage}
-            onSendTyping={sendTyping}
-            onBurnMessage={burnSingleMessage}
-            onBurnEntireChat={burnEntireChat}
-            onBackToCalculator={handleBackToCalculator}
-            onBackToBca={handleCloseVault}
-            onOpenSettings={() => setIsSettingsModalOpen(true)}
-            onChangeWallpaper={handleChangeWallpaper}
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP 2: C Compiler ---
+  if (currentApp === 'compiler') {
+    return (
+      <AppErrorBoundary appName="C Compiler" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="C Compiler" />}>
+          <SimpleCCompilerApp
+            onBackToBca={handleReturnToBca}
+            onOpenCalcVault={() => handleSelectApp('calc')}
+            onOpenSukhan={() => handleSelectApp('sukhan')}
+            onOpenCyber={() => handleSelectApp('cyber')}
+            onOpenDevForge={() => handleSelectApp('dev')}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
           />
-        )}
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
 
-        {/* Burn Broadcast Toast */}
-        {burnToast && (
-          <div className="fixed top-5 z-50 bg-red-950/90 border border-red-800 text-red-200 text-xs px-4 py-2 rounded-full shadow-2xl flex items-center gap-2 animate-bounce">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-            <span>Chat clear ho gayi!</span>
-          </div>
-        )}
+  // --- RENDER APP 3: DevForge ---
+  if (currentApp === 'dev') {
+    return (
+      <AppErrorBoundary appName="DevForge" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="DevForge" />}>
+          <DevForgeApp
+            onBackToBca={handleReturnToBca}
+            onOpenCalcVault={() => handleSelectApp('calc')}
+            onOpenSukhan={() => handleSelectApp('sukhan')}
+            onOpenCompiler={() => handleSelectApp('compiler')}
+            onOpenCyber={() => handleSelectApp('cyber')}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
 
-        {/* Settings Modal */}
-        {isSettingsModalOpen && (
+  // --- RENDER APP 4: DocuCraft Studio ---
+  if (currentApp === 'docucraft') {
+    return (
+      <AppErrorBoundary appName="DocuCraft Studio" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="DocuCraft Studio" />}>
+          <DocuCraftApp />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP 5: Git & CI/CD Studio ---
+  if (currentApp === 'gitstudio') {
+    return (
+      <AppErrorBoundary appName="Git & CI/CD Studio" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Git & CI/CD Studio" />}>
+          <GitStudioApp />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP 6: CyberShield Academy ---
+  if (currentApp === 'cyber') {
+    return (
+      <AppErrorBoundary appName="CyberShield" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="CyberShield" />}>
+          <CyberShieldApp
+            onBackToBca={handleReturnToBca}
+            onOpenCalcVault={() => handleSelectApp('calc')}
+            onOpenSukhan={() => handleSelectApp('sukhan')}
+            onOpenCompiler={() => handleSelectApp('compiler')}
+            onOpenDevForge={() => handleSelectApp('dev')}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP 7: NetSec Sandbox ---
+  if (currentApp === 'netsec') {
+    return (
+      <AppErrorBoundary appName="NetSec Sandbox" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="NetSec Sandbox" />}>
+          <NetSecApp />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP 8: API-X Lab ---
+  if (currentApp === 'apix') {
+    return (
+      <AppErrorBoundary appName="API-X Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="API-X Lab" />}>
+          <ApiXApp />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP 9: CloudOps Shell ---
+  if (currentApp === 'cloudops') {
+    return (
+      <AppErrorBoundary appName="CloudOps Shell" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="CloudOps Shell" />}>
+          <CloudOpsApp />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP 10: PromptCraft Pro ---
+  if (currentApp === 'promptcraft') {
+    return (
+      <AppErrorBoundary appName="PromptCraft Pro" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="PromptCraft Pro" />}>
+          <PromptCraftApp />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP 11: SUKHAN Literary Lounge ---
+  if (currentApp === 'sukhan') {
+    return (
+      <AppErrorBoundary appName="SUKHAN" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="SUKHAN" />}>
+          <SukhanApp
+            onBackToBca={handleReturnToBca}
+            onOpenCalcVault={() => handleSelectApp('calc')}
+            onOpenCompiler={() => handleSelectApp('compiler')}
+            onOpenCyber={() => handleSelectApp('cyber')}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP 12: CalcVault ---
+  if (currentApp === 'calc') {
+    return (
+      <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center animate-fade-in font-sans">
+        <div className="w-full h-full max-w-md bg-black shadow-2xl relative flex flex-col">
+          {vaultView === 'calculator' ? (
+            <Calculator
+              onUnlock={handleUnlockVault}
+              onClose={handleReturnToBca}
+              onOpenSettings={() => setIsSettingsModalOpen(true)}
+              soundEnabled={vaultSettings.soundEnabled}
+              hapticsEnabled={vaultSettings.hapticsEnabled}
+              secretPin={vaultSettings.secretPin}
+              hasSecretCode={Boolean(vaultSettings.secretPin)}
+              onlineCount={onlineCount}
+              friendStatus={friendStatus}
+            />
+          ) : (
+            <SecretChat
+              peerId={peerId}
+              settings={vaultSettings}
+              messages={messages}
+              onlineCount={onlineCount}
+              isPeerTyping={isPeerTyping}
+              peerTypingName={peerTypingName}
+              friendStatus={friendStatus}
+              onSendMessage={sendMessage}
+              onSendAudio={sendAudio}
+              onSendImage={sendImage}
+              onSendTyping={sendTyping}
+              onBurnMessage={burnSingleMessage}
+              onBurnEntireChat={burnEntireChat}
+              onBackToCalculator={handleBackToCalculator}
+              onBackToBca={handleReturnToBca}
+              onOpenSettings={() => setIsSettingsModalOpen(true)}
+              onChangeWallpaper={handleChangeWallpaper}
+            />
+          )}
+
           <SettingsModal
-            settings={vaultSettings}
-            onUpdateSettings={handleUpdateVaultSettings}
+            isOpen={isSettingsModalOpen}
             onClose={() => setIsSettingsModalOpen(false)}
+            settings={vaultSettings}
+            onSave={handleUpdateVaultSettings}
           />
-        )}
-      </main>
+        </div>
+      </div>
     );
   }
 
-  // --- RENDER 2: SUKHAN Literary Lounge (Made by Prince Thakur) ---
-  if (isSukhanOpen) {
-    return (
-      <>
-        <SukhanApp
-          onBackToSuite={handleOpenAppSwitcher}
-          onOpenCalcVault={() => {
-            setIsSukhanOpen(false);
-            setIsVaultOpen(true);
-            window.location.hash = 'calc';
-          }}
-          onOpenBcaVerse={handleCloseSukhan}
-          onOpenAppSwitcher={handleOpenAppSwitcher}
-        />
-
-        {/* 4-Apps Suite Switcher Modal */}
-        <AppSwitcherModal
-          isOpen={isAppSwitcherOpen}
-          onClose={() => setIsAppSwitcherOpen(false)}
-          currentApp="sukhan"
-          onSelectApp={handleSelectApp}
-        />
-      </>
-    );
-  }
-
-  // --- RENDER 3: Simple C Compiler (Made by Prince Thakur) ---
-  if (isCompilerOpen) {
-    return (
-      <>
-        <SimpleCCompilerApp
-          onBackToBca={handleCloseCompiler}
-          onOpenCalcVault={() => {
-            setIsCompilerOpen(false);
-            setIsVaultOpen(true);
-            window.location.hash = 'calc';
-          }}
-          onOpenSukhan={() => {
-            setIsCompilerOpen(false);
-            setIsSukhanOpen(true);
-            window.location.hash = 'sukhan';
-          }}
-          onOpenAppSwitcher={handleOpenAppSwitcher}
-        />
-
-        {/* 4-Apps Suite Switcher Modal */}
-        <AppSwitcherModal
-          isOpen={isAppSwitcherOpen}
-          onClose={() => setIsAppSwitcherOpen(false)}
-          currentApp="compiler"
-          onSelectApp={handleSelectApp}
-        />
-      </>
-    );
-  }
-
-  // --- RENDER 4: CyberShield Academy (Zero to Hero) ---
-  if (isCyberOpen) {
-    return (
-      <>
-        <CyberShieldApp
-          onBackToBca={handleCloseCyber}
-          onOpenCalcVault={() => {
-            setIsCyberOpen(false);
-            setIsVaultOpen(true);
-            window.location.hash = 'calc';
-          }}
-          onOpenSukhan={() => {
-            setIsCyberOpen(false);
-            setIsSukhanOpen(true);
-            window.location.hash = 'sukhan';
-          }}
-          onOpenCompiler={() => {
-            setIsCyberOpen(false);
-            setIsCompilerOpen(true);
-            window.location.hash = 'compiler';
-          }}
-          onOpenJarvis={() => {
-            setIsCyberOpen(false);
-            setIsJarvisOpen(true);
-            window.location.hash = 'jarvis';
-          }}
-          onOpenAppSwitcher={handleOpenAppSwitcher}
-        />
-
-        {/* 6-Apps Suite Switcher Modal */}
-        <AppSwitcherModal
-          isOpen={isAppSwitcherOpen}
-          onClose={() => setIsAppSwitcherOpen(false)}
-          currentApp="cyber"
-          onSelectApp={handleSelectApp}
-        />
-      </>
-    );
-  }
-
-  // --- RENDER 5: JARVIS AI Assistant ---
-  if (isJarvisOpen) {
-    return (
-      <>
-        <JarvisApp
-          onBackToBca={handleCloseJarvis}
-          onOpenCalcVault={() => {
-            setIsJarvisOpen(false);
-            setIsVaultOpen(true);
-            window.location.hash = 'calc';
-          }}
-          onOpenSukhan={() => {
-            setIsJarvisOpen(false);
-            setIsSukhanOpen(true);
-            window.location.hash = 'sukhan';
-          }}
-          onOpenCompiler={() => {
-            setIsJarvisOpen(false);
-            setIsCompilerOpen(true);
-            window.location.hash = 'compiler';
-          }}
-          onOpenCyber={() => {
-            setIsJarvisOpen(false);
-            setIsCyberOpen(true);
-            window.location.hash = 'cyber';
-          }}
-          onOpenAppSwitcher={handleOpenAppSwitcher}
-        />
-
-        {/* 7-Apps Suite Switcher Modal */}
-        <AppSwitcherModal
-          isOpen={isAppSwitcherOpen}
-          onClose={() => setIsAppSwitcherOpen(false)}
-          currentApp="jarvis"
-          onSelectApp={handleSelectApp}
-        />
-      </>
-    );
-  }
-
-  // --- RENDER 6: DevForge (Developer Swiss-Army Knife) ---
-  if (isDevForgeOpen) {
-    return (
-      <>
-        <DevForgeApp
-          onSwitchApp={(target) => {
-            if (target === 'switcher') {
-              setIsAppSwitcherOpen(true);
-            }
-          }}
-        />
-
-        {/* 7-Apps Suite Switcher Modal */}
-        <AppSwitcherModal
-          isOpen={isAppSwitcherOpen}
-          onClose={() => setIsAppSwitcherOpen(false)}
-          currentApp="dev"
-          onSelectApp={handleSelectApp}
-        />
-      </>
-    );
-  }
-
-  // --- RENDER 7: TechMaster 2000+ (Zero to Hero Academy) ---
-  if (isTechMasterOpen) {
-    return (
-      <>
-        <TechMasterApp
-          onBackToBca={handleCloseTechMaster}
-          onOpenJarvis={() => {
-            setIsTechMasterOpen(false);
-            setIsJarvisOpen(true);
-            window.location.hash = 'jarvis';
-          }}
-          onOpenCompiler={() => {
-            setIsTechMasterOpen(false);
-            setIsCompilerOpen(true);
-            window.location.hash = 'compiler';
-          }}
-          onOpenCyber={() => {
-            setIsTechMasterOpen(false);
-            setIsCyberOpen(true);
-            window.location.hash = 'cyber';
-          }}
-          onOpenDevForge={() => {
-            setIsTechMasterOpen(false);
-            setIsDevForgeOpen(true);
-            window.location.hash = 'dev';
-          }}
-          onOpenAppSwitcher={handleOpenAppSwitcher}
-          isOmnitrixTheme={isOmnitrix}
-        />
-
-        {/* 8-Apps Suite Switcher Modal */}
-        <AppSwitcherModal
-          isOpen={isAppSwitcherOpen}
-          onClose={() => setIsAppSwitcherOpen(false)}
-          currentApp="techmaster"
-          onSelectApp={handleSelectApp}
-        />
-      </>
-    );
-  }
-
-  // --- RENDER 8: BCA Verse Portal ---
+  // --- RENDER APP 13: Core BCA Verse Academic Portal ---
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
-      {/* App Launch Splash Screen: "Made by Prince Thakur" */}
+    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans transition-colors duration-200">
+      {/* App Launch Splash Screen */}
       {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
 
-      {/* Floating Instant Update Notification Banner */}
+      {/* Instant Update Banner */}
       {updateAvailable && (
-        <aside aria-label="Update notification" className="fixed top-3 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-2xl shadow-2xl border border-indigo-400 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 text-xs font-bold">
+        <aside aria-label="Update notification" className="fixed top-3 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-2xl shadow-2xl border border-blue-400 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 text-xs font-bold">
           <Zap className="w-4 h-4 text-amber-300 fill-amber-300 animate-pulse" />
-          <span>Naya App Update Available Hai!</span>
+          <span>New Update Available!</span>
           <button
-            onClick={handleForceUpdateApp}
-            className="px-3 py-1 bg-white text-indigo-700 rounded-xl text-xs font-extrabold hover:bg-indigo-50 shadow-xs cursor-pointer"
+            onClick={() => window.location.reload()}
+            className="px-3 py-1 bg-white text-blue-700 rounded-xl text-xs font-extrabold hover:bg-blue-50 shadow-xs cursor-pointer"
           >
             Update Now
           </button>
@@ -935,88 +702,74 @@ export default function App() {
         setActiveTab={setActiveTab}
         isDark={isDark}
         toggleTheme={toggleTheme}
-        isOmnitrixActive={isOmnitrix}
-        onToggleOmnitrix={handleToggleOmnitrix}
         onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenTechMaster={handleOpenTechMaster}
-        onOpenCalculatorVault={() => {
-          setIsVaultOpen(true);
-          window.location.hash = 'calc';
-        }}
-        onOpenNotes={handleOpenNotes}
-        onOpenSukhan={handleOpenSukhan}
-        onOpenCompiler={handleOpenCompiler}
-        onOpenCyber={handleOpenCyber}
-        onOpenJarvis={handleOpenJarvis}
-        onOpenDevForge={handleOpenDevForge}
-        onOpenAppSwitcher={handleOpenAppSwitcher}
-        onForceUpdateApp={handleForceUpdateApp}
+        onSelectApp={handleSelectApp}
+        onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
         bookmarkCount={bookmarks.length}
       />
 
-      {/* Main View Area */}
-      <main className="flex-1">
+      {/* Main Tab Panels */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {activeTab === 'home' && (
           <HomePage
-            onNavigate={handleNavigate}
-            onOpenCompiler={handleOpenCompiler}
-            onOpenCyber={handleOpenCyber}
-            onOpenJarvis={handleOpenJarvis}
-            onOpenDevForge={handleOpenDevForge}
-            onOpenTechMaster={handleOpenTechMaster}
+            onNavigate={(tab: ActiveTab, prefill?: any) => {
+              if (prefill?.topicId) setPrefilledTopicId(prefill.topicId);
+              if (prefill?.type) setPrefilledSolverType(prefill.type);
+              if (prefill?.cProgramId) setPrefilledProgramId(prefill.cProgramId);
+              setActiveTab(tab);
+            }}
+            onOpenCompiler={() => handleSelectApp('compiler')}
+            onOpenCyber={() => handleSelectApp('cyber')}
+            onOpenDevForge={() => handleSelectApp('dev')}
+            onOpenTechMaster={() => handleSelectApp('techmaster')}
           />
         )}
 
         {activeTab === 'logic-solver' && (
           <LogicSolver
-            initialType={prefillLogic.type}
-            initialInput={prefillLogic.input}
-            onSaveBookmark={handleSaveBookmark}
-            isBookmarked={isBookmarked}
+            initialType={prefilledSolverType || 'dec-to-bin'}
+            onSaveBookmark={handleAddBookmark}
+            isBookmarked={(id) => bookmarks.some((b) => b.id === id)}
           />
         )}
 
         {activeTab === 'c-generator' && (
           <CProgramGenerator
-            initialProgramId={prefillCProgramId}
-            onSaveBookmark={handleSaveBookmark}
-            isBookmarked={isBookmarked}
+            initialProgramId={prefilledProgramId || undefined}
+            onSaveBookmark={handleAddBookmark}
+            isBookmarked={(id) => bookmarks.some((b) => b.id === id)}
           />
         )}
 
         {activeTab === 'fundamentals' && (
           <ComputerFundamentals
-            onSaveBookmark={handleSaveBookmark}
-            isBookmarked={isBookmarked}
-          />
-        )}
-
-        {activeTab === 'notes' && (
-          <OfflineNotesPad
-            onBackToBca={() => {
-              setActiveTab('home');
-              window.location.hash = '';
-            }}
-            onOpenCalculator={() => {
-              setIsVaultOpen(true);
-              window.location.hash = 'calc';
-            }}
-            onOpenSukhan={handleOpenSukhan}
-            onOpenCompiler={handleOpenCompiler}
-            secretPin={vaultSettings.secretPin}
-            soundEnabled={vaultSettings.soundEnabled}
-            hapticsEnabled={vaultSettings.hapticsEnabled}
+            onSaveBookmark={handleAddBookmark}
+            isBookmarked={(id) => bookmarks.some((b) => b.id === id)}
           />
         )}
 
         {activeTab === 'formula-sheet' && <FormulaSheet />}
 
+        {activeTab === 'notes' && (
+          <OfflineNotesPad
+            onBackToBca={handleReturnToBca}
+            onOpenCalculator={() => handleSelectApp('calc')}
+            onOpenSukhan={() => handleSelectApp('sukhan')}
+            onOpenCompiler={() => handleSelectApp('compiler')}
+          />
+        )}
+
         {activeTab === 'bookmarks' && (
           <BookmarksView
             bookmarks={bookmarks}
             onRemoveBookmark={handleRemoveBookmark}
-            onClearAll={handleClearBookmarks}
-            onNavigate={handleNavigate}
+            onClearAll={() => setBookmarks([])}
+            onNavigate={(tab: ActiveTab, prefill?: any) => {
+              if (prefill?.topicId) setPrefilledTopicId(prefill.topicId);
+              if (prefill?.type) setPrefilledSolverType(prefill.type);
+              if (prefill?.cProgramId) setPrefilledProgramId(prefill.cProgramId);
+              setActiveTab(tab);
+            }}
           />
         )}
       </main>
@@ -1025,133 +778,24 @@ export default function App() {
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        onNavigate={handleNavigate}
         recentSearches={recentSearches}
-        onAddRecentSearch={handleAddRecentSearch}
-        onClearRecentSearches={handleClearRecentSearches}
+        onAddRecentSearch={handleAddSearch}
+        onClearRecentSearches={handleClearSearches}
+        onNavigate={(tab: ActiveTab, prefill?: any) => {
+          if (prefill?.topicId) setPrefilledTopicId(prefill.topicId);
+          if (prefill?.type) setPrefilledSolverType(prefill.type);
+          if (prefill?.cProgramId) setPrefilledProgramId(prefill.cProgramId);
+          setActiveTab(tab);
+        }}
       />
 
-      {/* 6-Apps Suite Switcher Modal */}
+      {/* 13-Apps Suite Switcher Modal */}
       <AppSwitcherModal
         isOpen={isAppSwitcherOpen}
         onClose={() => setIsAppSwitcherOpen(false)}
-        currentApp={
-          isJarvisOpen
-            ? 'jarvis'
-            : isCyberOpen
-            ? 'cyber'
-            : isCompilerOpen
-            ? 'compiler'
-            : isVaultOpen
-            ? 'calc'
-            : isSukhanOpen
-            ? 'sukhan'
-            : 'bca'
-        }
+        currentApp={currentApp}
         onSelectApp={handleSelectApp}
       />
-
-      {/* Toast Feedback */}
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xl text-xs font-bold animate-in fade-in slide-in-from-bottom-2 duration-200">
-          {toastMessage}
-        </div>
-      )}
-
-      {/* Footer */}
-      <footer className="border-t border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm py-8 text-xs text-slate-500 dark:text-slate-400">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-          <div className="flex flex-col sm:flex-row items-center gap-2">
-            <span className="font-bold text-slate-900 dark:text-white">
-              BCA Verse
-            </span>
-            <span className="hidden sm:inline text-slate-300">·</span>
-            <span>6-in-1 Master Offline Suite</span>
-            <span className="hidden sm:inline text-slate-300">·</span>
-            <button
-              onClick={() => setShowSplash(true)}
-              className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1 cursor-pointer"
-              title="View credits & splash screen"
-            >
-              <Heart className="w-3 h-3 text-pink-500 fill-pink-500" />
-              <span>Made by Prince Thakur</span>
-            </button>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs">
-            <button
-              onClick={() => handleNavigate('logic-solver')}
-              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
-            >
-              Number Solver
-            </button>
-            <button
-              onClick={() => handleNavigate('c-generator')}
-              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
-            >
-              C Programs
-            </button>
-            <button
-              onClick={handleOpenCompiler}
-              className="flex items-center gap-1 text-cyan-600 dark:text-cyan-400 font-semibold hover:underline cursor-pointer"
-              title="Open Simple C Compiler"
-            >
-              <span>C Compiler (#compiler)</span>
-            </button>
-            <button
-              onClick={handleOpenCyber}
-              className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold hover:underline cursor-pointer"
-              title="Open CyberShield Academy"
-            >
-              <Shield className="w-3.5 h-3.5" />
-              <span>CyberShield (#cyber)</span>
-            </button>
-            <button
-              onClick={handleOpenJarvis}
-              className="flex items-center gap-1 text-cyan-500 dark:text-cyan-300 font-semibold hover:underline cursor-pointer"
-              title="Open JARVIS AI Assistant"
-            >
-              <Bot className="w-3.5 h-3.5" />
-              <span>JARVIS AI (#jarvis)</span>
-            </button>
-            <button
-              onClick={handleOpenSukhan}
-              className="flex items-center gap-1 text-[#C6A66B] font-semibold hover:underline cursor-pointer"
-              title="Open SUKHAN Literary Lounge"
-            >
-              <SukhanPenIcon size={14} />
-              <span className="font-serif">SUKHAN (#sukhan)</span>
-            </button>
-            <button
-              onClick={() => {
-                setIsVaultOpen(true);
-                window.location.hash = 'calc';
-              }}
-              className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-semibold hover:underline cursor-pointer"
-              title="Open Secret Calculator"
-            >
-              <CalcIcon className="w-3.5 h-3.5" />
-              <span>Calc Vault (#calc)</span>
-            </button>
-            <button
-              onClick={handleOpenAppSwitcher}
-              className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer"
-              title="Switch Between 6 Apps"
-            >
-              <Grid className="w-3.5 h-3.5" />
-              <span>6-Apps Suite</span>
-            </button>
-            <button
-              onClick={handleForceUpdateApp}
-              className="flex items-center gap-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium hover:underline cursor-pointer"
-              title="Clear cache and reload latest version"
-            >
-              <RotateCw className="w-3 h-3" />
-              <span>Force Update</span>
-            </button>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

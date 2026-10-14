@@ -37,24 +37,24 @@ import {
 } from '../data/techMasterData';
 import { TechCategory, TechLevel, TechQuestion } from '../types';
 
-interface TechMasterAppProps {
+export interface TechMasterAppProps {
   onBackToBca?: () => void;
-  onOpenJarvis?: () => void;
+  onOpenCalcVault?: () => void;
+  onOpenSukhan?: () => void;
   onOpenCompiler?: () => void;
   onOpenCyber?: () => void;
   onOpenDevForge?: () => void;
   onOpenAppSwitcher?: () => void;
-  isOmnitrixTheme?: boolean;
 }
 
 export const TechMasterApp: React.FC<TechMasterAppProps> = ({
   onBackToBca,
-  onOpenJarvis,
+  onOpenCalcVault,
+  onOpenSukhan,
   onOpenCompiler,
   onOpenCyber,
   onOpenDevForge,
-  onOpenAppSwitcher,
-  isOmnitrixTheme = false
+  onOpenAppSwitcher
 }) => {
   // Navigation tabs
   const [activeTab, setActiveTab] = useState<'vault' | 'roadmap' | 'drill' | 'ask_ai'>('vault');
@@ -139,30 +139,22 @@ export const TechMasterApp: React.FC<TechMasterAppProps> = ({
       setActiveTab('ask_ai');
     }
 
-    try {
-      const res = await fetch('/api/jarvis/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: `You are the Lead Master Technologist & Cybersecurity Professor in TechMaster 2000+. 
-Provide a crystal-clear, 100% verified, deeply authoritative, zero-cringe explanation with real code/commands/laws in structured Markdown (Roman Hinglish/English) for this question:
-"${q}"`,
-          cringeLevel: 'deep',
-          persona: 'cyber_expert'
-        })
-      });
+    // Client-side offline technical answer search & synthesis
+    setTimeout(() => {
+      const match = TECH_MASTER_QUESTIONS.find(item => 
+        item.title.toLowerCase().includes(q.toLowerCase()) || 
+        item.tags.some(t => q.toLowerCase().includes(t.toLowerCase())) ||
+        item.deepAnswer.toLowerCase().includes(q.toLowerCase()) ||
+        item.shortAnswer.toLowerCase().includes(q.toLowerCase())
+      );
 
-      if (res.ok) {
-        const data = await res.json();
-        setAiResult(data.reply || 'Answer received.');
+      if (match) {
+        setAiResult(`### 📌 ${match.title}\n\n**Category:** ${match.category.toUpperCase()} | **Level:** ${match.level.toUpperCase()}\n\n**Overview:**\n${match.shortAnswer}\n\n**In-Depth Architecture:**\n${match.deepAnswer}\n\n${match.practicalLab ? `\`\`\`bash\n${match.practicalLab}\n\`\`\`` : ''}\n\n💡 *Key Takeaway:* ${match.keyTakeaway}\n\n💡 *Verified from TechMaster 2000+ Knowledge Base.*`);
       } else {
-        setAiResult('Local Offline Brain: Is sawal par deep investigation process activate kar di gayi hai.');
+        setAiResult(`### 🚀 Technical Analysis: "${q}"\n\n**Executive Summary:**\nYeh concept computer science & cybersecurity infrastructure ka vital component hai. Real-world systems me iska implementation security, efficiency aur high-availability deliver karta hai.\n\n**Key Implementation Guidelines:**\n1. **Core Architecture**: Modular breakdown with strict validation and error handling.\n2. **Security Controls**: Follow Principle of Least Privilege (PoLP) and defense-in-depth.\n3. **Audit & Monitoring**: Maintain structured logging and compliance checkpoints.\n\n💡 *Tip: Aap sidebar me related category select karke verified practice questions bhi dekh sakte hain.*`);
       }
-    } catch {
-      setAiResult('Network temporarily busy. Using offline verified syllabus answer.');
-    } finally {
       setAiLoading(false);
-    }
+    }, 400);
   };
 
   const getCategoryIcon = (catId: TechCategory) => {
@@ -226,15 +218,6 @@ Provide a crystal-clear, 100% verified, deeply authoritative, zero-cringe explan
 
           {/* Quick Actions */}
           <div className="flex items-center gap-1.5 sm:gap-2">
-            {onOpenJarvis && (
-              <button
-                onClick={onOpenJarvis}
-                className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold hover:bg-cyan-500/20 transition-all cursor-pointer"
-              >
-                <Bot className="w-3.5 h-3.5" />
-                <span>Jarvis AI</span>
-              </button>
-            )}
 
             {onOpenAppSwitcher && (
               <button
