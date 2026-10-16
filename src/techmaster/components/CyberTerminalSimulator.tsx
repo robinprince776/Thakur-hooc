@@ -58,7 +58,7 @@ export const CyberTerminalSimulator: React.FC = () => {
     { label: 'nmap -sS target.com', cmd: 'nmap -sS scanme.org' },
     { label: 'cybercell 1930', cmd: 'cybercell 1930' },
     { label: 'param-siddhi --info', cmd: 'param-siddhi --info' },
-    { label: 'omnitrix --status', cmd: 'omnitrix --status' },
+    { label: 'snort --status', cmd: 'snort --status' },
     { label: 'itact --section 66', cmd: 'itact --section 66' },
     { label: 'ping -c 4 8.8.8.8', cmd: 'ping -c 4 8.8.8.8' },
     { label: 'whois google.com', cmd: 'whois google.com' },
@@ -93,7 +93,7 @@ export const CyberTerminalSimulator: React.FC = () => {
   nmap -sS <target>    : Execute TCP SYN Stealth Port Scan
   cybercell 1930       : Run Indian Cyber Cell & 1930 helpline emergency protocols
   param-siddhi --info  : Query India's premier PARAM Siddhi-AI Supercomputer specs
-  omnitrix --status    : Check Ben 10 Alien Force Omnitrix DNA status & Azmuth core
+  snort --status       : Query Network Intrusion Detection & Prevention System (NIDS/NIPS)
   itact --section 66   : Display penalties under Information Technology Act 2000
   ping -c 4 <host>     : Send ICMP Echo Request packets
   whois <domain>       : Query domain WHOIS & Autonomous System Number (ASN)
@@ -159,20 +159,20 @@ Interconnect       : NVIDIA Mellanox HDR 200Gbps InfiniBand
 Parallel Framework : OpenMPI 4.1 + CUDA 12.2 + Slurm Workload Manager
 Primary Workloads  : Weather Modeling, Genomic Sequencing, Defense AI, Drug Discovery`
       });
-    } else if (lower.includes('omnitrix')) {
+    } else if (lower.includes('snort') || lower.includes('nids') || lower.includes('ips')) {
       newLines.push({
         id: `out-${Date.now()}-1`,
         type: 'success',
-        text: `AZMUTH GALVAN PRIME TELEMETRY MATRIX:
+        text: `SNORT INTRUSION DETECTION & PREVENTION SYSTEM (NIDS/NIPS):
 ════════════════════════════════════════════════════════════════
-Device Model       : Omnitrix Recalibrated [Alien Force Mode]
-Firmware           : Level 20 Technology (Galvan Prime Standard)
-DNA Database       : 1,000,903 Stored Alien DNA Profiles
-Active AF Matrix   : Swampfire, Brainstorm, Humungousaur, Jetray, Echo Echo,
-                     Chromastone, Big Chill, Spidermonkey, Goop, Alien X
-Core Energy State  : 100% Emerald Plasma
-Self-Destruct Code : DEACTIVATED
-Voice Command Auth : Prince Thakur [Master Controller]`
+Service Status     : ACTIVE [Running on interface eth0 in Promiscuous Mode]
+Rule Engine        : Snort 3.1.72 Open-Source IPS
+Signatures Loaded  : 34,812 Community & Talos Verified Rules
+Detection Modes    : Signature-based, Anomaly-based, Protocol Analysis
+Active Decoders    : TCP, UDP, ICMP, IPv4, IPv6, TLS/SSL, HTTP/2
+Alert Pipeline     : Fast Alerting -> /var/log/snort/alert_fast.txt
+Action Matrix      : ALERT on port-scan, DROP on exploit payloads
+Zero-Day Defense   : Heuristic Preprocessor Active [Zero Benign Dropped]`
       });
     } else if (lower.includes('itact') || lower.includes('section 66')) {
       newLines.push({

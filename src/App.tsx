@@ -12,6 +12,8 @@ import { SecretChat } from './components/SecretChat';
 import { SettingsModal } from './components/SettingsModal';
 import { SplashScreen } from './components/SplashScreen';
 import { OfflineNotesPad } from './components/OfflineNotesPad';
+import { BcaNotesView } from './components/BcaNotesView';
+import { BcaPracticeView } from './components/BcaPracticeView';
 import { AppSwitcherModal, CurrentAppType } from './components/AppSwitcherModal';
 import { useDirectChat } from './hooks/useDirectChat';
 import { playUnlockSound, playLockSound, triggerHaptic } from './utils/sound';
@@ -58,6 +60,12 @@ const GitStudioApp = React.lazy(() =>
 );
 const DocuCraftApp = React.lazy(() =>
   import('./docucraft/DocuCraftApp').then((m) => ({ default: m.DocuCraftApp }))
+);
+const ReconMasterApp = React.lazy(() =>
+  import('./recon/ReconMasterApp').then((m) => ({ default: m.ReconMasterApp }))
+);
+const SecureCodeLabApp = React.lazy(() =>
+  import('./defense/SecureCodeLabApp').then((m) => ({ default: m.SecureCodeLabApp }))
 );
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
@@ -235,6 +243,10 @@ export default function App() {
         setCurrentApp('calc');
       } else if (h === '#sukhan' || h === '#shayar' || h === '#poetry') {
         setCurrentApp('sukhan');
+      } else if (h === '#recon' || h === '#osint') {
+        setCurrentApp('recon');
+      } else if (h === '#securecode' || h === '#payload' || h === '#defense') {
+        setCurrentApp('securecode');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -274,6 +286,8 @@ export default function App() {
     else if (app === 'cyber') window.location.hash = 'cyber';
     else if (app === 'netsec') window.location.hash = 'netsec';
     else if (app === 'apix') window.location.hash = 'apix';
+    else if (app === 'recon') window.location.hash = 'recon';
+    else if (app === 'securecode') window.location.hash = 'securecode';
     else if (app === 'cloudops') window.location.hash = 'cloudops';
     else if (app === 'promptcraft') window.location.hash = 'promptcraft';
     else if (app === 'calc') window.location.hash = 'calc';
@@ -569,6 +583,48 @@ export default function App() {
     );
   }
 
+  // --- RENDER APP: ReconMaster OSINT Toolkit ---
+  if (currentApp === 'recon') {
+    return (
+      <AppErrorBoundary appName="ReconMaster" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="ReconMaster" />}>
+          <ReconMasterApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: SecureCode Lab Defensive Studio ---
+  if (currentApp === 'securecode') {
+    return (
+      <AppErrorBoundary appName="SecureCode Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="SecureCode Lab" />}>
+          <SecureCodeLabApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
   // --- RENDER APP 9: CloudOps Shell ---
   if (currentApp === 'cloudops') {
     return (
@@ -710,6 +766,50 @@ export default function App() {
 
       {/* Main Tab Panels */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* 1. 📖 Notes Tab (C Programming Hub & Digital Electronics Lab) */}
+        {activeTab === 'notes' && (
+          <BcaNotesView
+            onSaveBookmark={handleAddBookmark}
+            isBookmarked={(id) => bookmarks.some((b) => b.id === id)}
+            onOpenCodeRunner={(code) => {
+              if (code) setPrefilledProgramId(null);
+              setActiveTab('code-runner');
+            }}
+          />
+        )}
+
+        {/* 2. 🧮 Solvers Tab (Number Systems, K-Map, Truth Table, Adders) */}
+        {(activeTab === 'solvers' || activeTab === 'logic-solver') && (
+          <LogicSolver
+            initialType={prefilledSolverType || 'dec-to-bin'}
+            onSaveBookmark={handleAddBookmark}
+            isBookmarked={(id) => bookmarks.some((b) => b.id === id)}
+          />
+        )}
+
+        {/* 3. 💻 Code Runner Tab (60+ verified C programs with compiler) */}
+        {(activeTab === 'code-runner' || activeTab === 'c-generator') && (
+          <CProgramGenerator
+            initialProgramId={prefilledProgramId || undefined}
+            onSaveBookmark={handleAddBookmark}
+            isBookmarked={(id) => bookmarks.some((b) => b.id === id)}
+          />
+        )}
+
+        {/* 4. 📝 Practice Tab (150+ Viva Voce & Exam oriented questions) */}
+        {activeTab === 'practice' && (
+          <BcaPracticeView
+            onSaveBookmark={handleAddBookmark}
+            isBookmarked={(id) => bookmarks.some((b) => b.id === id)}
+          />
+        )}
+
+        {/* 5. 📄 Cheat Sheet Tab (Formulas & quick syntax reference) */}
+        {(activeTab === 'cheat-sheet' || activeTab === 'formula-sheet') && (
+          <FormulaSheet />
+        )}
+
+        {/* 6. Overview / Home Hub */}
         {activeTab === 'home' && (
           <HomePage
             onNavigate={(tab: ActiveTab, prefill?: any) => {
@@ -725,22 +825,7 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'logic-solver' && (
-          <LogicSolver
-            initialType={prefilledSolverType || 'dec-to-bin'}
-            onSaveBookmark={handleAddBookmark}
-            isBookmarked={(id) => bookmarks.some((b) => b.id === id)}
-          />
-        )}
-
-        {activeTab === 'c-generator' && (
-          <CProgramGenerator
-            initialProgramId={prefilledProgramId || undefined}
-            onSaveBookmark={handleAddBookmark}
-            isBookmarked={(id) => bookmarks.some((b) => b.id === id)}
-          />
-        )}
-
+        {/* 7. Computer Fundamentals (Archival) */}
         {activeTab === 'fundamentals' && (
           <ComputerFundamentals
             onSaveBookmark={handleAddBookmark}
@@ -748,17 +833,7 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'formula-sheet' && <FormulaSheet />}
-
-        {activeTab === 'notes' && (
-          <OfflineNotesPad
-            onBackToBca={handleReturnToBca}
-            onOpenCalculator={() => handleSelectApp('calc')}
-            onOpenSukhan={() => handleSelectApp('sukhan')}
-            onOpenCompiler={() => handleSelectApp('compiler')}
-          />
-        )}
-
+        {/* 8. Saved Bookmarks */}
         {activeTab === 'bookmarks' && (
           <BookmarksView
             bookmarks={bookmarks}

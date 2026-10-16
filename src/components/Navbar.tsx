@@ -27,12 +27,16 @@ import { CurrentAppType } from './AppSwitcherModal';
 
 export type ActiveTab =
   | 'home'
+  | 'notes'
+  | 'solvers'
+  | 'code-runner'
+  | 'practice'
+  | 'cheat-sheet'
+  | 'bookmarks'
   | 'logic-solver'
   | 'c-generator'
   | 'fundamentals'
-  | 'formula-sheet'
-  | 'notes'
-  | 'bookmarks';
+  | 'formula-sheet';
 
 interface NavbarProps {
   activeTab: ActiveTab;
@@ -61,12 +65,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [updating, setUpdating] = useState(false);
 
   const navItems = [
-    { id: 'home' as ActiveTab, label: 'Home', icon: Home },
-    { id: 'logic-solver' as ActiveTab, label: 'Logic & Numbers', icon: Cpu },
-    { id: 'c-generator' as ActiveTab, label: 'C Programs', icon: Terminal },
-    { id: 'fundamentals' as ActiveTab, label: 'Comp Fundamentals', icon: Layers },
-    { id: 'notes' as ActiveTab, label: 'Offline Notes', icon: FileText },
-    { id: 'formula-sheet' as ActiveTab, label: 'Formula Sheet', icon: BookOpen },
+    { id: 'notes' as ActiveTab, label: 'Notes', icon: BookOpen },
+    { id: 'solvers' as ActiveTab, label: 'Solvers', icon: Cpu },
+    { id: 'code-runner' as ActiveTab, label: 'Code Runner', icon: Terminal },
+    { id: 'practice' as ActiveTab, label: 'Practice', icon: Layers },
+    { id: 'cheat-sheet' as ActiveTab, label: 'Cheat Sheet', icon: FileText },
+    { id: 'home' as ActiveTab, label: 'Overview', icon: Home },
     { id: 'bookmarks' as ActiveTab, label: 'Saved', icon: Bookmark, badge: bookmarkCount },
   ];
 
@@ -87,7 +91,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={() => {
-                setActiveTab('home');
+                setActiveTab('notes');
                 setMobileMenuOpen(false);
               }}
               className="flex items-center gap-2.5 group text-left cursor-pointer"
@@ -105,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 </div>
                 <span className="text-[11px] font-medium text-slate-400 hidden xs:block">
-                  TechMaster Suite · 13 Apps
+                  TechMaster Suite · 15 Apps
                 </span>
               </div>
             </button>

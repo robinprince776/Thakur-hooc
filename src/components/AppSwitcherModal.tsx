@@ -32,6 +32,8 @@ export type CurrentAppType =
   | 'cyber'
   | 'netsec'
   | 'apix'
+  | 'recon'
+  | 'securecode'
   | 'cloudops'
   | 'promptcraft'
   | 'calc'
@@ -204,6 +206,38 @@ const ALL_APPS: AppItem[] = [
     icon: (
       <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-600 to-emerald-600 flex items-center justify-center text-white shadow-md">
         <Server className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'recon',
+    category: 'Security',
+    title: 'ReconMaster',
+    subtitle: 'OSINT & Recon Toolkit',
+    tagline: 'DNS Lookup · Nmap Builder · Headers · Google Dorks',
+    description: 'Ethical reconnaissance lab with real-time DNS queries, Nmap command generator, security headers inspector, and 50+ Google dorks.',
+    badge: 'Recon & OSINT',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#recon',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-md">
+        <Search className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'securecode',
+    category: 'Security',
+    title: 'SecureCode Lab',
+    subtitle: 'AppSec & Defensive Coding',
+    tagline: 'Hash Identifier · Encoding Toolkit · OWASP Top 10 Fixes',
+    description: 'Learn secure coding in C, C++, and Web. Cryptographic hash analysis (MD5 vs bcrypt/Argon2), encoding conversions, and OWASP code patches.',
+    badge: 'Defensive Lab',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    hash: '#securecode',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-white shadow-md">
+        <Shield className="w-5 h-5" />
       </div>
     )
   },

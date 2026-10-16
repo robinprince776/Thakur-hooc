@@ -11,8 +11,12 @@ import {
   HelpCircle,
   Sparkles,
   Layers,
-  Table as TableIcon
+  Table as TableIcon,
+  Cpu,
+  Zap,
+  Calculator
 } from 'lucide-react';
+import { TruthTableGenerator, KMapInteractiveSolver, AdderSubtractorSim } from './DigitalCircuitSimulators';
 
 interface LogicSolverProps {
   initialType?: NumberSystemType;
@@ -44,6 +48,7 @@ export const LogicSolver: React.FC<LogicSolverProps> = ({
   const [arithmeticOp, setArithmeticOp] = useState<'+' | '-' | '*' | '/'>('+');
   const [arithmeticBase, setArithmeticBase] = useState<number>(8);
 
+  const [solverMode, setSolverMode] = useState<'number-systems' | 'kmap-interactive' | 'truth-table' | 'adders'>('number-systems');
   const [result, setResult] = useState<NumberSolverResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copiedAnswer, setCopiedAnswer] = useState(false);
@@ -208,8 +213,41 @@ export const LogicSolver: React.FC<LogicSolverProps> = ({
         </div>
       </div>
 
-      {/* Input Card */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-md border border-slate-200/80 dark:border-slate-700 space-y-6">
+      {/* Sub-tab selector */}
+      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-900 border border-slate-800 rounded-2xl">
+        {[
+          { id: 'number-systems', label: 'Number Systems & Arithmetic', icon: Calculator },
+          { id: 'kmap-interactive', label: 'Interactive K-Map (2-4 Vars)', icon: Zap },
+          { id: 'truth-table', label: 'Truth Table Generator', icon: TableIcon },
+          { id: 'adders', label: 'Adder & Subtractor Simulator', icon: Cpu }
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isAct = solverMode === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setSolverMode(tab.id as any)}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                isAct
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {solverMode === 'kmap-interactive' && <KMapInteractiveSolver />}
+      {solverMode === 'truth-table' && <TruthTableGenerator />}
+      {solverMode === 'adders' && <AdderSubtractorSim />}
+
+      {solverMode === 'number-systems' && (
+        <>
+          {/* Input Card */}
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-md border border-slate-200/80 dark:border-slate-700 space-y-6">
         {/* Step 1: Conversion Type Selector */}
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
@@ -886,6 +924,8 @@ export const LogicSolver: React.FC<LogicSolverProps> = ({
           </div>
         </div>
       )}
-    </div>
+    </>
+  )}
+</div>
   );
 };
