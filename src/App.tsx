@@ -73,6 +73,9 @@ const SentinelLabApp = React.lazy(() =>
 const CyberAcademyApp = React.lazy(() =>
   import('./academy/CyberAcademyApp').then((m) => ({ default: m.CyberAcademyApp }))
 );
+const CyberPathApp = React.lazy(() =>
+  import('./cyberpath/CyberPathApp').then((m) => ({ default: m.CyberPathApp }))
+);
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
   secretPin: '1307',
@@ -199,6 +202,7 @@ export default function App() {
       if (h === '#securecode' || h === '#defense') return 'securecode';
       if (h === '#sentinel' || h === '#soc' || h === '#blue') return 'sentinel';
       if (h === '#academy' || h === '#ctf' || h === '#learn') return 'academy';
+      if (h === '#cyberpath' || h === '#path') return 'cyberpath';
       return 'bca';
     } catch {
       return 'bca';
@@ -261,6 +265,8 @@ export default function App() {
         setCurrentApp('sentinel');
       } else if (h === '#academy' || h === '#ctf' || h === '#learn') {
         setCurrentApp('academy');
+      } else if (h === '#cyberpath' || h === '#path') {
+        setCurrentApp('cyberpath');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -298,6 +304,7 @@ export default function App() {
     else if (app === 'docucraft') window.location.hash = 'docucraft';
     else if (app === 'gitstudio') window.location.hash = 'gitstudio';
     else if (app === 'cyber') window.location.hash = 'cyber';
+    else if (app === 'cyberpath') window.location.hash = 'cyberpath';
     else if (app === 'sentinel') window.location.hash = 'sentinel';
     else if (app === 'academy') window.location.hash = 'academy';
     else if (app === 'netsec') window.location.hash = 'netsec';
@@ -668,6 +675,27 @@ export default function App() {
       <AppErrorBoundary appName="CyberAcademy" onReset={handleReturnToBca}>
         <Suspense fallback={<AppLoadingSpinner appName="CyberAcademy" />}>
           <CyberAcademyApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: CyberPath Master Learning Hub ---
+  if (currentApp === 'cyberpath') {
+    return (
+      <AppErrorBoundary appName="CyberPath" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="CyberPath" />}>
+          <CyberPathApp
             onBackToBca={handleReturnToBca}
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
             onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}

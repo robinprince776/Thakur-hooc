@@ -33,6 +33,7 @@ export type CurrentAppType =
   | 'docucraft'
   | 'gitstudio'
   | 'cyber'
+  | 'cyberpath'
   | 'sentinel'
   | 'academy'
   | 'netsec'
@@ -227,6 +228,22 @@ const ALL_APPS: AppItem[] = [
     icon: (
       <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-md">
         <Search className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'cyberpath',
+    category: 'Security',
+    title: 'CyberPath',
+    subtitle: 'Master Cybersecurity Hub (Zero to Hero)',
+    tagline: 'Hacker Mindset · Attack Sim Lab · Home Lab · 30-Day Bootcamp',
+    description: '100% legal, defensive cybersecurity academy: 20+ interactive attack scenarios, STRIDE threat modeling, visual attack simulations (SQLi/XSS/CSRF), TryHackMe/HTB home lab setup, 99% deep concepts, and 300+ interview Q&As.',
+    badge: 'Master Academy',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#cyberpath',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
+        <Shield className="w-5 h-5" />
       </div>
     )
   },
