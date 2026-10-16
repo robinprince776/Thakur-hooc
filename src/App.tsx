@@ -67,6 +67,12 @@ const ReconMasterApp = React.lazy(() =>
 const SecureCodeLabApp = React.lazy(() =>
   import('./defense/SecureCodeLabApp').then((m) => ({ default: m.SecureCodeLabApp }))
 );
+const SentinelLabApp = React.lazy(() =>
+  import('./sentinel/SentinelLabApp').then((m) => ({ default: m.SentinelLabApp }))
+);
+const CyberAcademyApp = React.lazy(() =>
+  import('./academy/CyberAcademyApp').then((m) => ({ default: m.CyberAcademyApp }))
+);
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
   secretPin: '1307',
@@ -189,6 +195,10 @@ export default function App() {
       if (h === '#promptcraft' || h === '#prompt' || h === '#ai') return 'promptcraft';
       if (h === '#calc' || h === '#vault' || h === '#chat') return 'calc';
       if (h === '#sukhan' || h === '#shayar' || h === '#poetry') return 'sukhan';
+      if (h === '#recon' || h === '#osint') return 'recon';
+      if (h === '#securecode' || h === '#defense') return 'securecode';
+      if (h === '#sentinel' || h === '#soc' || h === '#blue') return 'sentinel';
+      if (h === '#academy' || h === '#ctf' || h === '#learn') return 'academy';
       return 'bca';
     } catch {
       return 'bca';
@@ -245,8 +255,12 @@ export default function App() {
         setCurrentApp('sukhan');
       } else if (h === '#recon' || h === '#osint') {
         setCurrentApp('recon');
-      } else if (h === '#securecode' || h === '#payload' || h === '#defense') {
+      } else if (h === '#securecode' || h === '#defense') {
         setCurrentApp('securecode');
+      } else if (h === '#sentinel' || h === '#soc' || h === '#blue') {
+        setCurrentApp('sentinel');
+      } else if (h === '#academy' || h === '#ctf' || h === '#learn') {
+        setCurrentApp('academy');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -284,6 +298,8 @@ export default function App() {
     else if (app === 'docucraft') window.location.hash = 'docucraft';
     else if (app === 'gitstudio') window.location.hash = 'gitstudio';
     else if (app === 'cyber') window.location.hash = 'cyber';
+    else if (app === 'sentinel') window.location.hash = 'sentinel';
+    else if (app === 'academy') window.location.hash = 'academy';
     else if (app === 'netsec') window.location.hash = 'netsec';
     else if (app === 'apix') window.location.hash = 'apix';
     else if (app === 'recon') window.location.hash = 'recon';
@@ -610,6 +626,48 @@ export default function App() {
       <AppErrorBoundary appName="SecureCode Lab" onReset={handleReturnToBca}>
         <Suspense fallback={<AppLoadingSpinner appName="SecureCode Lab" />}>
           <SecureCodeLabApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: SentinelLab Defensive Toolkit ---
+  if (currentApp === 'sentinel') {
+    return (
+      <AppErrorBoundary appName="SentinelLab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="SentinelLab" />}>
+          <SentinelLabApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: CyberAcademy Hands-On Learning Hub ---
+  if (currentApp === 'academy') {
+    return (
+      <AppErrorBoundary appName="CyberAcademy" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="CyberAcademy" />}>
+          <CyberAcademyApp
             onBackToBca={handleReturnToBca}
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
             onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}

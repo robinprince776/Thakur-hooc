@@ -271,7 +271,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Quick Launch Suite Apps in Drawer */}
           <div className="mt-4 pt-4 border-t border-slate-800 space-y-2">
             <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1 mb-2">
-              All 13 Applications
+              All 15 Applications
             </div>
 
             {/* App Switcher button */}
@@ -284,7 +284,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <div className="flex items-center gap-2.5">
                 <Grid className="w-4 h-4" />
-                <span>Open 13-Apps Master Switcher</span>
+                <span>Open 15-Apps Master Switcher</span>
               </div>
               <span>Launch</span>
             </button>
@@ -292,8 +292,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Quick Links */}
             <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
               {[
+                { id: 'sentinel' as CurrentAppType, label: 'SentinelLab', icon: Shield },
+                { id: 'academy' as CurrentAppType, label: 'CyberAcademy', icon: BookOpen },
                 { id: 'techmaster' as CurrentAppType, label: 'TechMaster 2000+', icon: BookOpen },
                 { id: 'compiler' as CurrentAppType, label: 'C Compiler', icon: Terminal },
+                { id: 'recon' as CurrentAppType, label: 'ReconMaster', icon: Search },
+                { id: 'securecode' as CurrentAppType, label: 'SecureCode Lab', icon: Shield },
                 { id: 'promptcraft' as CurrentAppType, label: 'PromptCraft Pro', icon: Sparkles },
                 { id: 'apix' as CurrentAppType, label: 'API-X Lab', icon: Server },
                 { id: 'cloudops' as CurrentAppType, label: 'CloudOps Shell', icon: Cloud },

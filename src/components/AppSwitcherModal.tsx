@@ -18,7 +18,10 @@ import {
   FileText,
   GitBranch,
   Globe,
-  Code2
+  Code2,
+  GraduationCap,
+  Lock,
+  Activity
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 
@@ -30,6 +33,8 @@ export type CurrentAppType =
   | 'docucraft'
   | 'gitstudio'
   | 'cyber'
+  | 'sentinel'
+  | 'academy'
   | 'netsec'
   | 'apix'
   | 'recon'
@@ -222,6 +227,38 @@ const ALL_APPS: AppItem[] = [
     icon: (
       <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-md">
         <Search className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'sentinel',
+    category: 'Security',
+    title: 'SentinelLab',
+    subtitle: 'Defensive Security & Blue Team',
+    tagline: 'Password Entropy · Hashes · Headers · Log Analyzer · Phishing Sim',
+    description: 'Security analyst & SOC operations toolkit: NIST password strength math, Web Crypto hash verifier, HTTP security headers checklist, offline log parser, and OWASP defense.',
+    badge: 'SOC & Blue Team',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    hash: '#sentinel',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-cyan-600 flex items-center justify-center text-white shadow-md">
+        <Shield className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'academy',
+    category: 'Education',
+    title: 'CyberAcademy',
+    subtitle: 'Hands-On Cyber Learning & CTF Arena',
+    tagline: 'CTF Challenges · Cryptography · Stego · Career Roadmap',
+    description: '100% legal ethical hacking practice: built-in CTF challenges, Caesar & Vigenère ciphers, steganography playground, packet flow visualizer, and IT Act 2000 legal framework.',
+    badge: 'Hands-On CTF',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    hash: '#academy',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-600 to-orange-600 flex items-center justify-center text-white shadow-md">
+        <GraduationCap className="w-5 h-5" />
       </div>
     )
   },
