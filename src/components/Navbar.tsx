@@ -198,14 +198,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>API-X</span>
             </button>
 
-            {/* 13-Apps Suite Switcher */}
+            {/* 40-Apps Suite Switcher */}
             <button
               onClick={onOpenAppSwitcher}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/30 cursor-pointer"
-              title="Open 13-Apps Master Suite Switcher"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition-all shadow-md shadow-cyan-600/30 cursor-pointer"
+              title="Open 40-Apps Master Suite Switcher"
             >
               <Grid className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">13 Apps</span>
+              <span className="hidden sm:inline">40 Apps</span>
             </button>
 
             {/* Dark / Light Toggle */}
@@ -271,7 +271,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Quick Launch Suite Apps in Drawer */}
           <div className="mt-4 pt-4 border-t border-slate-800 space-y-2">
             <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1 mb-2">
-              All 16 Applications
+              TechMaster 40-App Ecosystem
             </div>
 
             {/* App Switcher button */}
@@ -280,33 +280,40 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setMobileMenuOpen(false);
                 onOpenAppSwitcher();
               }}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-md cursor-pointer"
+              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold bg-cyan-600 hover:bg-cyan-500 text-white shadow-md cursor-pointer transition-colors"
             >
               <div className="flex items-center gap-2.5">
                 <Grid className="w-4 h-4" />
-                <span>Open 16-Apps Master Switcher</span>
+                <span>Open 40-Apps Master Switcher</span>
               </div>
-              <span>Launch</span>
+              <span className="text-[10px] bg-cyan-700/60 px-2 py-0.5 rounded font-mono">40 Apps</span>
             </button>
 
             {/* Quick Links */}
             <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
               {[
+                { id: 'career' as CurrentAppType, label: 'TechCareer Hub', icon: BookOpen },
                 { id: 'cyberpath' as CurrentAppType, label: 'CyberPath', icon: Shield },
                 { id: 'sentinel' as CurrentAppType, label: 'SentinelLab', icon: Shield },
                 { id: 'academy' as CurrentAppType, label: 'CyberAcademy', icon: BookOpen },
+                { id: 'linux' as CurrentAppType, label: 'Linux Mastery', icon: Terminal },
+                { id: 'pcxray' as CurrentAppType, label: 'PC Hardware', icon: Cpu },
+                { id: 'netviz' as CurrentAppType, label: 'Net Visualizer', icon: Globe },
+                { id: 'dsa' as CurrentAppType, label: 'DSA Lab', icon: Layers },
+                { id: 'database' as CurrentAppType, label: 'SQL Sandbox', icon: Server },
+                { id: 'cicd' as CurrentAppType, label: 'CI/CD DevSecOps', icon: GitBranch },
+                { id: 'containers' as CurrentAppType, label: 'Docker & K8s', icon: Cloud },
+                { id: 'cloudiam' as CurrentAppType, label: 'Cloud IAM', icon: Shield },
+                { id: 'siem' as CurrentAppType, label: 'SIEM Inspector', icon: Terminal },
+                { id: 'threatintel' as CurrentAppType, label: 'Threat Intel', icon: Shield },
+                { id: 'forensics' as CurrentAppType, label: 'DFIR Forensics', icon: Search },
+                { id: 'cryptomaster' as CurrentAppType, label: 'Crypto & PQC', icon: Sparkles },
+                { id: 'systemdesign' as CurrentAppType, label: 'SystemDesign', icon: Layers },
+                { id: 'compliance' as CurrentAppType, label: 'ComplianceLab', icon: Shield },
+                { id: 'webperf' as CurrentAppType, label: 'WebPerf Lab', icon: Sparkles },
+                { id: 'gitflow' as CurrentAppType, label: 'GitFlow Lab', icon: GitBranch },
                 { id: 'techmaster' as CurrentAppType, label: 'TechMaster 2000+', icon: BookOpen },
                 { id: 'compiler' as CurrentAppType, label: 'C Compiler', icon: Terminal },
-                { id: 'recon' as CurrentAppType, label: 'ReconMaster', icon: Search },
-                { id: 'securecode' as CurrentAppType, label: 'SecureCode Lab', icon: Shield },
-                { id: 'promptcraft' as CurrentAppType, label: 'PromptCraft Pro', icon: Sparkles },
-                { id: 'apix' as CurrentAppType, label: 'API-X Lab', icon: Server },
-                { id: 'cloudops' as CurrentAppType, label: 'CloudOps Shell', icon: Cloud },
-                { id: 'gitstudio' as CurrentAppType, label: 'Git Studio', icon: GitBranch },
-                { id: 'docucraft' as CurrentAppType, label: 'DocuCraft', icon: FileText },
-                { id: 'netsec' as CurrentAppType, label: 'NetSec Sandbox', icon: Globe },
-                { id: 'cyber' as CurrentAppType, label: 'CyberShield', icon: Shield },
-                { id: 'dev' as CurrentAppType, label: 'DevForge', icon: Wrench },
                 { id: 'calc' as CurrentAppType, label: 'CalcVault', icon: Calculator },
                 { id: 'sukhan' as CurrentAppType, label: 'SUKHAN', icon: Sparkles },
               ].map((app) => {
@@ -320,7 +327,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     }}
                     className="flex items-center gap-2 p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer text-left"
                   >
-                    <Icon className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                    <Icon className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                     <span className="truncate text-[11px] font-semibold">{app.label}</span>
                   </button>
                 );

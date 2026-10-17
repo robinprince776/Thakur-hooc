@@ -76,6 +76,73 @@ const CyberAcademyApp = React.lazy(() =>
 const CyberPathApp = React.lazy(() =>
   import('./cyberpath/CyberPathApp').then((m) => ({ default: m.CyberPathApp }))
 );
+const TechCareerHubApp = React.lazy(() =>
+  import('./career/TechCareerHubApp').then((m) => ({ default: m.TechCareerHubApp }))
+);
+const LinuxMasteryApp = React.lazy(() =>
+  import('./linux/LinuxMasteryApp').then((m) => ({ default: m.LinuxMasteryApp }))
+);
+const PcxrayApp = React.lazy(() =>
+  import('./hardware/PcxrayApp').then((m) => ({ default: m.PcxrayApp }))
+);
+const NetVizApp = React.lazy(() =>
+  import('./networking/NetVizApp').then((m) => ({ default: m.NetVizApp }))
+);
+const DsaLabApp = React.lazy(() =>
+  import('./dsa/DsaLabApp').then((m) => ({ default: m.DsaLabApp }))
+);
+const SqlPlaygroundApp = React.lazy(() =>
+  import('./database/SqlPlaygroundApp').then((m) => ({ default: m.SqlPlaygroundApp }))
+);
+const CicdApp = React.lazy(() =>
+  import('./devops/CicdApp').then((m) => ({ default: m.CicdApp }))
+);
+const ContainersApp = React.lazy(() =>
+  import('./devops/ContainersApp').then((m) => ({ default: m.ContainersApp }))
+);
+const CloudIamApp = React.lazy(() =>
+  import('./cloudiam/CloudIamApp').then((m) => ({ default: m.CloudIamApp }))
+);
+const SiemLabApp = React.lazy(() =>
+  import('./siem/SiemLabApp').then((m) => ({ default: m.SiemLabApp }))
+);
+const ThreatIntelApp = React.lazy(() =>
+  import('./threatintel/ThreatIntelApp').then((m) => ({ default: m.ThreatIntelApp }))
+);
+const DigitalForensicsApp = React.lazy(() =>
+  import('./forensics/DigitalForensicsApp').then((m) => ({ default: m.DigitalForensicsApp }))
+);
+const CryptoMasterApp = React.lazy(() =>
+  import('./cryptomaster/CryptoMasterApp').then((m) => ({ default: m.CryptoMasterApp }))
+);
+const ReversingApp = React.lazy(() =>
+  import('./reversing/ReversingApp').then((m) => ({ default: m.ReversingApp }))
+);
+const FocusApp = React.lazy(() =>
+  import('./productivity/FocusApp').then((m) => ({ default: m.FocusApp }))
+);
+const DataFormatterApp = React.lazy(() =>
+  import('./tools/DataFormatterApp').then((m) => ({ default: m.DataFormatterApp }))
+);
+const RegexMasterApp = React.lazy(() =>
+  import('./tools/RegexMasterApp').then((m) => ({ default: m.RegexMasterApp }))
+);
+const SystemDesignLabApp = React.lazy(() =>
+  import('./systemdesign/SystemDesignLabApp').then((m) => ({ default: m.SystemDesignLabApp }))
+);
+const ComplianceLabApp = React.lazy(() =>
+  import('./compliance/ComplianceLabApp').then((m) => ({ default: m.ComplianceLabApp }))
+);
+const WebPerfLabApp = React.lazy(() =>
+  import('./webperf/WebPerfLabApp').then((m) => ({ default: m.WebPerfLabApp }))
+);
+const ThreatModelingApp = React.lazy(() =>
+  import('./threatmodeling/ThreatModelingApp').then((m) => ({ default: m.ThreatModelingApp }))
+);
+const GitFlowApp = React.lazy(() =>
+  import('./gitflow/GitFlowApp').then((m) => ({ default: m.GitFlowApp }))
+);
+
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
   secretPin: '1307',
@@ -203,6 +270,28 @@ export default function App() {
       if (h === '#sentinel' || h === '#soc' || h === '#blue') return 'sentinel';
       if (h === '#academy' || h === '#ctf' || h === '#learn') return 'academy';
       if (h === '#cyberpath' || h === '#path') return 'cyberpath';
+      if (h === '#career' || h === '#salary' || h === '#interview') return 'career';
+      if (h === '#linux' || h === '#terminal') return 'linux';
+      if (h === '#pcxray' || h === '#hardware' || h === '#cpu') return 'pcxray';
+      if (h === '#netviz' || h === '#osi' || h === '#tcp') return 'netviz';
+      if (h === '#dsa' || h === '#datastructures' || h === '#stack') return 'dsa';
+      if (h === '#database' || h === '#sql' || h === '#query') return 'database';
+      if (h === '#cicd' || h === '#devsecops' || h === '#pipeline') return 'cicd';
+      if (h === '#containers' || h === '#docker' || h === '#k8s') return 'containers';
+      if (h === '#cloudiam' || h === '#iam' || h === '#aws') return 'cloudiam';
+      if (h === '#siem' || h === '#logs' || h === '#triage') return 'siem';
+      if (h === '#threatintel' || h === '#ioc' || h === '#mitre') return 'threatintel';
+      if (h === '#forensics' || h === '#dfir' || h === '#exif') return 'forensics';
+      if (h === '#cryptomaster' || h === '#crypto' || h === '#pqc') return 'cryptomaster';
+      if (h === '#reversing' || h === '#asm' || h === '#assembly') return 'reversing';
+      if (h === '#focus' || h === '#pomodoro' || h === '#timer') return 'focus';
+      if (h === '#dataformat' || h === '#json' || h === '#yaml') return 'dataformat';
+      if (h === '#regexmaster' || h === '#regex') return 'regexmaster';
+      if (h === '#systemdesign' || h === '#architecture' || h === '#cap') return 'systemdesign';
+      if (h === '#compliance' || h === '#audit' || h === '#gdpr' || h === '#itact') return 'compliance';
+      if (h === '#webperf' || h === '#vitals' || h === '#lighthouse') return 'webperf';
+      if (h === '#threatmodel' || h === '#stride' || h === '#dread') return 'threatmodel';
+      if (h === '#gitflow' || h === '#rebase' || h === '#reflog') return 'gitflow';
       return 'bca';
     } catch {
       return 'bca';
@@ -267,6 +356,50 @@ export default function App() {
         setCurrentApp('academy');
       } else if (h === '#cyberpath' || h === '#path') {
         setCurrentApp('cyberpath');
+      } else if (h === '#career' || h === '#salary' || h === '#interview') {
+        setCurrentApp('career');
+      } else if (h === '#linux' || h === '#terminal') {
+        setCurrentApp('linux');
+      } else if (h === '#pcxray' || h === '#hardware' || h === '#cpu') {
+        setCurrentApp('pcxray');
+      } else if (h === '#netviz' || h === '#osi' || h === '#tcp') {
+        setCurrentApp('netviz');
+      } else if (h === '#dsa' || h === '#datastructures' || h === '#stack') {
+        setCurrentApp('dsa');
+      } else if (h === '#database' || h === '#sql' || h === '#query') {
+        setCurrentApp('database');
+      } else if (h === '#cicd' || h === '#devsecops' || h === '#pipeline') {
+        setCurrentApp('cicd');
+      } else if (h === '#containers' || h === '#docker' || h === '#k8s') {
+        setCurrentApp('containers');
+      } else if (h === '#cloudiam' || h === '#iam' || h === '#aws') {
+        setCurrentApp('cloudiam');
+      } else if (h === '#siem' || h === '#logs' || h === '#triage') {
+        setCurrentApp('siem');
+      } else if (h === '#threatintel' || h === '#ioc' || h === '#mitre') {
+        setCurrentApp('threatintel');
+      } else if (h === '#forensics' || h === '#dfir' || h === '#exif') {
+        setCurrentApp('forensics');
+      } else if (h === '#cryptomaster' || h === '#crypto' || h === '#pqc') {
+        setCurrentApp('cryptomaster');
+      } else if (h === '#reversing' || h === '#asm' || h === '#assembly') {
+        setCurrentApp('reversing');
+      } else if (h === '#focus' || h === '#pomodoro' || h === '#timer') {
+        setCurrentApp('focus');
+      } else if (h === '#dataformat' || h === '#json' || h === '#yaml') {
+        setCurrentApp('dataformat');
+      } else if (h === '#regexmaster' || h === '#regex') {
+        setCurrentApp('regexmaster');
+      } else if (h === '#systemdesign' || h === '#architecture' || h === '#cap') {
+        setCurrentApp('systemdesign');
+      } else if (h === '#compliance' || h === '#audit' || h === '#gdpr' || h === '#itact') {
+        setCurrentApp('compliance');
+      } else if (h === '#webperf' || h === '#vitals' || h === '#lighthouse') {
+        setCurrentApp('webperf');
+      } else if (h === '#threatmodel' || h === '#stride' || h === '#dread') {
+        setCurrentApp('threatmodel');
+      } else if (h === '#gitflow' || h === '#rebase' || h === '#reflog') {
+        setCurrentApp('gitflow');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -315,6 +448,28 @@ export default function App() {
     else if (app === 'promptcraft') window.location.hash = 'promptcraft';
     else if (app === 'calc') window.location.hash = 'calc';
     else if (app === 'sukhan') window.location.hash = 'sukhan';
+    else if (app === 'career') window.location.hash = 'career';
+    else if (app === 'linux') window.location.hash = 'linux';
+    else if (app === 'pcxray') window.location.hash = 'pcxray';
+    else if (app === 'netviz') window.location.hash = 'netviz';
+    else if (app === 'dsa') window.location.hash = 'dsa';
+    else if (app === 'database') window.location.hash = 'database';
+    else if (app === 'cicd') window.location.hash = 'cicd';
+    else if (app === 'containers') window.location.hash = 'containers';
+    else if (app === 'cloudiam') window.location.hash = 'cloudiam';
+    else if (app === 'siem') window.location.hash = 'siem';
+    else if (app === 'threatintel') window.location.hash = 'threatintel';
+    else if (app === 'forensics') window.location.hash = 'forensics';
+    else if (app === 'cryptomaster') window.location.hash = 'cryptomaster';
+    else if (app === 'reversing') window.location.hash = 'reversing';
+    else if (app === 'focus') window.location.hash = 'focus';
+    else if (app === 'dataformat') window.location.hash = 'dataformat';
+    else if (app === 'regexmaster') window.location.hash = 'regexmaster';
+    else if (app === 'systemdesign') window.location.hash = 'systemdesign';
+    else if (app === 'compliance') window.location.hash = 'compliance';
+    else if (app === 'webperf') window.location.hash = 'webperf';
+    else if (app === 'threatmodel') window.location.hash = 'threatmodel';
+    else if (app === 'gitflow') window.location.hash = 'gitflow';
   };
 
   const handleReturnToBca = () => {
@@ -696,6 +851,468 @@ export default function App() {
       <AppErrorBoundary appName="CyberPath" onReset={handleReturnToBca}>
         <Suspense fallback={<AppLoadingSpinner appName="CyberPath" />}>
           <CyberPathApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: TechCareer Hub ---
+  if (currentApp === 'career') {
+    return (
+      <AppErrorBoundary appName="TechCareer Hub" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="TechCareer Hub" />}>
+          <TechCareerHubApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Linux & Kali Mastery ---
+  if (currentApp === 'linux') {
+    return (
+      <AppErrorBoundary appName="Linux & Kali Mastery" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Linux & Kali Mastery" />}>
+          <LinuxMasteryApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: PC Hardware & OS Explorer ---
+  if (currentApp === 'pcxray') {
+    return (
+      <AppErrorBoundary appName="PC Hardware & OS Explorer" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="PC Hardware & OS Explorer" />}>
+          <PcxrayApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Networking Visualizer ---
+  if (currentApp === 'netviz') {
+    return (
+      <AppErrorBoundary appName="Networking Visualizer" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Networking Visualizer" />}>
+          <NetVizApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Data Structures Lab ---
+  if (currentApp === 'dsa') {
+    return (
+      <AppErrorBoundary appName="Data Structures Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Data Structures Lab" />}>
+          <DsaLabApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: SQL Playground ---
+  if (currentApp === 'database') {
+    return (
+      <AppErrorBoundary appName="SQL Playground" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="SQL Playground" />}>
+          <SqlPlaygroundApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: DevSecOps CI/CD Lab ---
+  if (currentApp === 'cicd') {
+    return (
+      <AppErrorBoundary appName="DevSecOps CI/CD Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="DevSecOps CI/CD Lab" />}>
+          <CicdApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Container & K8s Lab ---
+  if (currentApp === 'containers') {
+    return (
+      <AppErrorBoundary appName="Container & K8s Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Container & K8s Lab" />}>
+          <ContainersApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Cloud IAM & Policy Studio ---
+  if (currentApp === 'cloudiam') {
+    return (
+      <AppErrorBoundary appName="Cloud IAM & Policy Studio" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Cloud IAM & Policy Studio" />}>
+          <CloudIamApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: SIEM & SOC Log Inspector ---
+  if (currentApp === 'siem') {
+    return (
+      <AppErrorBoundary appName="SIEM & SOC Log Inspector" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="SIEM & SOC Log Inspector" />}>
+          <SiemLabApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Threat Intel & IOC Extractor ---
+  if (currentApp === 'threatintel') {
+    return (
+      <AppErrorBoundary appName="Threat Intel & IOC Extractor" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Threat Intel & IOC Extractor" />}>
+          <ThreatIntelApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Digital Forensics Workbench ---
+  if (currentApp === 'forensics') {
+    return (
+      <AppErrorBoundary appName="Digital Forensics Workbench" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Digital Forensics Workbench" />}>
+          <DigitalForensicsApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Crypto & Post-Quantum Lab ---
+  if (currentApp === 'cryptomaster') {
+    return (
+      <AppErrorBoundary appName="Crypto & Post-Quantum Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Crypto & Post-Quantum Lab" />}>
+          <CryptoMasterApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Reverse Engineering Lab ---
+  if (currentApp === 'reversing') {
+    return (
+      <AppErrorBoundary appName="Reverse Engineering Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Reverse Engineering Lab" />}>
+          <ReversingApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Focus & Productivity Studio ---
+  if (currentApp === 'focus') {
+    return (
+      <AppErrorBoundary appName="Focus & Productivity Studio" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Focus & Productivity Studio" />}>
+          <FocusApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Data Formatter & Minifier ---
+  if (currentApp === 'dataformat') {
+    return (
+      <AppErrorBoundary appName="Data Formatter & Minifier" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Data Formatter & Minifier" />}>
+          <DataFormatterApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Regex Master Lab ---
+  if (currentApp === 'regexmaster') {
+    return (
+      <AppErrorBoundary appName="Regex Master Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Regex Master Lab" />}>
+          <RegexMasterApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: SystemDesign Lab ---
+  if (currentApp === 'systemdesign') {
+    return (
+      <AppErrorBoundary appName="SystemDesign Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="SystemDesign Lab" />}>
+          <SystemDesignLabApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: ComplianceLab ---
+  if (currentApp === 'compliance') {
+    return (
+      <AppErrorBoundary appName="ComplianceLab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="ComplianceLab" />}>
+          <ComplianceLabApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: WebPerf Lab ---
+  if (currentApp === 'webperf') {
+    return (
+      <AppErrorBoundary appName="WebPerf Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="WebPerf Lab" />}>
+          <WebPerfLabApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: ThreatModeling Lab ---
+  if (currentApp === 'threatmodel') {
+    return (
+      <AppErrorBoundary appName="ThreatModeling Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="ThreatModeling Lab" />}>
+          <ThreatModelingApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: GitFlow Lab ---
+  if (currentApp === 'gitflow') {
+    return (
+      <AppErrorBoundary appName="GitFlow Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="GitFlow Lab" />}>
+          <GitFlowApp
             onBackToBca={handleReturnToBca}
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
             onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
