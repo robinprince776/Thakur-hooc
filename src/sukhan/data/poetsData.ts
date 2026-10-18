@@ -698,5 +698,440 @@ export const POETS_DATA: PoetProfile[] = [
       }
     ],
     poems: []
+  },
+  {
+    id: 'sahir',
+    nameRoman: 'Sahir Ludhianvi',
+    takhallus: 'Sahir',
+    era: 'Progressive Writers & Cinema Legend',
+    eraDates: '1921 – 1980',
+    languages: ['Urdu', 'Hindi'],
+    birthPlace: 'Ludhiana (Punjab), Mumbai',
+    bioHinglish:
+      'Urdu shayari aur Hindustani filmon ke azeem inqilabi geetkaar. Inhone aam mazdoor, aurat aur samajik na-barabari ke dard ko aisi shola-baar zabaan di jiska asar aaj bhi qayam hai. "Talkhiyan" inki aisi kitaab hai jiske lakhon nuskhon ne dilon ko badla.',
+    historicalContextHinglish:
+      'Progressive Writers\' Movement (Taraqqi Pasand Tehreek) ke stambh the. Bombay cinema me aakar inhone gaano ko sasti aashiqui se nikaal kar rooh aur samaj ka aaina bana diya.',
+    majorThemes: ['Samaji Na-barabari', 'Inqilaab', 'Ishq-e-Haqeeqi', 'Aam Insaan Ka Dukh', 'Talkhiyan'],
+    signatureCouplet: [
+      'Ek shehanshah ne daulat ka sahara le kar,',
+      'Hum gareebon ki mohabbat ka udaya hai mazaak.'
+    ],
+    signatureMeaning:
+      'Taj Mahal jaisi azeem imaarat par aam insaan ke nazariye se Sahir ka ye teekha tanqeed hai, ki ameer apne pyar ko patharon me qaid kar ke gareebon ke masoom pyar ko nicha dikhaate hain.',
+    verifiedWorksCount: 320,
+    accentColor: '#C6A66B',
+    portraitGradient: 'from-amber-950/40 via-[#2A1625] to-[#0B0B0F]',
+    sourceReferences: ['Talkhiyan (1944)', 'Parchhaiyan', 'Aao Ki Koi Khwab Bunein'],
+    relatedPoetIds: ['faiz', 'rahat', 'dushyant'],
+    popularCouplets: [
+      {
+        id: 'sahir_1',
+        poetId: 'sahir',
+        poetName: 'Sahir Ludhianvi',
+        linesRoman: [
+          'Main pal do pal ka shayar hoon, pal do pal meri kahani hai,',
+          'Pal do pal meri hasti hai, pal do pal meri jawani hai.'
+        ],
+        hinglishMeaning:
+          'Zindagi aur shohrat ki fana hone wali fitrat ko Sahir ne aisi saadgi se pehchana ki har kalakaar ke aatmsamman aur vinamrata ka geet ban gaya.',
+        moods: ['Falsafa', 'Zindagi', 'Tanhai'],
+        form: 'Sher',
+        tags: ['pal-do-pal', 'zindagi', 'shayar'],
+        difficultWords: [{ word: 'Hasti', meaning: 'Wujood / Existence' }]
+      },
+      {
+        id: 'sahir_2',
+        poetId: 'sahir',
+        poetName: 'Sahir Ludhianvi',
+        linesRoman: [
+          'Ye mehlon ye takhton ye taajon ki duniya,',
+          'Ye duniya agar mil bhi jaye to kya hai.'
+        ],
+        hinglishMeaning:
+          'Paisa, satta aur dikhawe ki ye matlabi duniya agar poori ki poori bhi kisi ko mil jaye toh bina rooh aur sachche prem ke iska koi mol nahi.',
+        moods: ['Falsafa', 'Khuddaari', 'Tanhai'],
+        form: 'Sher',
+        tags: ['duniya', 'inqilaab', 'pyaasa'],
+        difficultWords: [{ word: 'Takhton', meaning: 'Singhasan / Thrones' }]
+      }
+    ],
+    poems: []
+  },
+  {
+    id: 'faraz',
+    nameRoman: 'Ahmad Faraz',
+    takhallus: 'Faraz',
+    era: 'Modern Romantic & Resistance Era',
+    eraDates: '1931 – 2008',
+    languages: ['Urdu'],
+    birthPlace: 'Kohat / Peshawar',
+    bioHinglish:
+      'Husn, ishq aur baghaawat ke be-misaal shayar. Inka kalam aam aashiq ke dil ki aawaz bhi hai aur fauji aamriyat ke khilaf inqilaab ka aalam bhi. Inki ghazal "Ranjish hi sahi" duniya bhar me Urdu adab ki pehchan hai.',
+    historicalContextHinglish:
+      'Zia-ul-Haq ke aamri daur me inhone be-khauf baghaawat ki aur jila-watani (exile) ka dard saha. Inka kalam ishq aur azaadi ka haseen sangam hai.',
+    majorThemes: ['Husn Aur Ishq', 'Judai Ka Gham', 'Inqilaabi Baghaawat', 'Nazuk Ehsaasat'],
+    signatureCouplet: [
+      'Ranjish hi sahi dil hi dukhane ke liye aa,',
+      'Aa phir se mujhe chhod ke jaane ke liye aa.'
+    ],
+    signatureMeaning:
+      'Bhale hi dilon me narazgi ya gila ho, par bas ek baar laut aao; chahe dobara chhod kar jaane ke liye hi sahi, tumhari aamad hi dil ki zindagi hai.',
+    verifiedWorksCount: 380,
+    accentColor: '#E6C280',
+    portraitGradient: 'from-rose-950/40 via-[#1C1625] to-[#0B0B0F]',
+    sourceReferences: ['Tanha Tanha', 'Dard-e-Aashob', 'Jana Jana', 'Kulliyat-e-Faraz'],
+    relatedPoetIds: ['faiz', 'ghalib', 'jaun'],
+    popularCouplets: [
+      {
+        id: 'faraz_1',
+        poetId: 'faraz',
+        poetName: 'Ahmad Faraz',
+        linesRoman: [
+          'Suna hai log use aankh bhar ke dekhte hain,',
+          'So us ke shahar mein kuch din thehar ke dekhte hain.'
+        ],
+        hinglishMeaning:
+          'Shayar mehboob ke husn aur charche sun kar uske shehar me thoda ruk kar khud us deedaar ka lutf uthane ki tamanna karta hai.',
+        moods: ['Ishq', 'Yaadein'],
+        form: 'Sher',
+        tags: ['aankh-bhar', 'shahar', 'deedaar'],
+        difficultWords: [{ word: 'Thehar ke', meaning: 'Ruk kar / To stay' }]
+      },
+      {
+        id: 'faraz_2',
+        poetId: 'faraz',
+        poetName: 'Ahmad Faraz',
+        linesRoman: [
+          'Ab ke hum bichhde toh shaayad kabhi khwaabon mein milein,',
+          'Jis tarah sookhe hue phool kitaabon mein milein.'
+        ],
+        hinglishMeaning:
+          'Judai ka aisa dardnaak manzar jahan do aashiq hamesha ke liye aise alag ho gaye jaise kitaabon ke andar sukhe hue murjhaye gulab.',
+        moods: ['Judai', 'Dard', 'Yaadein'],
+        form: 'Sher',
+        tags: ['khwaab', 'kitaab', 'sookhe-phool'],
+        difficultWords: [{ word: 'Bichhde', meaning: 'Separated / Alag hue' }]
+      }
+    ],
+    poems: []
+  },
+  {
+    id: 'nidafazli',
+    nameRoman: 'Nida Fazli',
+    takhallus: 'Nida',
+    era: 'Contemporary Humanist Era',
+    eraDates: '1938 – 2016',
+    languages: ['Urdu', 'Hindi'],
+    birthPlace: 'Delhi / Gwalior / Mumbai',
+    bioHinglish:
+      'Ghar, maa, bache aur aam insaan ke roz-marra rishton ko aisi saadgi se likhne wale shayar jinka har sher dil ko chhoo leta hai. Partition ke waqt poora parivar Pakistan chala gaya par Nida Hindostan ki mitti me hi rahe.',
+    historicalContextHinglish:
+      'Modern metro city ki akelapan aur bheed ke beech rishton ki ghumti hui sacchayi ko aam zabaan me piroya. Jagjit Singh saheb ne inke lafzon ko aisi aawaz di jo har ghar ki goonj ban gayi.',
+    majorThemes: ['Maa Aur Ghar', 'Aam Aadmi Ka Dard', 'Shehri Akelapan', 'Bachpan Aur Yaadein'],
+    signatureCouplet: [
+      'Kabhi kisi ko mukammal jahan nahi milta,',
+      'Kahin zameen to kahin aasmaan nahi milta.'
+    ],
+    signatureMeaning:
+      'Zindagi me kisi ko bhi har cheez poori nahi milti; har kisi ke muqaddar me koi na koi kami reh hi jaati hai, yahi is jahan ki dastoor hai.',
+    verifiedWorksCount: 240,
+    accentColor: '#C6A66B',
+    portraitGradient: 'from-teal-950/40 via-[#15151C] to-[#0B0B0F]',
+    sourceReferences: ['Lafzon Ka Pul', 'Mor Naach', 'Aankhon Bhar Aakash', 'Duniya Jise Kehte Hain'],
+    relatedPoetIds: ['bashir', 'dushyant', 'kabir'],
+    popularCouplets: [
+      {
+        id: 'nida_1',
+        poetId: 'nidafazli',
+        poetName: 'Nida Fazli',
+        linesRoman: [
+          'Besan ki saundhi roti par khatti chatni jaisi maa,',
+          'Yaad aati hai chauke-baasan chimta-phookni jaisi maa.'
+        ],
+        hinglishMeaning:
+          'Maa ki mamta aur ghar ke desi choolhe-chauke ka itna sacha aur bholapan bhara bayan jo ankhon me aansu la deta hai.',
+        moods: ['Yaadein', 'Zindagi'],
+        form: 'Sher',
+        tags: ['maa', 'ghar', 'saundhi-roti'],
+        difficultWords: [{ word: 'Chauke-baasan', meaning: 'Kitchen ke bartan aur chulha' }]
+      },
+      {
+        id: 'nida_2',
+        poetId: 'nidafazli',
+        poetName: 'Nida Fazli',
+        linesRoman: [
+          'Duniya jise kehte hain jaadugari ka khilona hai,',
+          'Mil gaya to mitti hai kho gaya to sona hai.'
+        ],
+        hinglishMeaning:
+          'Insaan ki fitrat hai ki jo cheez paas hoti hai uski qadar nahi karta aur jo haath se chali jaati hai use sabse anmol samajh kar rota rehta hai.',
+        moods: ['Falsafa', 'Zindagi'],
+        form: 'Sher',
+        tags: ['duniya', 'mitti', 'sona'],
+        difficultWords: [{ word: 'Jaadugari', meaning: 'Illusion / Maya' }]
+      }
+    ],
+    poems: []
+  },
+  {
+    id: 'bashir',
+    nameRoman: 'Dr. Bashir Badr',
+    takhallus: 'Bashir',
+    era: 'Modern Lyrical Maestro',
+    eraDates: '1935 – Present',
+    languages: ['Urdu', 'Hindi'],
+    birthPlace: 'Ayodhya / Kanpur / Meerut / Bhopal',
+    bioHinglish:
+      'Chhote-chhote aam lafzon se aisi jaadugari paida karne wale shayar jinka kalam dil ki har dharkan ko mehsoos hota hai. Sahitya Akademi aur Padma Shri se sammanit is ustaad ne ghazal ko har aam Hindustani ki boli bana diya.',
+    historicalContextHinglish:
+      'Meerut dangon me apna ghar aur saari kitabein jalne ke baad bhi inhone nafrat ke khilaf sirf mohabbat, deepak aur ujale ka kalam chhedna jari rakha.',
+    majorThemes: ['Ujale Aur Chirag', 'Dushmani Me Sharafat', 'Ishq Ki Saadgi', 'Yaadein'],
+    signatureCouplet: [
+      'Ujale apni yaadon ke hamare saath rehne do,',
+      'Na jaane kis gali mein zindagi ki shaam ho jaye.'
+    ],
+    signatureMeaning:
+      'Beete hue khush-gawar lamhon aur yaadon ko sambhaal kar rakhein, kyunki zindagi ka safar anjaan hai aur kab aakhri mod aa jaye kisi ko maloom nahi.',
+    verifiedWorksCount: 280,
+    accentColor: '#C6A66B',
+    portraitGradient: 'from-amber-900/30 via-[#26152B] to-[#0B0B0F]',
+    sourceReferences: ['Ujale Apni Yaadon Ke', 'Aahat', 'Roshni Ke Khadde', 'Kulliyat-e-Bashir Badr'],
+    relatedPoetIds: ['faraz', 'nidafazli', 'wasim'],
+    popularCouplets: [
+      {
+        id: 'bashir_1',
+        poetId: 'bashir',
+        poetName: 'Dr. Bashir Badr',
+        linesRoman: [
+          'Koi haath bhi na milayega jo gale miloge tapaak se,',
+          'Ye naye mizaj ka shahar hai zara faasle se mila karo.'
+        ],
+        hinglishMeaning:
+          'Modern zamane me log aam sachche jazbaaton se darte hain; is shehri dikhawe ki duniya me thodi doori aur thehraav rakh kar milna samajhdari hai.',
+        moods: ['Falsafa', 'Zindagi'],
+        form: 'Sher',
+        tags: ['faasla', 'shahar', 'mizaj'],
+        difficultWords: [{ word: 'Tapaak se', meaning: 'Garam-joshi se / With sudden warmth' }]
+      },
+      {
+        id: 'bashir_2',
+        poetId: 'bashir',
+        poetName: 'Dr. Bashir Badr',
+        linesRoman: [
+          'Dushmani jam kar karo lekin ye gunjaish rahe,',
+          'Jab kabhi hum dost ho jayein to sharminda na hon.'
+        ],
+        hinglishMeaning:
+          'Kisi se ikhtilaf ya dushmani me bhi maryada aur sharafat ki hadd paar mat karo, taaki agar kal dosti ki naubat aaye toh aankh milane ki sharam na bache.',
+        moods: ['Falsafa', 'Khuddaari'],
+        form: 'Sher',
+        tags: ['dushmani', 'sharafat', 'dosti'],
+        difficultWords: [{ word: 'Gunjaish', meaning: 'Scope / Room for reconciliation' }]
+      }
+    ],
+    poems: []
+  },
+  {
+    id: 'dushyant',
+    nameRoman: 'Dushyant Kumar',
+    takhallus: 'Dushyant',
+    era: 'Hindi Ghazal Pioneer & Inqilab',
+    eraDates: '1933 – 1975',
+    languages: ['Hindi', 'Urdu'],
+    birthPlace: 'Bijnor (UP), Bhopal',
+    bioHinglish:
+      'Hindustani Hindi ghazal ko naya janam aur inqilabi dhar dene wale krantikari kavi. Inka sangrah "Saaye Mein Dhoop" swatantrata ke baad ke bhrashtachar aur samajik anyay ke khilaf sabse teekhi aawaz bana.',
+    historicalContextHinglish:
+      '1970s ke aam manav ke nirasha, be-rozgari aur Emergency ke daur me unki ghazlon ne har chaatra, mazdoor aur aam nagrik ke dil me aag jala di.',
+    majorThemes: ['Inqilaab', 'Jana-Aakrosh', 'Satta Par Prahaar', 'Saaye Mein Dhoop', 'Umeed'],
+    signatureCouplet: [
+      'Ho gayi hai peer parvat si pighalni chahiye,',
+      'Is Himalay se koi Ganga nikalni chahiye.'
+    ],
+    signatureMeaning:
+      'Dukh, dard aur anyay ka pahad ab hadd paar kar chuka hai; ab is sthiti ko badalne ke liye koi naya kranti ka prawah aana hi chahiye.',
+    verifiedWorksCount: 180,
+    accentColor: '#D97706',
+    portraitGradient: 'from-orange-950/40 via-[#15151C] to-[#0B0B0F]',
+    sourceReferences: ['Saaye Mein Dhoop', 'Surya Ka Swagat', 'Awaazon Ke Ghere'],
+    relatedPoetIds: ['rahat', 'sahir', 'nidafazli'],
+    popularCouplets: [
+      {
+        id: 'dushyant_1',
+        poetId: 'dushyant',
+        poetName: 'Dushyant Kumar',
+        linesRoman: [
+          'Sirf hungama khada karna mera maqsad nahi,',
+          'Meri koshish hai ki ye surat badalni chahiye.'
+        ],
+        hinglishMeaning:
+          'Kavi ka lakshya sirf shor machana ya pradarshan karna nahi hai, balki vyavastha aur aam insaan ki sthiti me vastavik badlav lana hai.',
+        moods: ['Inqilaab', 'Khuddaari', 'Falsafa'],
+        form: 'Sher',
+        tags: ['surat-badalni', 'hungama', 'kranti'],
+        difficultWords: [{ word: 'Surat', meaning: 'Dasha / Reality' }]
+      },
+      {
+        id: 'dushyant_2',
+        poetId: 'dushyant',
+        poetName: 'Dushyant Kumar',
+        linesRoman: [
+          'Tere seene mein nahi toh mere seene mein sahi,',
+          'Ho kahin bhi aag lekin aag jalni chahiye.'
+        ],
+        hinglishMeaning:
+          'Parivartan aur anyay ke virodh ki aag chahe tere seene me ho ya mere, bas samaj me wo aatmsamman ki lau kabhi bujhni nahi chahiye.',
+        moods: ['Inqilaab', 'Junoon'],
+        form: 'Sher',
+        tags: ['aag', 'seena', 'kranti'],
+        difficultWords: [{ word: 'Lau', meaning: 'Flame / Jyoti' }]
+      }
+    ],
+    poems: []
+  },
+  {
+    id: 'amrita',
+    nameRoman: 'Amrita Pritam',
+    takhallus: 'Amrita',
+    era: 'Progressive Punjabi & Partition Voice',
+    eraDates: '1919 – 2005',
+    languages: ['Punjabi', 'Hindi'],
+    birthPlace: 'Gujranwala (Punjab), Delhi',
+    bioHinglish:
+      'Punjabi sahitya ki azeem tareen aawaz aur pehli mahila Sahitya Akademi evam Jnanpith sammanit lekhika. Partition ke dard, aurat ke aatmsamman aur be-panaah ishq ko unhone aisi teekhi aur pavan lekhni di jo amar hai.',
+    historicalContextHinglish:
+      '1947 ke batware me Punjab ke lahu aur auraton par hue atyachar ko dekh kar unhone Waris Shah ko pukara jo poore up-mahadvip ka sabse dardnaak geet bana.',
+    majorThemes: ['Batware Ka Dard', 'Aurat Ka Aatmsamman', 'Ishq-e-Haqeeqi', 'Waris Shah Nu Awaaz', 'Pinjar'],
+    signatureCouplet: [
+      'Ajj aakhaan Waris Shah nu kithon qabraan vichon bol,',
+      'Te ajj kitaab-e-ishq da koi agla varka phol.'
+    ],
+    signatureMeaning:
+      'He Waris Shah! Apni qabr se bol uth aur dekh ki tere Punjab ki betiyan kitne dukh me hain; aaj prem ki kitaab ka koi agla naya panna khol.',
+    verifiedWorksCount: 220,
+    accentColor: '#E11D48',
+    portraitGradient: 'from-pink-950/40 via-[#261523] to-[#0B0B0F]',
+    sourceReferences: ['Ajj Aakhaan Waris Shah Nu', 'Pinjar', 'Raseedi Ticket', 'Kagaz Te Canvas'],
+    relatedPoetIds: ['shiv', 'bulleh', 'faiz'],
+    popularCouplets: [
+      {
+        id: 'amrita_1',
+        poetId: 'amrita',
+        poetName: 'Amrita Pritam',
+        linesRoman: [
+          'Main tenu phir milangi, kithe? kis tarah? pata nahi,',
+          'Shayad tere takhayyul di chinag ban ke tere canvas te utragi.'
+        ],
+        hinglishMeaning:
+          'Main tujhe phir milungi, kahan aur kaise pata nahi; shayad teri kalpana ki chingari ban kar tere chitra-pat (canvas) par ubhar aaungi.',
+        moods: ['Ishq', 'Yaadein', 'Tasawwuf'],
+        form: 'Kafi',
+        tags: ['phir-milangi', 'punjabi', 'canvas'],
+        difficultWords: [{ word: 'Takhayyul', meaning: 'Kalpana / Imagination' }]
+      }
+    ],
+    poems: []
+  },
+  {
+    id: 'shiv',
+    nameRoman: 'Shiv Kumar Batalvi',
+    takhallus: 'Batalvi (Birha Da Sultan)',
+    era: 'Romantic Lyricist of Punjab',
+    eraDates: '1936 – 1973',
+    languages: ['Punjabi'],
+    birthPlace: 'Bara Pind Lohtian / Batala (Punjab)',
+    bioHinglish:
+      'Punjab ke sabse laadley aur kam-umr Sahitya Akademi award pane wale shayar, jinhe "Birha Da Sultan" (King of Separation) kaha jata hai. Inke lafzon me jheel jaisi gehrai aur aag jaisi tadap thi.',
+    historicalContextHinglish:
+      'Adhunik Punjabi geet-kavita ko sangeet aur dard ki aisi chashni di jo Jagjit Singh aur Nusrat Fateh Ali Khan se lekar aam naujawanon tak goonji.',
+    majorThemes: ['Birha (Separation)', 'Joban Rutte Marna', 'Peda Aur Dard', 'Maa Da Pyar'],
+    signatureCouplet: [
+      'Maye ni maye mere geetan de naina vich,',
+      'Birhon di radak pave.'
+    ],
+    signatureMeaning:
+      'O meri maa, mere likhe geeton ki aankhon me birha aur judai ki aisi chubhan hai jaise ret ka dukh dard ban kar chubh raha ho.',
+    verifiedWorksCount: 160,
+    accentColor: '#C6A66B',
+    portraitGradient: 'from-emerald-950/40 via-[#1C1625] to-[#0B0B0F]',
+    sourceReferences: ['Loonan', 'Peedan Da Paraga', 'Alvida', 'Aartian'],
+    relatedPoetIds: ['amrita', 'bulleh', 'jaun'],
+    popularCouplets: [
+      {
+        id: 'shiv_1',
+        poetId: 'shiv',
+        poetName: 'Shiv Kumar Batalvi',
+        linesRoman: [
+          'Asan taan joban rutte marna,',
+          'Murr jaana asan bhare bharaye hijr tere di karni.'
+        ],
+        hinglishMeaning:
+          'Humne toh jawani ki mausam me hi vida ho jana hai; judai ke is dard ko jhelte hue jawani ke shikar par hi mukti pa leni hai.',
+        moods: ['Dard', 'Judai', 'Falsafa'],
+        form: 'Kafi',
+        tags: ['joban-rutte', 'punjabi', 'birha'],
+        difficultWords: [{ word: 'Joban rutte', meaning: 'In the spring of youth / Jawani mein' }]
+      }
+    ],
+    poems: []
+  },
+  {
+    id: 'wasim',
+    nameRoman: 'Wasim Barelvi',
+    takhallus: 'Wasim',
+    era: 'Contemporary Ghazal Master',
+    eraDates: '1940 – Present',
+    languages: ['Urdu', 'Hindi'],
+    birthPlace: 'Bareilly (UP)',
+    bioHinglish:
+      'Samkaaleen daur ke azeem Urdu shayar jinke sher dimaag ko jhanjhorne aur aatmsamman ko jagane me be-misaal hain. Bareilly College me Urdu ke Head of Department rahe aur duniya bhar me Hindustani tezeeb ka danka bajaya.',
+    historicalContextHinglish:
+      'Mushairon ki aab-o-hawa me jahan sasta manoranjan badhne laga tha, Wasim Barelvi ne gambheer falsafa aur aam vyaktitva ki maryada ko banaye rakha.',
+    majorThemes: ['Chehra Aur Haqeeqat', 'Khuddari', 'Aandhiyon Me Chirag', 'Waqt Aur Insaan'],
+    signatureCouplet: [
+      'Apne chehre se jo zahir hai chhupayein kaise,',
+      'Teri marzi ke mutabiq nazar aayein kaise.'
+    ],
+    signatureMeaning:
+      'Jo sachchai insaan ke chehre aur aatma par likhi hai use kaise chhupayein; hum kisi aur ki khushi ke liye apna astitva aur sachi pehchan kaise badal lein.',
+    verifiedWorksCount: 260,
+    accentColor: '#C6A66B',
+    portraitGradient: 'from-blue-950/40 via-[#15151C] to-[#0B0B0F]',
+    sourceReferences: ['Aandhiyon Ke Darmiyan', 'Tabassum Gham Ka', 'Charag-e-Aasman', 'Aankh Aansoo Hui'],
+    relatedPoetIds: ['bashir', 'rahat', 'nidafazli'],
+    popularCouplets: [
+      {
+        id: 'wasim_1',
+        poetId: 'wasim',
+        poetName: 'Wasim Barelvi',
+        linesRoman: [
+          'Aandhiyon ke khilaf chalna hai,',
+          'Ye diya hai isko jalna hai.'
+        ],
+        hinglishMeaning:
+          'Mushkilaat chahe kitni bhi tez aandhi bankar aayein, sach aur aatmsamman ke is diye ko har haal me roshan rehna hai.',
+        moods: ['Khuddaari', 'Falsafa', 'Junoon'],
+        form: 'Sher',
+        tags: ['aandhiyan', 'diya', 'khuddari'],
+        difficultWords: [{ word: 'Aandhiyon', meaning: 'Storms / Vipattiyan' }]
+      },
+      {
+        id: 'wasim_2',
+        poetId: 'wasim',
+        poetName: 'Wasim Barelvi',
+        linesRoman: [
+          'Jhooth wale kahin se kahin pahunch gaye,',
+          'Sacchai dhoondhti hi rahi raasta.'
+        ],
+        hinglishMeaning:
+          'Kalyug ka ye sacha drishya hai jahan chhal-kapat wale jaldi aage nikal jaate hain aur sach bolne wala imaandari ke kaante chun-ta rehta hai.',
+        moods: ['Falsafa', 'Zindagi'],
+        form: 'Sher',
+        tags: ['jhooth', 'sacchai', 'zamana'],
+        difficultWords: [{ word: 'Dhoondhti', meaning: 'Searching' }]
+      }
+    ],
+    poems: []
   }
 ];
+

@@ -127,30 +127,138 @@ export const SukhanCardDesigner: React.FC<SukhanCardDesignerProps> = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleDownloadCard = () => {
-    if (!cardRef.current) return;
-    // Export card text + visual representation
-    const textBlob = new Blob(
-      [
-        `========================================\n` +
-          `           S U K H A N  C A R D          \n` +
-          `========================================\n\n` +
-          `${config.poetryText}\n\n` +
-          `— ${config.attribution}\n\n` +
-          `Theme: ${activeTheme.name}\n` +
-          `Watermark: ${config.watermarkText}\n` +
-          `========================================\n`
-      ],
-      { type: 'text/plain;charset=utf-8' }
-    );
-    const url = URL.createObjectURL(textBlob);
+  const handleDownloadPng = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 750;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Draw background based on active theme
+    if (config.theme === 'burgundy') {
+      const grad = ctx.createLinearGradient(0, 0, 1200, 750);
+      grad.addColorStop(0, '#59263C');
+      grad.addColorStop(0.5, '#3C1425');
+      grad.addColorStop(1, '#0B0B0F');
+      ctx.fillStyle = grad;
+    } else if (config.theme === 'paper') {
+      ctx.fillStyle = '#F2E9DC';
+    } else if (config.theme === 'gold') {
+      ctx.fillStyle = '#0B0B0F';
+    } else if (config.theme === 'midnight') {
+      ctx.fillStyle = '#15151C';
+    } else {
+      // Obsidian default
+      const grad = ctx.createRadialGradient(600, 375, 50, 600, 375, 700);
+      grad.addColorStop(0, '#1a1829');
+      grad.addColorStop(1, '#0B0B0F');
+      ctx.fillStyle = grad;
+    }
+    ctx.fillRect(0, 0, 1200, 750);
+
+    // Outer & Inner Borders
+    const borderColor =
+      config.theme === 'paper'
+        ? '#7A3626'
+        : config.theme === 'midnight'
+        ? '#52525b'
+        : '#C6A66B';
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(40, 40, 1120, 670);
+
+    ctx.strokeStyle =
+      config.theme === 'paper'
+        ? 'rgba(122, 54, 38, 0.3)'
+        : config.theme === 'midnight'
+        ? 'rgba(113, 113, 122, 0.3)'
+        : 'rgba(198, 166, 107, 0.4)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(50, 50, 1100, 650);
+
+    // Decorative corner dots
+    ctx.fillStyle = borderColor;
+    [
+      [40, 40],
+      [1160, 40],
+      [40, 710],
+      [1160, 710]
+    ].forEach(([x, y]) => {
+      ctx.beginPath();
+      ctx.arc(x, y, 6, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Top Brand Crest
+    ctx.fillStyle = borderColor;
+    ctx.font = 'bold 16px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('✦   S U K H A N   ✦', 600, 95);
+
+    // Decorative Quote mark
+    ctx.font = 'italic 70px Georgia, serif';
+    ctx.fillStyle =
+      config.theme === 'paper' ? 'rgba(122, 54, 38, 0.2)' : 'rgba(198, 166, 107, 0.25)';
+    ctx.fillText('“', 600, 170);
+
+    // Poetry Content Lines
+    const lines = config.poetryText.split('\n').filter(Boolean);
+    const textColor =
+      config.theme === 'paper'
+        ? '#1A1815'
+        : config.theme === 'gold'
+        ? '#C6A66B'
+        : '#FFF5EA';
+
+    ctx.fillStyle = textColor;
+    const fontChoice =
+      config.font === 'cinzel'
+        ? 'Cinzel, Georgia, serif'
+        : config.font === 'sans'
+        ? 'system-ui, sans-serif'
+        : 'Georgia, serif';
+
+    const fontSizePx =
+      config.fontSize === 'xl' ? 36 : config.fontSize === 'lg' ? 32 : config.fontSize === 'sm' ? 24 : 28;
+
+    ctx.font = `italic ${fontSizePx}px ${fontChoice}`;
+    ctx.textAlign = config.alignment;
+
+    const startX = config.alignment === 'left' ? 120 : config.alignment === 'right' ? 1080 : 600;
+    const lineHeight = fontSizePx + 20;
+    const totalTextHeight = lines.length * lineHeight;
+    const startY = 320 - totalTextHeight / 2;
+
+    lines.forEach((line, index) => {
+      ctx.fillText(line.trim(), startX, startY + index * lineHeight);
+    });
+
+    // Attribution
+    if (config.showAttribution && config.attribution) {
+      ctx.font = `bold 24px Georgia, serif`;
+      ctx.fillStyle = borderColor;
+      ctx.textAlign = config.alignment;
+      ctx.fillText(`— ${config.attribution}`, startX, startY + lines.length * lineHeight + 40);
+    }
+
+    // Watermark
+    if (config.showWatermark && config.watermarkText) {
+      ctx.font = '14px system-ui, sans-serif';
+      ctx.fillStyle =
+        config.theme === 'paper' ? 'rgba(74, 66, 56, 0.7)' : 'rgba(198, 166, 107, 0.6)';
+      ctx.textAlign = 'center';
+      ctx.fillText(config.watermarkText, 600, 680);
+    }
+
+    // Export image as PNG
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `sukhan-sher-card-${Date.now()}.txt`;
-    document.body.appendChild(a);
+    a.download = `sukhan-card-${Date.now()}.png`;
+    a.href = canvas.toDataURL('image/png');
     a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadCard = () => {
+    handleDownloadPng();
   };
 
   return (

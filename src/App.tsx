@@ -142,6 +142,16 @@ const ThreatModelingApp = React.lazy(() =>
 const GitFlowApp = React.lazy(() =>
   import('./gitflow/GitFlowApp').then((m) => ({ default: m.GitFlowApp }))
 );
+const MindShieldApp = React.lazy(() =>
+  import('./psychology/MindShieldApp').then((m) => ({ default: m.MindShieldApp }))
+);
+const ZenFocusApp = React.lazy(() =>
+  import('./wellness/ZenFocusApp').then((m) => ({ default: m.ZenFocusApp }))
+);
+const VisualAtlasApp = React.lazy(() =>
+  import('./atlas/VisualAtlasApp').then((m) => ({ default: m.VisualAtlasApp }))
+);
+
 
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
@@ -292,6 +302,9 @@ export default function App() {
       if (h === '#webperf' || h === '#vitals' || h === '#lighthouse') return 'webperf';
       if (h === '#threatmodel' || h === '#stride' || h === '#dread') return 'threatmodel';
       if (h === '#gitflow' || h === '#rebase' || h === '#reflog') return 'gitflow';
+      if (h === '#mindshield' || h === '#psychology' || h === '#psych') return 'mindshield';
+      if (h === '#zenfocus' || h === '#wellness' || h === '#zen') return 'zenfocus';
+      if (h === '#atlas' || h === '#mindmap' || h === '#diagrams') return 'atlas';
       return 'bca';
     } catch {
       return 'bca';
@@ -400,6 +413,12 @@ export default function App() {
         setCurrentApp('threatmodel');
       } else if (h === '#gitflow' || h === '#rebase' || h === '#reflog') {
         setCurrentApp('gitflow');
+      } else if (h === '#mindshield' || h === '#psychology' || h === '#psych') {
+        setCurrentApp('mindshield');
+      } else if (h === '#zenfocus' || h === '#wellness' || h === '#zen') {
+        setCurrentApp('zenfocus');
+      } else if (h === '#atlas' || h === '#mindmap' || h === '#diagrams') {
+        setCurrentApp('atlas');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -470,6 +489,9 @@ export default function App() {
     else if (app === 'webperf') window.location.hash = 'webperf';
     else if (app === 'threatmodel') window.location.hash = 'threatmodel';
     else if (app === 'gitflow') window.location.hash = 'gitflow';
+    else if (app === 'mindshield') window.location.hash = 'mindshield';
+    else if (app === 'zenfocus') window.location.hash = 'zenfocus';
+    else if (app === 'atlas') window.location.hash = 'atlas';
   };
 
   const handleReturnToBca = () => {
@@ -1313,6 +1335,69 @@ export default function App() {
       <AppErrorBoundary appName="GitFlow Lab" onReset={handleReturnToBca}>
         <Suspense fallback={<AppLoadingSpinner appName="GitFlow Lab" />}>
           <GitFlowApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: MindShield Lab ---
+  if (currentApp === 'mindshield') {
+    return (
+      <AppErrorBoundary appName="MindShield Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="MindShield Lab" />}>
+          <MindShieldApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: ZenFocus ---
+  if (currentApp === 'zenfocus') {
+    return (
+      <AppErrorBoundary appName="ZenFocus" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="ZenFocus" />}>
+          <ZenFocusApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: VisualAtlas ---
+  if (currentApp === 'atlas') {
+    return (
+      <AppErrorBoundary appName="VisualAtlas" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="VisualAtlas" />}>
+          <VisualAtlasApp
             onBackToBca={handleReturnToBca}
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
             onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}

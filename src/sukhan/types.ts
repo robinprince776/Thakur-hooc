@@ -6,7 +6,48 @@ export type SukhanAppTab =
   | 'moods'
   | 'vault'
   | 'card-designer'
-  | 'resources';
+  | 'resources'
+  | 'dictionary'
+  | 'meter'
+  | 'tarannum'
+  | 'quiz';
+
+export interface LughatWord {
+  id: string;
+  word: string;
+  pronunciation: string;
+  origin: 'Urdu / Farsi' | 'Arabi' | 'Hindi / Sanskrit' | 'Punjabi';
+  category: 'Ishq' | 'Gham' | 'Falsafa' | 'Qudrat' | 'Mehfil' | 'Tasawwuf';
+  hinglishMeaning: string;
+  englishMeaning: string;
+  synonyms: string[];
+  exampleSher: {
+    lines: [string, string];
+    poet: string;
+  };
+}
+
+export interface BahrPattern {
+  id: string;
+  name: string;
+  arooziPattern: string; // e.g. "Fa'oolun Fa'oolun Fa'oolun Fa'ool"
+  weightPattern: string; // e.g. "122 122 122 12"
+  descriptionHinglish: string;
+  popularExample: [string, string];
+  poet: string;
+  cadence: 'Chhoti Bahr (Fast/Intense)' | 'Darmiyani Bahr (Balanced/Lyrical)' | 'Lambi Bahr (Grand/Majestic)';
+}
+
+export interface QuizQuestion {
+  id: string;
+  type: 'identify_poet' | 'complete_couplet';
+  sherLines: [string, string];
+  missingLineIndex?: 0 | 1;
+  options: string[];
+  correctAnswer: string;
+  explanationHinglish: string;
+  poetName: string;
+}
 
 export interface DifficultWord {
   word: string;

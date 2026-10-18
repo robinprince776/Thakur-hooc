@@ -109,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 </div>
                 <span className="text-[11px] font-medium text-slate-400 hidden xs:block">
-                  TechMaster Suite · 15 Apps
+                  TechMaster Suite · 42 Apps
                 </span>
               </div>
             </button>
@@ -198,14 +198,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>API-X</span>
             </button>
 
-            {/* 40-Apps Suite Switcher */}
+            {/* 42-Apps Suite Switcher */}
             <button
               onClick={onOpenAppSwitcher}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition-all shadow-md shadow-cyan-600/30 cursor-pointer"
-              title="Open 40-Apps Master Suite Switcher"
+              title="Open 42-Apps Master Suite Switcher"
             >
               <Grid className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">40 Apps</span>
+              <span className="hidden sm:inline">42 Apps</span>
             </button>
 
             {/* Dark / Light Toggle */}
@@ -284,15 +284,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <div className="flex items-center gap-2.5">
                 <Grid className="w-4 h-4" />
-                <span>Open 40-Apps Master Switcher</span>
+                <span>Open 42-Apps Master Switcher</span>
               </div>
-              <span className="text-[10px] bg-cyan-700/60 px-2 py-0.5 rounded font-mono">40 Apps</span>
+              <span className="text-[10px] bg-cyan-700/60 px-2 py-0.5 rounded font-mono">42+ Apps</span>
             </button>
 
             {/* Quick Links */}
             <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
               {[
                 { id: 'career' as CurrentAppType, label: 'TechCareer Hub', icon: BookOpen },
+                { id: 'mindshield' as CurrentAppType, label: 'MindShield Lab', icon: Shield },
+                { id: 'zenfocus' as CurrentAppType, label: 'ZenFocus', icon: Sparkles },
+                { id: 'atlas' as CurrentAppType, label: 'VisualAtlas', icon: Layers },
                 { id: 'cyberpath' as CurrentAppType, label: 'CyberPath', icon: Shield },
                 { id: 'sentinel' as CurrentAppType, label: 'SentinelLab', icon: Shield },
                 { id: 'academy' as CurrentAppType, label: 'CyberAcademy', icon: BookOpen },
@@ -301,6 +304,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 { id: 'netviz' as CurrentAppType, label: 'Net Visualizer', icon: Globe },
                 { id: 'dsa' as CurrentAppType, label: 'DSA Lab', icon: Layers },
                 { id: 'database' as CurrentAppType, label: 'SQL Sandbox', icon: Server },
+                { id: 'systemdesign' as CurrentAppType, label: 'SystemDesign', icon: Layers },
                 { id: 'cicd' as CurrentAppType, label: 'CI/CD DevSecOps', icon: GitBranch },
                 { id: 'containers' as CurrentAppType, label: 'Docker & K8s', icon: Cloud },
                 { id: 'cloudiam' as CurrentAppType, label: 'Cloud IAM', icon: Shield },
@@ -308,7 +312,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 { id: 'threatintel' as CurrentAppType, label: 'Threat Intel', icon: Shield },
                 { id: 'forensics' as CurrentAppType, label: 'DFIR Forensics', icon: Search },
                 { id: 'cryptomaster' as CurrentAppType, label: 'Crypto & PQC', icon: Sparkles },
-                { id: 'systemdesign' as CurrentAppType, label: 'SystemDesign', icon: Layers },
                 { id: 'compliance' as CurrentAppType, label: 'ComplianceLab', icon: Shield },
                 { id: 'webperf' as CurrentAppType, label: 'WebPerf Lab', icon: Sparkles },
                 { id: 'gitflow' as CurrentAppType, label: 'GitFlow Lab', icon: GitBranch },

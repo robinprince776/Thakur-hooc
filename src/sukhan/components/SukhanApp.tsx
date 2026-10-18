@@ -12,7 +12,11 @@ import {
   Menu,
   X,
   Sparkles,
-  Heart
+  Heart,
+  Activity,
+  Music,
+  HelpCircle,
+  Award
 } from 'lucide-react';
 import { SukhanAppTab, PoetryDraft } from '../types';
 import { SukhanPenIcon } from './SukhanPenIcon';
@@ -24,6 +28,10 @@ import { SukhanPersonalVault } from './SukhanPersonalVault';
 import { SukhanCardDesigner } from './SukhanCardDesigner';
 import { SukhanResources } from './SukhanResources';
 import { SukhanShayariLibrary } from './SukhanShayariLibrary';
+import { SukhanLughat } from './SukhanLughat';
+import { SukhanMeterAnalyzer } from './SukhanMeterAnalyzer';
+import { SukhanTarannumStudio } from './SukhanTarannumStudio';
+import { SukhanQuiz } from './SukhanQuiz';
 
 export interface SukhanAppProps {
   onBackToSuite?: () => void;
@@ -69,6 +77,10 @@ export const SukhanApp: React.FC<SukhanAppProps> = ({
     { id: 'library' as SukhanAppTab, label: 'Shayari Library', icon: Sparkles },
     { id: 'studio' as SukhanAppTab, label: 'Writing Studio', icon: PenTool },
     { id: 'poets' as SukhanAppTab, label: 'Shayaron Ki Duniya', icon: BookOpen },
+    { id: 'dictionary' as SukhanAppTab, label: 'Lughat (Dictionary)', icon: BookOpen },
+    { id: 'meter' as SukhanAppTab, label: 'Bahr & Arooz', icon: Activity },
+    { id: 'tarannum' as SukhanAppTab, label: 'Tarannum & Riyaz', icon: Music },
+    { id: 'quiz' as SukhanAppTab, label: 'Pehchano Shayar', icon: Award },
     { id: 'moods' as SukhanAppTab, label: 'Mood Explorer', icon: Compass },
     { id: 'vault' as SukhanAppTab, label: 'Meri Diary', icon: BookMarked },
     { id: 'card-designer' as SukhanAppTab, label: 'Card Designer', icon: Palette },
@@ -327,6 +339,40 @@ export const SukhanApp: React.FC<SukhanAppProps> = ({
           />
         )}
 
+        {activeTab === 'dictionary' && (
+          <SukhanLughat
+            onInsertIntoStudio={(word) => {
+              setStudioPrefill((prev) => ({
+                ...prev,
+                prompt: prev.prompt ? `${prev.prompt} ${word}` : word
+              }));
+              setActiveTab('studio');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onOpenCardDesigner={handleOpenCardDesigner}
+          />
+        )}
+
+        {activeTab === 'meter' && (
+          <SukhanMeterAnalyzer
+            onInsertTemplateIntoStudio={(meterName, pattern) => {
+              setStudioPrefill((prev) => ({
+                ...prev,
+                prompt: `// Bahr: ${meterName} (${pattern})\n\n`
+              }));
+              setActiveTab('studio');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onOpenCardDesigner={handleOpenCardDesigner}
+          />
+        )}
+
+        {activeTab === 'tarannum' && <SukhanTarannumStudio />}
+
+        {activeTab === 'quiz' && (
+          <SukhanQuiz onOpenCardDesigner={handleOpenCardDesigner} />
+        )}
+
         {activeTab === 'resources' && <SukhanResources />}
       </main>
 
@@ -360,6 +406,30 @@ export const SukhanApp: React.FC<SukhanAppProps> = ({
               Shayaron Ki Duniya
             </button>
             <button
+              onClick={() => setActiveTab('dictionary')}
+              className="hover:text-[#C6A66B] transition-colors cursor-pointer"
+            >
+              Lughat
+            </button>
+            <button
+              onClick={() => setActiveTab('meter')}
+              className="hover:text-[#C6A66B] transition-colors cursor-pointer"
+            >
+              Bahr & Arooz
+            </button>
+            <button
+              onClick={() => setActiveTab('tarannum')}
+              className="hover:text-[#C6A66B] transition-colors cursor-pointer"
+            >
+              Tarannum
+            </button>
+            <button
+              onClick={() => setActiveTab('quiz')}
+              className="hover:text-[#C6A66B] transition-colors cursor-pointer"
+            >
+              Quiz
+            </button>
+            <button
               onClick={() => setActiveTab('vault')}
               className="hover:text-[#C6A66B] transition-colors cursor-pointer"
             >
@@ -370,7 +440,7 @@ export const SukhanApp: React.FC<SukhanAppProps> = ({
                 onClick={onOpenAppSwitcher}
                 className="text-[#C6A66B] font-bold hover:underline cursor-pointer"
               >
-                App Suite (3 Apps)
+                App Suite (42 Apps)
               </button>
             )}
           </div>

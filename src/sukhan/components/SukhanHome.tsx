@@ -406,6 +406,110 @@ export const SukhanHome: React.FC<SukhanHomeProps> = ({
         </div>
       </section>
 
+      {/* NEW LUXURY FEATURE HUBS */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between border-b border-[#C6A66B]/20 pb-2">
+          <div>
+            <h3 className="text-base sm:text-lg font-serif font-bold text-[#FFF5EA]">
+              Naye Shahi Features &amp; Adabi Tools
+            </h3>
+            <p className="text-xs text-zinc-400">
+              Shayaron aur shauqeenon ke liye exclusive mauseeqi aur arooz tools
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* 1. Lughat */}
+          <div
+            onClick={() => onNavigateTab('dictionary')}
+            className="group cursor-pointer p-5 rounded-2xl bg-[#15151C] border border-[#C6A66B]/30 hover:border-[#C6A66B] hover:shadow-xl hover:shadow-[#C6A66B]/10 transition-all flex flex-col justify-between"
+          >
+            <div className="space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-[#59263C]/60 text-[#C6A66B] flex items-center justify-center border border-[#C6A66B]/20 group-hover:scale-105 transition-transform">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <h4 className="text-sm font-serif font-bold text-[#FFF5EA] group-hover:text-[#C6A66B] transition-colors">
+                Lughat (Dictionary)
+              </h4>
+              <p className="text-xs text-zinc-400 line-clamp-2">
+                Urdu, Farsi aur Punjabi ke anmol alfaaz ke maani, talaffuz aur ash'aar.
+              </p>
+            </div>
+            <div className="pt-3 text-[11px] font-semibold text-[#C6A66B] flex items-center gap-1">
+              <span>Lughat Kholein</span>
+              <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* 2. Bahr & Arooz */}
+          <div
+            onClick={() => onNavigateTab('meter')}
+            className="group cursor-pointer p-5 rounded-2xl bg-[#15151C] border border-cyan-500/30 hover:border-cyan-400 hover:shadow-xl hover:shadow-cyan-500/10 transition-all flex flex-col justify-between"
+          >
+            <div className="space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-cyan-950/60 text-cyan-400 flex items-center justify-center border border-cyan-500/30 group-hover:scale-105 transition-transform">
+                <Layers className="w-5 h-5" />
+              </div>
+              <h4 className="text-sm font-serif font-bold text-[#FFF5EA] group-hover:text-cyan-300 transition-colors">
+                Bahr &amp; Arooz Analyzer
+              </h4>
+              <p className="text-xs text-zinc-400 line-clamp-2">
+                Live Syllable Scansion (Taqti) tool jo aapke misre ka wazan aur Bahr match karta hai.
+              </p>
+            </div>
+            <div className="pt-3 text-[11px] font-semibold text-cyan-400 flex items-center gap-1">
+              <span>Meter Janchein</span>
+              <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* 3. Tarannum Studio */}
+          <div
+            onClick={() => onNavigateTab('tarannum')}
+            className="group cursor-pointer p-5 rounded-2xl bg-[#15151C] border border-amber-500/30 hover:border-amber-400 hover:shadow-xl hover:shadow-amber-500/10 transition-all flex flex-col justify-between"
+          >
+            <div className="space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-amber-950/60 text-amber-400 flex items-center justify-center border border-amber-500/30 group-hover:scale-105 transition-transform">
+                <Music className="w-5 h-5" />
+              </div>
+              <h4 className="text-sm font-serif font-bold text-[#FFF5EA] group-hover:text-amber-300 transition-colors">
+                Tarannum &amp; Tanpura
+              </h4>
+              <p className="text-xs text-zinc-400 line-clamp-2">
+                Pure client-side acoustic Tanpura drone, Hindustani Taal metronome aur voice recorder.
+              </p>
+            </div>
+            <div className="pt-3 text-[11px] font-semibold text-amber-400 flex items-center gap-1">
+              <span>Riyaz Shuru Karein</span>
+              <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* 4. Quiz */}
+          <div
+            onClick={() => onNavigateTab('quiz')}
+            className="group cursor-pointer p-5 rounded-2xl bg-[#15151C] border border-rose-500/30 hover:border-rose-400 hover:shadow-xl hover:shadow-rose-500/10 transition-all flex flex-col justify-between"
+          >
+            <div className="space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-rose-950/60 text-rose-400 flex items-center justify-center border border-rose-500/30 group-hover:scale-105 transition-transform">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <h4 className="text-sm font-serif font-bold text-[#FFF5EA] group-hover:text-rose-300 transition-colors">
+                Pehchano Shayar Quiz
+              </h4>
+              <p className="text-xs text-zinc-400 line-clamp-2">
+                Ash'aar padhein, shayar pehchanein aur streak banakar XP points kamayein.
+              </p>
+            </div>
+            <div className="pt-3 text-[11px] font-semibold text-rose-400 flex items-center gap-1">
+              <span>Khel Shuru Karein</span>
+              <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ADAB GUIDE / WRITING RESOURCES BANNER */}
       <section className="rounded-3xl p-6 bg-gradient-to-r from-[#59263C]/20 via-[#15151C] to-[#C6A66B]/10 border border-[#C6A66B]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">

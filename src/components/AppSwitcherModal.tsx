@@ -34,28 +34,36 @@ import {
   Gauge,
   GitMerge,
   ShieldAlert,
-  Share2
+  Share2,
+  Brain
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 
 export type CurrentAppType =
-  // 📚 Education & Career
+  // 🗺️ Career
+  | 'career'
+  // 📚 Education
   | 'bca'
   | 'techmaster'
-  | 'career'
   | 'linux'
   | 'pcxray'
   | 'netviz'
   | 'dsa'
-  // 💻 Development
+  // 💻 Dev & Cloud
   | 'compiler'
   | 'dev'
   | 'docucraft'
   | 'gitstudio'
   | 'database'
-  | 'dataformat'
-  | 'regexmaster'
   | 'systemdesign'
+  | 'cloudops'
+  | 'cicd'
+  | 'containers'
+  | 'cloudiam'
+  | 'netsec'
+  | 'apix'
+  | 'webperf'
+  | 'gitflow'
   // 🛡️ Security
   | 'cyber'
   | 'cyberpath'
@@ -69,20 +77,18 @@ export type CurrentAppType =
   | 'cryptomaster'
   | 'reversing'
   | 'threatmodel'
-  // ☁️ DevOps & AI
-  | 'cloudops'
-  | 'cicd'
-  | 'containers'
-  | 'cloudiam'
-  | 'netsec'
-  | 'apix'
-  | 'webperf'
-  | 'gitflow'
+  // 🧠 Psychology
+  | 'mindshield'
+  // 🗺️ Diagrams
+  | 'atlas'
+  // ⚙️ Utilities & Wellness
   | 'promptcraft'
-  // 🔒 Privacy & Life
   | 'calc'
   | 'focus'
+  | 'zenfocus'
   | 'compliance'
+  | 'dataformat'
+  | 'regexmaster'
   | 'sukhan';
 
 interface AppSwitcherModalProps {
@@ -94,7 +100,7 @@ interface AppSwitcherModalProps {
 
 interface AppItem {
   id: CurrentAppType;
-  category: 'Education' | 'Development' | 'Security' | 'DevOps & AI' | 'Privacy & Life';
+  category: 'Career' | 'Education' | 'Security' | 'Dev' | 'Psychology' | 'Diagrams' | 'Utilities';
   title: string;
   subtitle: string;
   tagline: string;
@@ -106,7 +112,61 @@ interface AppItem {
 }
 
 const ALL_APPS: AppItem[] = [
-  // 📚 Education & Career (7 Apps)
+  // 🎯 Career (1 App)
+  {
+    id: 'career',
+    category: 'Career',
+    title: 'TechCareer Hub',
+    subtitle: 'Roadmaps, Salaries & AI Interviewer',
+    tagline: 'Cybersecurity, Cloud & AI Careers · ₹5L to ₹1.5Cr+',
+    description: '6-Month step-by-step roadmaps (SOC, Pentester, Cloud), FAANG salary benchmarks, certifications guide, and simulated interview evaluations.',
+    badge: 'Career Mega-Hub',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    hash: '#career',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md">
+        <Briefcase className="w-5 h-5 text-emerald-200" />
+      </div>
+    )
+  },
+
+  // 🧠 Psychology (1 App)
+  {
+    id: 'mindshield',
+    category: 'Psychology',
+    title: 'MindShield Lab',
+    subtitle: 'Human Psychology & Social Defense',
+    tagline: 'Cognitive Biases · Dark UX Defense · Cialdini Rules · Phishing Sim',
+    description: 'Master cognitive biases exploited by hackers, defeat manipulative Dark UX patterns, study Cialdini persuasion principles, and simulate social engineering defenses.',
+    badge: 'Human Defense',
+    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    hash: '#mindshield',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
+        <Brain className="w-5 h-5 text-purple-200" />
+      </div>
+    )
+  },
+
+  // 🗺️ Diagrams & Mind Maps (1 App)
+  {
+    id: 'atlas',
+    category: 'Diagrams',
+    title: 'VisualAtlas',
+    subtitle: 'Interactive Mind Maps & Architecture',
+    tagline: 'OSI 7-Layers · Cyber Kill Chain · C Pointer Memory · K8s Control Plane',
+    description: 'The ultimate visual revision workbench. Clickable dynamic architecture diagrams spanning networking, cybersecurity kill chain, C stack/heap memory, and Kubernetes.',
+    badge: 'Visual Engine',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#atlas',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-md">
+        <Layers className="w-5 h-5 text-cyan-200" />
+      </div>
+    )
+  },
+
+  // 📚 Education (6 Apps)
   {
     id: 'bca',
     category: 'Education',
@@ -136,22 +196,6 @@ const ALL_APPS: AppItem[] = [
     icon: (
       <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-700 flex items-center justify-center text-white shadow-md">
         <BookOpen className="w-5 h-5 text-cyan-200" />
-      </div>
-    )
-  },
-  {
-    id: 'career',
-    category: 'Education',
-    title: 'TechCareer Hub',
-    subtitle: 'Roadmaps, Salaries & AI Interviewer',
-    tagline: 'Cybersecurity, Cloud & AI Careers · ₹5L to ₹1.5Cr+',
-    description: '6-Month step-by-step roadmaps (SOC, Pentester, Cloud), FAANG salary benchmarks, certifications guide, and simulated interview evaluations.',
-    badge: 'Career Mega-Hub',
-    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-    hash: '#career',
-    icon: (
-      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md">
-        <Briefcase className="w-5 h-5 text-emerald-200" />
       </div>
     )
   },
@@ -220,137 +264,7 @@ const ALL_APPS: AppItem[] = [
     )
   },
 
-  // 💻 Development (8 Apps)
-  {
-    id: 'compiler',
-    category: 'Development',
-    title: 'Simple C Compiler',
-    subtitle: 'In-Browser Sandbox & Runner',
-    tagline: 'Zero Setup · Standard Libraries · Instant Output',
-    description: 'Clean, distraction-free online C code execution sandbox with pre-loaded BCA curriculum templates and memory inspector.',
-    badge: 'Pure Dev',
-    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-    hash: '#compiler',
-    icon: (
-      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md">
-        <Terminal className="w-5 h-5" />
-      </div>
-    )
-  },
-  {
-    id: 'dev',
-    category: 'Development',
-    title: 'DevForge Web Studio',
-    subtitle: 'Frontend Code Lab',
-    tagline: 'HTML · CSS · JavaScript Live Preview',
-    description: 'Interactive web prototyping environment with split-pane live preview, console inspection, and asset loaders.',
-    badge: 'Frontend',
-    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-    hash: '#dev',
-    icon: (
-      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-white shadow-md">
-        <Wrench className="w-5 h-5" />
-      </div>
-    )
-  },
-  {
-    id: 'docucraft',
-    category: 'Development',
-    title: 'DocuCraft',
-    subtitle: 'Technical Docs & Markdown',
-    tagline: 'Live Rendering · MathJax · PDF Export Ready',
-    description: 'Technical document editor with GitHub-flavored Markdown, LaTeX equation rendering, and syntax-highlighted code blocks.',
-    badge: 'Docs',
-    badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
-    hash: '#docucraft',
-    icon: (
-      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-600 to-blue-700 flex items-center justify-center text-white shadow-md">
-        <FileText className="w-5 h-5" />
-      </div>
-    )
-  },
-  {
-    id: 'gitstudio',
-    category: 'Development',
-    title: 'GitStudio',
-    subtitle: 'Visual Git Tree & Branching',
-    tagline: 'Interactive DAG · Rebase · Cherry-Pick Simulator',
-    description: 'Interactive visualization of Git commit graphs, branch lifecycles, stash operations, and merge conflict resolution.',
-    badge: 'Git Tool',
-    badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
-    hash: '#gitstudio',
-    icon: (
-      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-600 to-red-700 flex items-center justify-center text-white shadow-md">
-        <GitBranch className="w-5 h-5" />
-      </div>
-    )
-  },
-  {
-    id: 'database',
-    category: 'Development',
-    title: 'SQL Playground',
-    subtitle: 'In-Memory Relational Database Sandbox',
-    tagline: 'SELECT · JOIN · GROUP BY · Schema Visualizer',
-    description: 'Interactive SQL query workbench with live employee/security dataset, explain visualizer, and syntax presets.',
-    badge: 'SQL Sandbox',
-    badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-    hash: '#database',
-    icon: (
-      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md">
-        <Database className="w-5 h-5 text-blue-200" />
-      </div>
-    )
-  },
-  {
-    id: 'dataformat',
-    category: 'Development',
-    title: 'Data Formatter & Minifier',
-    subtitle: 'JSON, YAML & XML Parser',
-    tagline: 'Beautify · Minify · Syntax Validator · Escaper',
-    description: 'Instant client-side JSON/YAML/XML formatting, tree inspection, payload minification, and schema validation.',
-    badge: 'Data Utility',
-    badgeColor: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
-    hash: '#dataformat',
-    icon: (
-      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-600 to-emerald-700 flex items-center justify-center text-white shadow-md">
-        <FileText className="w-5 h-5 text-teal-200" />
-      </div>
-    )
-  },
-  {
-    id: 'regexmaster',
-    category: 'Development',
-    title: 'Regex Master Lab',
-    subtitle: 'Real-Time Regular Expression Playground',
-    tagline: 'Live Regex Matcher · Group Capturing · Security Patterns',
-    description: 'High-speed client-side regex tester with match highlighting, capture group extraction, and common security regexes.',
-    badge: 'Regex Pro',
-    badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
-    hash: '#regexmaster',
-    icon: (
-      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-700 flex items-center justify-center text-white shadow-md">
-        <Code2 className="w-5 h-5 text-indigo-200" />
-      </div>
-    )
-  },
-  {
-    id: 'systemdesign',
-    category: 'Development',
-    title: 'SystemDesign Lab',
-    subtitle: 'Distributed Systems & Architecture Sim',
-    tagline: 'CAP Theorem · Ingress QPS Sim · Caching Patterns',
-    description: 'Interactive high-scale architecture simulator with CDN, Redis cache-aside, DB read replicas, and back-of-the-envelope estimation.',
-    badge: 'Architecture',
-    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
-    hash: '#systemdesign',
-    icon: (
-      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-md">
-        <Share2 className="w-5 h-5 text-cyan-200" />
-      </div>
-    )
-  },
-
-  // 🛡️ Security & Defense (12 Apps)
+  // 🛡️ Security (12 Apps)
   {
     id: 'cyber',
     category: 'Security',
@@ -544,10 +458,106 @@ const ALL_APPS: AppItem[] = [
     )
   },
 
-  // ☁️ DevOps & AI (9 Apps)
+  // 💻 Dev & Cloud (14 Apps)
+  {
+    id: 'compiler',
+    category: 'Dev',
+    title: 'Simple C Compiler',
+    subtitle: 'In-Browser Sandbox & Runner',
+    tagline: 'Zero Setup · Standard Libraries · Instant Output',
+    description: 'Clean, distraction-free online C code execution sandbox with pre-loaded BCA curriculum templates and memory inspector.',
+    badge: 'Pure Dev',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    hash: '#compiler',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md">
+        <Terminal className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'dev',
+    category: 'Dev',
+    title: 'DevForge Web Studio',
+    subtitle: 'Frontend Code Lab',
+    tagline: 'HTML · CSS · JavaScript Live Preview',
+    description: 'Interactive web prototyping environment with split-pane live preview, console inspection, and asset loaders.',
+    badge: 'Frontend',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    hash: '#dev',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-white shadow-md">
+        <Wrench className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'docucraft',
+    category: 'Dev',
+    title: 'DocuCraft',
+    subtitle: 'Technical Docs & Markdown',
+    tagline: 'Live Rendering · MathJax · PDF Export Ready',
+    description: 'Technical document editor with GitHub-flavored Markdown, LaTeX equation rendering, and syntax-highlighted code blocks.',
+    badge: 'Docs',
+    badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+    hash: '#docucraft',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-600 to-blue-700 flex items-center justify-center text-white shadow-md">
+        <FileText className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'gitstudio',
+    category: 'Dev',
+    title: 'GitStudio',
+    subtitle: 'Visual Git Tree & Branching',
+    tagline: 'Interactive DAG · Rebase · Cherry-Pick Simulator',
+    description: 'Interactive visualization of Git commit graphs, branch lifecycles, stash operations, and merge conflict resolution.',
+    badge: 'Git Tool',
+    badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    hash: '#gitstudio',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-600 to-red-700 flex items-center justify-center text-white shadow-md">
+        <GitBranch className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'database',
+    category: 'Dev',
+    title: 'SQL Playground',
+    subtitle: 'In-Memory Relational Database Sandbox',
+    tagline: 'SELECT · JOIN · GROUP BY · Schema Visualizer',
+    description: 'Interactive SQL query workbench with live employee/security dataset, explain visualizer, and syntax presets.',
+    badge: 'SQL Sandbox',
+    badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    hash: '#database',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md">
+        <Database className="w-5 h-5 text-blue-200" />
+      </div>
+    )
+  },
+  {
+    id: 'systemdesign',
+    category: 'Dev',
+    title: 'SystemDesign Lab',
+    subtitle: 'Distributed Systems & Architecture Sim',
+    tagline: 'CAP Theorem · Ingress QPS Sim · Caching Patterns',
+    description: 'Interactive high-scale architecture simulator with CDN, Redis cache-aside, DB read replicas, and back-of-the-envelope estimation.',
+    badge: 'Architecture',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#systemdesign',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-md">
+        <Share2 className="w-5 h-5 text-cyan-200" />
+      </div>
+    )
+  },
   {
     id: 'cloudops',
-    category: 'DevOps & AI',
+    category: 'Dev',
     title: 'CloudOps',
     subtitle: 'Cloud & Infrastructure Reference',
     tagline: 'AWS · Docker · Kubernetes · Terraform Blueprints',
@@ -563,7 +573,7 @@ const ALL_APPS: AppItem[] = [
   },
   {
     id: 'cicd',
-    category: 'DevOps & AI',
+    category: 'Dev',
     title: 'DevSecOps CI/CD Lab',
     subtitle: 'Automated Pipeline Hardening',
     tagline: 'GitHub Actions · SAST (Semgrep) · Secret Scanning (TruffleHog)',
@@ -579,7 +589,7 @@ const ALL_APPS: AppItem[] = [
   },
   {
     id: 'containers',
-    category: 'DevOps & AI',
+    category: 'Dev',
     title: 'Container & K8s Lab',
     subtitle: 'Docker Hardening & Kubernetes Pods',
     tagline: 'Multi-Stage Dockerfile · Non-Root User · K8s SecurityContext',
@@ -595,7 +605,7 @@ const ALL_APPS: AppItem[] = [
   },
   {
     id: 'cloudiam',
-    category: 'DevOps & AI',
+    category: 'Dev',
     title: 'Cloud IAM & Policy Studio',
     subtitle: 'Least Privilege AWS IAM Builder',
     tagline: 'JSON IAM Policies · S3 Bucket Policy Audit · Confused Deputy Fix',
@@ -611,7 +621,7 @@ const ALL_APPS: AppItem[] = [
   },
   {
     id: 'netsec',
-    category: 'DevOps & AI',
+    category: 'Dev',
     title: 'NetSec Studio',
     subtitle: 'Web Security & Headers',
     tagline: 'CSP Generator · HSTS · CORS · Cookie Hardening',
@@ -627,7 +637,7 @@ const ALL_APPS: AppItem[] = [
   },
   {
     id: 'apix',
-    category: 'DevOps & AI',
+    category: 'Dev',
     title: 'ApiX',
     subtitle: 'API Inspector & HTTP Client',
     tagline: 'cURL Converter · REST Sandbox · Auth Tester',
@@ -643,7 +653,7 @@ const ALL_APPS: AppItem[] = [
   },
   {
     id: 'webperf',
-    category: 'DevOps & AI',
+    category: 'Dev',
     title: 'WebPerf Lab',
     subtitle: 'Core Web Vitals & Asset Optimizer',
     tagline: 'LCP, INP, CLS Simulator · AVIF/WebP Compression · Cache-Control',
@@ -659,7 +669,7 @@ const ALL_APPS: AppItem[] = [
   },
   {
     id: 'gitflow',
-    category: 'DevOps & AI',
+    category: 'Dev',
     title: 'GitFlow Lab',
     subtitle: 'Pro Git & Disaster Recovery',
     tagline: 'Rebase vs Merge · Cherry-Pick · Reflog Recovery · Bisect',
@@ -673,9 +683,43 @@ const ALL_APPS: AppItem[] = [
       </div>
     )
   },
+
+  // ⚙️ Utilities & Wellness (8 Apps)
+  {
+    id: 'zenfocus',
+    category: 'Utilities',
+    title: 'ZenFocus',
+    subtitle: 'Burnout Prevention & Mindful Flow',
+    tagline: '4-7-8 Breathwork Pacer · Web Audio Soundscapes · Shutdown Ritual',
+    description: 'Engineer wellness workspace with interactive vagus nerve breathing pacer, synthesizer-generated brown noise and binaural beats, and evening shutdown routines.',
+    badge: 'Wellness',
+    badgeColor: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+    hash: '#zenfocus',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-600 to-emerald-600 flex items-center justify-center text-white shadow-md">
+        <Heart className="w-5 h-5 text-teal-200" />
+      </div>
+    )
+  },
+  {
+    id: 'focus',
+    category: 'Utilities',
+    title: 'Focus Pomodoro Studio',
+    subtitle: 'Deep Work & Pomodoro Lab',
+    tagline: '25/5 Timer · Ambient White Noise · Daily Goal Tracker',
+    description: 'Clean distraction-free focus workspace with Pomodoro cycles, streak counters, and customizable session audio signals.',
+    badge: 'Focus',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    hash: '#focus',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-800 flex items-center justify-center text-white shadow-md">
+        <Clock className="w-5 h-5 text-emerald-200" />
+      </div>
+    )
+  },
   {
     id: 'promptcraft',
-    category: 'DevOps & AI',
+    category: 'Utilities',
     title: 'PromptCraft',
     subtitle: 'AI Prompt Engineering Lab',
     tagline: 'Chain-of-Thought · Few-Shot · System Prompt Builder',
@@ -689,11 +733,9 @@ const ALL_APPS: AppItem[] = [
       </div>
     )
   },
-
-  // 🔒 Privacy & Life (4 Apps)
   {
     id: 'calc',
-    category: 'Privacy & Life',
+    category: 'Utilities',
     title: 'CalcVault',
     subtitle: 'Discreet Calculator & Vault',
     tagline: 'P2P Encrypted Mesh · Zero Server Storage · Stealth UI',
@@ -708,24 +750,40 @@ const ALL_APPS: AppItem[] = [
     )
   },
   {
-    id: 'focus',
-    category: 'Privacy & Life',
-    title: 'Focus & Productivity Studio',
-    subtitle: 'Deep Work & Pomodoro Lab',
-    tagline: '25/5 Timer · Ambient White Noise · Daily Goal Tracker',
-    description: 'Clean distraction-free focus workspace with Pomodoro cycles, streak counters, and customizable session audio signals.',
-    badge: 'Focus',
-    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-    hash: '#focus',
+    id: 'dataformat',
+    category: 'Utilities',
+    title: 'Data Formatter & Minifier',
+    subtitle: 'JSON, YAML & XML Parser',
+    tagline: 'Beautify · Minify · Syntax Validator · Escaper',
+    description: 'Instant client-side JSON/YAML/XML formatting, tree inspection, payload minification, and schema validation.',
+    badge: 'Data Utility',
+    badgeColor: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+    hash: '#dataformat',
     icon: (
-      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-800 flex items-center justify-center text-white shadow-md">
-        <Clock className="w-5 h-5 text-emerald-200" />
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-600 to-emerald-700 flex items-center justify-center text-white shadow-md">
+        <FileText className="w-5 h-5 text-teal-200" />
+      </div>
+    )
+  },
+  {
+    id: 'regexmaster',
+    category: 'Utilities',
+    title: 'Regex Master Lab',
+    subtitle: 'Real-Time Regular Expression Playground',
+    tagline: 'Live Regex Matcher · Group Capturing · Security Patterns',
+    description: 'High-speed client-side regex tester with match highlighting, capture group extraction, and common security regexes.',
+    badge: 'Regex Pro',
+    badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+    hash: '#regexmaster',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-700 flex items-center justify-center text-white shadow-md">
+        <Code2 className="w-5 h-5 text-indigo-200" />
       </div>
     )
   },
   {
     id: 'compliance',
-    category: 'Privacy & Life',
+    category: 'Utilities',
     title: 'ComplianceLab',
     subtitle: 'Cyber Laws & Audit Readiness',
     tagline: 'Indian IT Act 2000 · GDPR · SOC 2 · ISO 27001 · HIPAA',
@@ -741,7 +799,7 @@ const ALL_APPS: AppItem[] = [
   },
   {
     id: 'sukhan',
-    category: 'Privacy & Life',
+    category: 'Utilities',
     title: 'SUKHAN',
     subtitle: 'Alfaaz, Ehsaas Aur Adab',
     tagline: 'Urdu & Hindi Poetry · Audio · Sher Designer',
@@ -757,7 +815,7 @@ const ALL_APPS: AppItem[] = [
   }
 ];
 
-const CATEGORIES = ['All', 'Education', 'Development', 'Security', 'DevOps & AI', 'Privacy & Life'] as const;
+const CATEGORIES = ['All', 'Career', 'Education', 'Security', 'Dev', 'Psychology', 'Diagrams', 'Utilities'] as const;
 
 export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
   isOpen,
@@ -799,11 +857,11 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
               <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
                 TechMaster Ultimate Ecosystem
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-cyan-950 text-cyan-400 border border-cyan-800">
-                  40 Applications · Zero Lag
+                  42+ Applications · Zero Lag
                 </span>
               </h2>
               <p className="text-xs text-slate-400">
-                100% legal, defensive, educational suite covering BCA, Cybersecurity, Cloud, DevOps & Dev
+                100% legal, defensive, educational suite across Education, Security, Dev, Career, Psychology, Diagrams & Utilities
               </p>
             </div>
           </div>
@@ -840,7 +898,7 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search 40 applications..."
+              placeholder="Search 42 apps..."
               className="pl-9 pr-4 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-500 outline-none focus:border-cyan-500 w-full sm:w-64"
             />
           </div>
@@ -893,7 +951,7 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
 
         {/* Footer */}
         <div className="p-3.5 px-6 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between text-xs text-slate-500">
-          <span>Engineered by Prince Thakur · 40 Production Applications</span>
+          <span>Engineered by Prince Thakur · 42+ Production Applications</span>
           <span>Switch anytime via URL hash, top navigation or ⌘K</span>
         </div>
       </div>

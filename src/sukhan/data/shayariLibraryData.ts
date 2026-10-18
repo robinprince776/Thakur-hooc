@@ -755,5 +755,231 @@ export const SHAYARI_LIBRARY_DATA: LibrarySher[] = [
       { word: 'Matwali', meaning: 'Deewani ya mast-malang' }
     ],
     tags: ['sufiana', 'khusro', 'naina', 'khwaja', 'ishq']
+  },
+  // --- INQILAAB & TEVAR ---
+  {
+    id: 'inqilaab-1',
+    linesRoman: [
+      'Ho gayi hai peer parvat si pighalni chahiye,',
+      'Is Himalay se koi Ganga nikalni chahiye.'
+    ],
+    poetName: 'Dushyant Kumar',
+    poetId: 'dushyant',
+    mood: 'Inqilaab',
+    subMood: 'Kranti',
+    hinglishMeaning: 'Aam janta ka dukh ab pahaad ban chuka hai; ab is vyavastha se koi naya kranti ka prawah behna chahiye.',
+    difficultWords: [
+      { word: 'Peer', meaning: 'Dard ya peeda' },
+      { word: 'Parvat', meaning: 'Pahaad' }
+    ],
+    tags: ['inqilaab', 'dushyant', 'ganga', 'kranti', 'peer']
+  },
+  {
+    id: 'inqilaab-2',
+    linesRoman: [
+      'Sirf hungama khada karna mera maqsad nahi,',
+      'Meri koshish hai ki ye surat badalni chahiye.'
+    ],
+    poetName: 'Dushyant Kumar',
+    poetId: 'dushyant',
+    mood: 'Inqilaab',
+    subMood: 'Badlav',
+    hinglishMeaning: 'Kavi ka uddeshya sirf shor machana nahi, balki aam logon ki dasha aur sthiti ko vastav me badalna hai.',
+    difficultWords: [
+      { word: 'Hungama', meaning: 'Shor ya upadrav' },
+      { word: 'Surat', meaning: 'Dasha ya roop' }
+    ],
+    tags: ['inqilaab', 'dushyant', 'surat', 'badlav']
+  },
+  {
+    id: 'inqilaab-3',
+    linesRoman: [
+      'Ek shehanshah ne daulat ka sahara le kar,',
+      'Hum gareebon ki mohabbat ka udaya hai mazaak.'
+    ],
+    poetName: 'Sahir Ludhianvi',
+    poetId: 'sahir',
+    mood: 'Inqilaab',
+    subMood: 'Samaji Haqeeqat',
+    hinglishMeaning: 'Taj Mahal ke daulat-bhare pradarshan par Sahir ka teekha prahaar ki ameer ne apne pyar ko chatanon me qaid karke gareebon ke saste pyar ko chhota saabit kiya.',
+    difficultWords: [
+      { word: 'Shehanshah', meaning: 'Mughal samrat (Shah Jahan)' },
+      { word: 'Mazaak', meaning: 'Upahaas' }
+    ],
+    tags: ['sahir', 'inqilaab', 'taj-mahal', 'mohabbat']
+  },
+  // --- ISHQ & NAZAAKAT ---
+  {
+    id: 'faraz-1',
+    linesRoman: [
+      'Ranjish hi sahi dil hi dukhane ke liye aa,',
+      'Aa phir se mujhe chhod ke jaane ke liye aa.'
+    ],
+    poetName: 'Ahmad Faraz',
+    poetId: 'faraz',
+    mood: 'Ishq',
+    subMood: 'Dard-e-Dil',
+    hinglishMeaning: 'Chahe dil me narazgi ho ya giley-shikwe, bas ek baar laut aao; dobara chhod kar jaane ke liye hi sahi, tumhara aana hi zindagi hai.',
+    difficultWords: [
+      { word: 'Ranjish', meaning: 'Narazgi ya gila' },
+      { word: 'Dukhane', meaning: 'Takleef pahunchana' }
+    ],
+    tags: ['faraz', 'ishq', 'ranjish', 'mehdi-hassan']
+  },
+  {
+    id: 'faraz-2',
+    linesRoman: [
+      'Suna hai log use aankh bhar ke dekhte hain,',
+      'So us ke shahar mein kuch din thehar ke dekhte hain.'
+    ],
+    poetName: 'Ahmad Faraz',
+    poetId: 'faraz',
+    mood: 'Ishq',
+    subMood: 'Deedaar',
+    hinglishMeaning: 'Mehboob ke azeem husn ke charche sun kar shayar uske shehar me thoda thehar kar khud us jashn-e-husn ka deedar karna chahta hai.',
+    difficultWords: [
+      { word: 'Aankh bhar ke', meaning: 'Be-panah shauq se dekhna' },
+      { word: 'Thehar ke', meaning: 'Ruk kar' }
+    ],
+    tags: ['faraz', 'ishq', 'shahar', 'deedaar']
+  },
+  // --- FALSAFA & ZINDAGI ---
+  {
+    id: 'nida-1',
+    linesRoman: [
+      'Kabhi kisi ko mukammal jahan nahi milta,',
+      'Kahin zameen to kahin aasmaan nahi milta.'
+    ],
+    poetName: 'Nida Fazli',
+    poetId: 'nidafazli',
+    mood: 'Falsafa',
+    subMood: 'Haqeeqat-e-Hayat',
+    hinglishMeaning: 'Har insaan ki zindagi me koi na koi kami reh jaati hai; kisi ko bhi har cheez poori nahi milti, yahi kudarat ka nizaam hai.',
+    difficultWords: [
+      { word: 'Mukammal', meaning: 'Poora ya complete' },
+      { word: 'Jahan', meaning: 'Duniya' }
+    ],
+    tags: ['nida', 'falsafa', 'mukammal', 'zindagi']
+  },
+  {
+    id: 'nida-2',
+    linesRoman: [
+      'Duniya jise kehte hain jaadugari ka khilona hai,',
+      'Mil gaya to mitti hai kho gaya to sona hai.'
+    ],
+    poetName: 'Nida Fazli',
+    poetId: 'nidafazli',
+    mood: 'Falsafa',
+    subMood: 'Khwahish',
+    hinglishMeaning: 'Insaan ki aadat hai ki mili hui cheez ki qadar nahi karta aur jo haath se chhoot jaye use sabse anmol samajhta hai.',
+    difficultWords: [
+      { word: 'Jaadugari', meaning: 'Chhalawa ya illusion' },
+      { word: 'Khilona', meaning: 'Toy' }
+    ],
+    tags: ['nida', 'falsafa', 'mitti', 'sona']
+  },
+  {
+    id: 'bashir-1',
+    linesRoman: [
+      'Ujale apni yaadon ke hamare saath rehne do,',
+      'Na jaane kis gali mein zindagi ki shaam ho jaye.'
+    ],
+    poetName: 'Dr. Bashir Badr',
+    poetId: 'bashir',
+    mood: 'Yaadein',
+    subMood: 'Safarnaama',
+    hinglishMeaning: 'Beete lamhon ki khushboo aur roshni ko sambhal kar rakhein, kyunki zindagi anjaan hai aur kab kahan safar khatam ho jaye kisi ko maloom nahi.',
+    difficultWords: [
+      { word: 'Ujale', meaning: 'Roshni ya charag' },
+      { word: 'Shaam', meaning: 'Ant ya aakhri mod' }
+    ],
+    tags: ['bashir', 'yaadein', 'ujale', 'zindagi']
+  },
+  {
+    id: 'bashir-2',
+    linesRoman: [
+      'Dushmani jam kar karo lekin ye gunjaish rahe,',
+      'Jab kabhi hum dost ho jayein to sharminda na hon.'
+    ],
+    poetName: 'Dr. Bashir Badr',
+    poetId: 'bashir',
+    mood: 'Falsafa',
+    subMood: 'Insaniyat',
+    hinglishMeaning: 'Dushmani me bhi maryada ki hadd paar na karo, taaki agar kal dosti ka daur aaye to aankh jhukane ki sharam na bache.',
+    difficultWords: [
+      { word: 'Gunjaish', meaning: 'Gunjayesh ya sambhavna' },
+      { word: 'Sharminda', meaning: 'Lajjit' }
+    ],
+    tags: ['bashir', 'falsafa', 'dushmani', 'sharafat']
+  },
+  {
+    id: 'wasim-1',
+    linesRoman: [
+      'Apne chehre se jo zahir hai chhupayein kaise,',
+      'Teri marzi ke mutabiq nazar aayein kaise.'
+    ],
+    poetName: 'Wasim Barelvi',
+    poetId: 'wasim',
+    mood: 'Khuddaari',
+    subMood: 'Aatmasamman',
+    hinglishMeaning: 'Jo sachai humare andar aur chehre par safai se darj hai use kaise chhipayein; hum kisi aur ki khushi ke liye apna vastavik astitva kaise badal lein.',
+    difficultWords: [
+      { word: 'Zahir', meaning: 'Jo saaf dikhta ho' },
+      { word: 'Mutabiq', meaning: 'Anusaar / According to' }
+    ],
+    tags: ['wasim', 'khuddari', 'chehra', 'aatmasamman']
+  },
+  {
+    id: 'wasim-2',
+    linesRoman: [
+      'Aandhiyon ke khilaf chalna hai,',
+      'Ye diya hai isko jalna hai.'
+    ],
+    poetName: 'Wasim Barelvi',
+    poetId: 'wasim',
+    mood: 'Khuddaari',
+    subMood: 'Hausla',
+    hinglishMeaning: 'Mushkilon ki aandhiyan chahe kitni bhi tez hon, sach aur aatmasamman ke is diye ko har haal me roshan rehna hai.',
+    difficultWords: [
+      { word: 'Aandhiyon', meaning: 'Toofanon ke khilaf' },
+      { word: 'Diya', meaning: 'Deepak ya aatmasamman' }
+    ],
+    tags: ['wasim', 'hausla', 'aandhi', 'diya']
+  },
+  // --- PUNJABI CLASSICS ---
+  {
+    id: 'amrita-1',
+    linesRoman: [
+      'Ajj aakhaan Waris Shah nu kithon qabraan vichon bol,',
+      'Te ajj kitaab-e-ishq da koi agla varka phol.'
+    ],
+    poetName: 'Amrita Pritam',
+    poetId: 'amrita',
+    mood: 'Dard',
+    subMood: 'Dard-e-Punjab',
+    hinglishMeaning: 'Batware ke lahu aur auraton ke dard ko dekh kar Amrita ji ne Waris Shah ko pukara ki apni mazaar se bol uth aur prem ka naya panna khol.',
+    difficultWords: [
+      { word: 'Qabraan', meaning: 'Mazaaron vichon' },
+      { word: 'Varka', meaning: 'Panna / Page' }
+    ],
+    tags: ['amrita', 'punjabi', 'waris-shah', 'batwara']
+  },
+  {
+    id: 'shiv-1',
+    linesRoman: [
+      'Maye ni maye mere geetan de naina vich,',
+      'Birhon di radak pave.'
+    ],
+    poetName: 'Shiv Kumar Batalvi',
+    poetId: 'shiv',
+    mood: 'Dard',
+    subMood: 'Birha',
+    hinglishMeaning: 'O meri maa, mere geeton ki aankhon me birha aur judai ki aisi chubhan hai jaise ret ka dard dil ko cheerta ho.',
+    difficultWords: [
+      { word: 'Birhon', meaning: 'Judai / Separation' },
+      { word: 'Radak', meaning: 'Chubhan ya kanta' }
+    ],
+    tags: ['shiv', 'punjabi', 'birha', 'maa']
   }
 ];
+
