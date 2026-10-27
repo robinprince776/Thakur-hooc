@@ -148,6 +148,10 @@ const MindShieldApp = React.lazy(() =>
 const ZenFocusApp = React.lazy(() =>
   import('./wellness/ZenFocusApp').then((m) => ({ default: m.ZenFocusApp }))
 );
+const MediCoreApp = React.lazy(() =>
+  import("./medicore/MediCoreApp").then((m) => ({ default: m.MediCoreApp }))
+);
+
 const VisualAtlasApp = React.lazy(() =>
   import('./atlas/VisualAtlasApp').then((m) => ({ default: m.VisualAtlasApp }))
 );
@@ -305,6 +309,7 @@ export default function App() {
       if (h === '#mindshield' || h === '#psychology' || h === '#psych') return 'mindshield';
       if (h === '#zenfocus' || h === '#wellness' || h === '#zen') return 'zenfocus';
       if (h === '#atlas' || h === '#mindmap' || h === '#diagrams') return 'atlas';
+      if (h === '#medicore' || h === '#pharma' || h === '#pharmacy' || h === '#clinic') return 'medicore';
       return 'bca';
     } catch {
       return 'bca';
@@ -419,6 +424,8 @@ export default function App() {
         setCurrentApp('zenfocus');
       } else if (h === '#atlas' || h === '#mindmap' || h === '#diagrams') {
         setCurrentApp('atlas');
+      } else if (h === '#medicore' || h === '#pharma' || h === '#pharmacy' || h === '#clinic') {
+        setCurrentApp('medicore');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -492,6 +499,7 @@ export default function App() {
     else if (app === 'mindshield') window.location.hash = 'mindshield';
     else if (app === 'zenfocus') window.location.hash = 'zenfocus';
     else if (app === 'atlas') window.location.hash = 'atlas';
+    else if (app === 'medicore') window.location.hash = 'medicore';
   };
 
   const handleReturnToBca = () => {
@@ -1392,7 +1400,26 @@ export default function App() {
     );
   }
 
-  // --- RENDER APP: VisualAtlas ---
+        // --- RENDER APP: MediCore Pro ---
+      if (currentApp === 'medicore') {
+        return (
+          <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+            <AppErrorBoundary appName="MediCore Pro" onReset={handleReturnToBca}>
+              <Suspense fallback={<AppLoadingSpinner appName="MediCore Pro" />}>
+                <MediCoreApp />
+              </Suspense>
+              <AppSwitcherModal
+                isOpen={isAppSwitcherOpen}
+                onClose={() => setIsAppSwitcherOpen(false)}
+                currentApp={currentApp}
+                onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+              />
+            </AppErrorBoundary>
+          </div>
+        );
+      }
+
+      // --- RENDER APP: VisualAtlas ---
   if (currentApp === 'atlas') {
     return (
       <AppErrorBoundary appName="VisualAtlas" onReset={handleReturnToBca}>

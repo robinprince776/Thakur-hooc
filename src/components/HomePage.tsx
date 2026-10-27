@@ -1,6 +1,7 @@
 import React from 'react';
 import { Cpu, Terminal, ArrowRight, Zap, CheckCircle2, BookOpen, Sparkles, Layers, GraduationCap, FileText, Calculator as CalcIcon, Shield, Bot, Wrench } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
+import { OmnitrixLogo } from './OmnitrixLogo';
 import { ActiveTab } from './Navbar';
 
 interface HomePageProps {
@@ -54,51 +55,66 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-indigo-400/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 -mb-10 w-64 h-64 bg-purple-400/15 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 shadow-xs border border-indigo-100 dark:border-indigo-900/60 mb-5 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-            <span>Dedicated study portal for BCA students · Made by Prince Thakur</span>
+        <div className="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 shadow-xs border border-indigo-100 dark:border-indigo-900/60 mb-5 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
+              <OmnitrixLogo size="xs" glow={false} />
+              <span>Dedicated study portal for BCA students · Made by Prince Thakur</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+              Master 3 Core BCA Subjects{' '}
+              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Step-by-Step in Hinglish
+              </span>
+            </h1>
+
+            <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl font-normal leading-relaxed">
+              Logic System conversions with remainder tables, 45+ ready-to-run C Programs with line-by-line logic,
+              aur Fundamental of Computer BCA 1st Semester ke Unit 1 se 8 tak ke sabhi exam notes &amp; viva questions!
+            </p>
+
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => onNavigate('logic-solver')}
+                className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-semibold text-xs sm:text-sm shadow-md shadow-indigo-600/20 transition-all hover:gap-3 cursor-pointer"
+              >
+                <Cpu className="w-4 h-4" />
+                <span>Logic &amp; Numbers</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => onNavigate('c-generator')}
+                className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold text-xs sm:text-sm shadow-xs transition-all hover:gap-3 cursor-pointer"
+              >
+                <Terminal className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                <span>45+ C Programs</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => onNavigate('fundamentals')}
+                className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition-all hover:gap-3 cursor-pointer"
+              >
+                <Layers className="w-4 h-4" />
+                <span>Fundamental Notes (3rd Subject)</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-            Master 3 Core BCA Subjects{' '}
-            <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Step-by-Step in Hinglish
-            </span>
-          </h1>
-
-          <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl font-normal leading-relaxed">
-            Logic System conversions with remainder tables, 45+ ready-to-run C Programs with line-by-line logic,
-            aur Fundamental of Computer BCA 1st Semester ke Unit 1 se 8 tak ke sabhi exam notes &amp; viva questions!
-          </p>
-
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => onNavigate('logic-solver')}
-              className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-semibold text-xs sm:text-sm shadow-md shadow-indigo-600/20 transition-all hover:gap-3 cursor-pointer"
-            >
-              <Cpu className="w-4 h-4" />
-              <span>Logic &amp; Numbers</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={() => onNavigate('c-generator')}
-              className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold text-xs sm:text-sm shadow-xs transition-all hover:gap-3 cursor-pointer"
-            >
-              <Terminal className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-              <span>45+ C Programs</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={() => onNavigate('fundamentals')}
-              className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition-all hover:gap-3 cursor-pointer"
-            >
-              <Layers className="w-4 h-4" />
-              <span>Fundamental Notes (3rd Subject)</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+          {/* Hero Omnitrix Emblem Showcase */}
+          <div className="hidden lg:flex flex-col items-center justify-center p-6 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl backdrop-blur-md shrink-0">
+            <OmnitrixLogo size="2xl" glow={true} animated={true} />
+            <div className="mt-3 text-center">
+              <span className="block text-xs font-mono font-bold text-lime-400 tracking-widest uppercase">
+                Omnitrix Core
+              </span>
+              <span className="text-[11px] text-slate-400">
+                42 Defensive &amp; Dev Tools
+              </span>
+            </div>
           </div>
         </div>
       </section>

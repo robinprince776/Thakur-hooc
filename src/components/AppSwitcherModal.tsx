@@ -38,6 +38,7 @@ import {
   Brain
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
+import { OmnitrixLogo } from './OmnitrixLogo';
 
 export type CurrentAppType =
   // 🗺️ Career
@@ -89,7 +90,9 @@ export type CurrentAppType =
   | 'compliance'
   | 'dataformat'
   | 'regexmaster'
-  | 'sukhan';
+  | 'sukhan'
+  // 🩺 Clinical & Pharma
+  | 'medicore';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;
@@ -850,9 +853,7 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
         {/* Modal Header */}
         <div className="p-4 sm:p-6 border-b border-slate-800 bg-slate-900/90 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
-              <Grid className="w-5 h-5" />
-            </div>
+            <OmnitrixLogo size="md" glow={true} animated={true} />
             <div>
               <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
                 TechMaster Ultimate Ecosystem

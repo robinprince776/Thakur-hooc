@@ -23,6 +23,7 @@ import {
   Globe,
   GitBranch
 } from 'lucide-react';
+import { OmnitrixLogo } from './OmnitrixLogo';
 import { CurrentAppType } from './AppSwitcherModal';
 
 export type ActiveTab =
@@ -96,9 +97,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               className="flex items-center gap-2.5 group text-left cursor-pointer"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-                <Cpu className="w-5 h-5 text-white" />
-              </div>
+              <OmnitrixLogo size="md" glow={true} animated={true} />
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                   <span className="text-lg font-bold tracking-tight text-white">
