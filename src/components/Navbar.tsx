@@ -108,7 +108,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 </div>
                 <span className="text-[11px] font-medium text-slate-400 hidden xs:block">
-                  TechMaster Suite · 42 Apps
+                  TechMaster Suite · 43+ Apps
                 </span>
               </div>
             </button>
@@ -197,6 +197,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>API-X</span>
             </button>
 
+                        {/* MediCore Pro Desk Quick Nav */}
+            <button
+              onClick={() => onSelectApp("medicore")}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-teal-500/50 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 hover:from-teal-500/30 hover:to-cyan-500/30 text-teal-300 hover:text-white text-xs font-bold transition-all shadow-md shadow-teal-500/20 cursor-pointer animate-pulse"
+              title="Open MediCore Pro Clinical Desk (#medicore)"
+            >
+              <span>🩺</span>
+              <span className="font-extrabold tracking-wide">MediCore Pro</span>
+            </button>
+
             {/* 42-Apps Suite Switcher */}
             <button
               onClick={onOpenAppSwitcher}
@@ -204,7 +214,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               title="Open 42-Apps Master Suite Switcher"
             >
               <Grid className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">42 Apps</span>
+              <span className="hidden sm:inline">43+ Apps</span>
             </button>
 
             {/* Dark / Light Toggle */}
@@ -285,12 +295,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Grid className="w-4 h-4" />
                 <span>Open 42-Apps Master Switcher</span>
               </div>
-              <span className="text-[10px] bg-cyan-700/60 px-2 py-0.5 rounded font-mono">42+ Apps</span>
+              <span className="text-[10px] bg-cyan-700/60 px-2 py-0.5 rounded font-mono">43+ Apps</span>
             </button>
 
             {/* Quick Links */}
             <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
               {[
+                { id: 'medicore' as CurrentAppType, label: '🩺 MediCore Pro', icon: Sparkles },
                 { id: 'career' as CurrentAppType, label: 'TechCareer Hub', icon: BookOpen },
                 { id: 'mindshield' as CurrentAppType, label: 'MindShield Lab', icon: Shield },
                 { id: 'zenfocus' as CurrentAppType, label: 'ZenFocus', icon: Sparkles },

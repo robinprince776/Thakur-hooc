@@ -367,6 +367,39 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {/* NEW CLINICAL APP: MediCore Pro */}
+          <div
+            onClick={() => {
+              window.location.hash = "medicore";
+            }}
+            className="group cursor-pointer rounded-2xl bg-gradient-to-br from-teal-500/10 via-slate-50 to-cyan-500/10 dark:from-teal-950/40 dark:via-slate-900/90 dark:to-cyan-950/30 p-5 border-2 border-teal-500/50 hover:border-teal-400 shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center shrink-0 border border-teal-500/40 group-hover:scale-110 transition-transform text-2xl">
+                🩺
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-teal-400 transition-colors">
+                    MediCore Pro
+                  </h3>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/40">
+                    NEW APP
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-slate-600 dark:text-slate-300 line-clamp-2">
+                  D-Pharma Clinical Desk, Drug Vault with Indian brands, IV Fluids &amp; Cannula guide, Rx Decoder, and Paediatric/BSA calculators.
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
+              <span className="font-mono text-teal-400 font-semibold text-[11px]">#medicore</span>
+              <span className="text-teal-600 dark:text-teal-400 font-bold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                Open MediCore Desk ➔
+              </span>
+            </div>
+          </div>
+
           {/* OFFLINE APP 1: Scientific Calculator Vault */}
           <div
             onClick={() => {
