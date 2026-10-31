@@ -108,7 +108,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 </div>
                 <span className="text-[11px] font-medium text-slate-400 hidden xs:block">
-                  TechMaster Suite · 43+ Apps
+                  TechMaster Suite · 45+ Apps
                 </span>
               </div>
             </button>
@@ -197,24 +197,44 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>API-X</span>
             </button>
 
-                        {/* MediCore Pro Desk Quick Nav */}
+            {/* MediCore Pro Quick Nav */}
             <button
               onClick={() => onSelectApp("medicore")}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-teal-500/50 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 hover:from-teal-500/30 hover:to-cyan-500/30 text-teal-300 hover:text-white text-xs font-bold transition-all shadow-md shadow-teal-500/20 cursor-pointer animate-pulse"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-teal-500/50 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 hover:from-teal-500/30 hover:to-cyan-500/30 text-teal-300 hover:text-white text-xs font-bold transition-all shadow-md shadow-teal-500/20 cursor-pointer"
               title="Open MediCore Pro Clinical Desk (#medicore)"
             >
               <span>🩺</span>
-              <span className="font-extrabold tracking-wide">MediCore Pro</span>
+              <span className="font-extrabold tracking-wide hidden sm:inline">MediCore</span>
             </button>
 
-            {/* 42-Apps Suite Switcher */}
+            {/* UPSC CSE Prep */}
+            <button
+              onClick={() => onSelectApp('upsc')}
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-xs font-bold transition-all cursor-pointer"
+              title="Open UPSC CSE Civil Services Prep (#upsc)"
+            >
+              <span>🏛️</span>
+              <span className="hidden xl:inline">UPSC Prep</span>
+            </button>
+
+            {/* SvaraPulse Music */}
+            <button
+              onClick={() => onSelectApp('music')}
+              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-pink-500/40 bg-pink-500/10 hover:bg-pink-500/20 text-pink-300 text-xs font-bold transition-all cursor-pointer"
+              title="Open SvaraPulse Musicology Studio (#music)"
+            >
+              <span>🎵</span>
+              <span className="hidden xl:inline">Music Studio</span>
+            </button>
+
+            {/* 45-Apps Suite Switcher */}
             <button
               onClick={onOpenAppSwitcher}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition-all shadow-md shadow-cyan-600/30 cursor-pointer"
-              title="Open 42-Apps Master Suite Switcher"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold transition-all shadow-lg shadow-cyan-600/30 cursor-pointer"
+              title="Open 45-Apps Master Suite Switcher"
             >
               <Grid className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">43+ Apps</span>
+              <span>45+ Apps</span>
             </button>
 
             {/* Dark / Light Toggle */}
@@ -302,6 +322,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
               {[
                 { id: 'medicore' as CurrentAppType, label: '🩺 MediCore Pro', icon: Sparkles },
+                { id: 'upsc' as CurrentAppType, label: '🏛️ UPSC CSE Prep', icon: BookOpen },
+                { id: 'music' as CurrentAppType, label: '🎵 SvaraPulse Music', icon: Sparkles },
+                { id: 'sukhan' as CurrentAppType, label: '✍️ Sukhan Poetry', icon: BookOpen },
                 { id: 'career' as CurrentAppType, label: 'TechCareer Hub', icon: BookOpen },
                 { id: 'mindshield' as CurrentAppType, label: 'MindShield Lab', icon: Shield },
                 { id: 'zenfocus' as CurrentAppType, label: 'ZenFocus', icon: Sparkles },

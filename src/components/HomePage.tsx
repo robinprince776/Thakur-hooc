@@ -10,6 +10,8 @@ interface HomePageProps {
   onOpenCyber?: () => void;
   onOpenDevForge?: () => void;
   onOpenTechMaster?: () => void;
+  onSelectApp?: (appId: any) => void;
+  onOpenAppSwitcher?: () => void;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
@@ -17,7 +19,9 @@ export const HomePage: React.FC<HomePageProps> = ({
   onOpenCompiler,
   onOpenCyber,
   onOpenDevForge,
-  onOpenTechMaster
+  onOpenTechMaster,
+  onSelectApp,
+  onOpenAppSwitcher
 }) => {
   const quickSolvers = [
     { label: '25.625 to Binary (Point)', type: 'dec-to-bin', input: '25.625' },
@@ -114,6 +118,198 @@ export const HomePage: React.FC<HomePageProps> = ({
               <span className="text-[11px] text-slate-400">
                 42 Defensive &amp; Dev Tools
               </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ⭐ FLAGSHIP APPLICATIONS & CLINICAL REFERENCE HUB */}
+      <section className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-400 mb-1">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Instant Launch · 45 Production Applications</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              Featured Flagship Hubs &amp; Clinical Desk
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+              Direct 1-click access to newly requested modules, clinical reference, civil services, and audio labs.
+            </p>
+          </div>
+
+          {onOpenAppSwitcher && (
+            <button
+              onClick={onOpenAppSwitcher}
+              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white flex items-center gap-2 border border-slate-700 shadow-md cursor-pointer self-start sm:self-auto transition-all"
+            >
+              <span>View All 45 Apps</span>
+              <ArrowRight className="w-3.5 h-3.5 text-cyan-400" />
+            </button>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Card 1: MediCore Pro */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('medicore') : (window.location.hash = '#medicore')}
+            className="group p-5 rounded-3xl bg-slate-900/80 hover:bg-slate-900 border border-teal-500/30 hover:border-teal-500/60 backdrop-blur-xl shadow-xl transition-all cursor-pointer flex flex-col justify-between hover:-translate-y-1"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-teal-600 to-cyan-600 flex items-center justify-center text-white shadow-md shadow-teal-500/20 text-lg">
+                  🩺
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 font-bold">
+                  Clinical Desk
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-teal-300 transition-colors">
+                MediCore Pro
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Complete clinical reference for D-Pharma &amp; clinics. Disease Matrix, Drug Vault, IV Fluid formulas &amp; Rx decoder.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-teal-400 font-bold">
+              <span>Open Clinical Desk</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card 2: UPSC CSE Prep */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('upsc') : (window.location.hash = '#upsc')}
+            className="group p-5 rounded-3xl bg-slate-900/80 hover:bg-slate-900 border border-amber-500/30 hover:border-amber-500/60 backdrop-blur-xl shadow-xl transition-all cursor-pointer flex flex-col justify-between hover:-translate-y-1"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-600 via-orange-600 to-red-600 flex items-center justify-center text-white shadow-md shadow-amber-500/20 text-lg">
+                  🏛️
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
+                  Civil Services
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+                UPSC CSE Civil Services
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                IAS, IPS &amp; IFS master architecture. GS 1-4 syllabus, topper booklist, P.E.S.T.L.E mains answers &amp; PYQ simulator.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-amber-400 font-bold">
+              <span>Launch UPSC Navigator</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card 3: SvaraPulse Musicology */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('music') : (window.location.hash = '#music')}
+            className="group p-5 rounded-3xl bg-slate-900/80 hover:bg-slate-900 border border-pink-500/30 hover:border-pink-500/60 backdrop-blur-xl shadow-xl transition-all cursor-pointer flex flex-col justify-between hover:-translate-y-1"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-600 via-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-pink-500/20 text-lg">
+                  🎵
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30 font-bold">
+                  Audio &amp; Ragas
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-pink-300 transition-colors">
+                SvaraPulse Musicology
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Playable Web Audio Synthesizer, 10 Thaats, Teentaal metronome, Circle of 5ths, and studio audio mixing masterclass.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-pink-400 font-bold">
+              <span>Open Music Studio</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card 4: Sukhan Poetry Studio */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('sukhan') : (window.location.hash = '#sukhan')}
+            className="group p-5 rounded-3xl bg-slate-900/80 hover:bg-slate-900 border border-[#C6A66B]/30 hover:border-[#C6A66B]/60 backdrop-blur-xl shadow-xl transition-all cursor-pointer flex flex-col justify-between hover:-translate-y-1"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#59263C] to-[#15151C] border border-[#C6A66B]/40 flex items-center justify-center text-[#C6A66B] shadow-md text-lg">
+                  ✍️
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#59263C] text-[#C6A66B] border border-[#C6A66B]/30 font-bold">
+                  Literature
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-[#C6A66B] transition-colors">
+                SUKHAN Literary Lounge
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Urdu, Hindi &amp; Punjabi poetry studio, classical typography, Ghazal rhyming assistant, and Instagram card export.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-[#C6A66B] font-bold">
+              <span>Enter Sukhan</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card 5: C Programming & Algorithm Engine */}
+          <div
+            onClick={() => onNavigate('c-generator')}
+            className="group p-5 rounded-3xl bg-slate-900/80 hover:bg-slate-900 border border-purple-500/30 hover:border-purple-500/60 backdrop-blur-xl shadow-xl transition-all cursor-pointer flex flex-col justify-between hover:-translate-y-1"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-purple-500/20 text-lg">
+                  💻
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
+                  Code Studio
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-purple-300 transition-colors">
+                Algorithm &amp; C Generator
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Convert any problem statement to C, C++, Python, Java with line-by-line Hinglish logic &amp; interactive runner.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-purple-400 font-bold">
+              <span>Open Code Generator</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card 6: TechCareer Hub */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('career') : (window.location.hash = '#career')}
+            className="group p-5 rounded-3xl bg-slate-900/80 hover:bg-slate-900 border border-emerald-500/30 hover:border-emerald-500/60 backdrop-blur-xl shadow-xl transition-all cursor-pointer flex flex-col justify-between hover:-translate-y-1"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 text-lg">
+                  💼
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+                  Careers &amp; Salaries
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
+                TechCareer Hub
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                6-Month Cybersecurity, Cloud &amp; AI roadmaps, ₹5L to ₹1.5Cr+ salary packages, and simulated interview evaluator.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-emerald-400 font-bold">
+              <span>Explore Roadmaps</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
         </div>

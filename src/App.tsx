@@ -156,6 +156,14 @@ const VisualAtlasApp = React.lazy(() =>
   import('./atlas/VisualAtlasApp').then((m) => ({ default: m.VisualAtlasApp }))
 );
 
+const UpscMasterApp = React.lazy(() =>
+  import('./upsc/UpscMasterApp').then((m) => ({ default: m.UpscMasterApp }))
+);
+
+const MusicMasterApp = React.lazy(() =>
+  import('./music/MusicMasterApp').then((m) => ({ default: m.MusicMasterApp }))
+);
+
 
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
@@ -310,6 +318,8 @@ export default function App() {
       if (h === '#zenfocus' || h === '#wellness' || h === '#zen') return 'zenfocus';
       if (h === '#atlas' || h === '#mindmap' || h === '#diagrams') return 'atlas';
       if (h === '#medicore' || h === '#pharma' || h === '#pharmacy' || h === '#clinic') return 'medicore';
+      if (h === '#upsc' || h === '#ias' || h === '#civilservices' || h === '#ips') return 'upsc';
+      if (h === '#music' || h === '#svara' || h === '#ragas' || h === '#audio') return 'music';
       return 'bca';
     } catch {
       return 'bca';
@@ -426,6 +436,10 @@ export default function App() {
         setCurrentApp('atlas');
       } else if (h === '#medicore' || h === '#pharma' || h === '#pharmacy' || h === '#clinic') {
         setCurrentApp('medicore');
+      } else if (h === '#upsc' || h === '#ias' || h === '#civilservices' || h === '#ips') {
+        setCurrentApp('upsc');
+      } else if (h === '#music' || h === '#svara' || h === '#ragas' || h === '#audio') {
+        setCurrentApp('music');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -1419,6 +1433,52 @@ export default function App() {
         );
       }
 
+      // --- RENDER APP: UPSC CSE Civil Services Navigator ---
+      if (currentApp === 'upsc') {
+        return (
+          <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+            <AppErrorBoundary appName="UPSC CSE Prep" onReset={handleReturnToBca}>
+              <Suspense fallback={<AppLoadingSpinner appName="UPSC CSE Prep" />}>
+                <UpscMasterApp
+                  onBackToBca={handleReturnToBca}
+                  onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+                  onSwitchApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+                />
+              </Suspense>
+              <AppSwitcherModal
+                isOpen={isAppSwitcherOpen}
+                onClose={() => setIsAppSwitcherOpen(false)}
+                currentApp={currentApp}
+                onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+              />
+            </AppErrorBoundary>
+          </div>
+        );
+      }
+
+      // --- RENDER APP: SvaraPulse Musicology Studio ---
+      if (currentApp === 'music') {
+        return (
+          <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+            <AppErrorBoundary appName="SvaraPulse Music" onReset={handleReturnToBca}>
+              <Suspense fallback={<AppLoadingSpinner appName="SvaraPulse Music" />}>
+                <MusicMasterApp
+                  onBackToBca={handleReturnToBca}
+                  onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+                  onSwitchApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+                />
+              </Suspense>
+              <AppSwitcherModal
+                isOpen={isAppSwitcherOpen}
+                onClose={() => setIsAppSwitcherOpen(false)}
+                currentApp={currentApp}
+                onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+              />
+            </AppErrorBoundary>
+          </div>
+        );
+      }
+
       // --- RENDER APP: VisualAtlas ---
   if (currentApp === 'atlas') {
     return (
@@ -1637,6 +1697,8 @@ export default function App() {
             onOpenCyber={() => handleSelectApp('cyber')}
             onOpenDevForge={() => handleSelectApp('dev')}
             onOpenTechMaster={() => handleSelectApp('techmaster')}
+            onSelectApp={handleSelectApp}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
           />
         )}
 

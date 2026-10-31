@@ -35,7 +35,11 @@ import {
   GitMerge,
   ShieldAlert,
   Share2,
-  Brain
+  Brain,
+  Music,
+  Award,
+  Stethoscope,
+  HeartPulse
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 import { OmnitrixLogo } from './OmnitrixLogo';
@@ -43,6 +47,9 @@ import { OmnitrixLogo } from './OmnitrixLogo';
 export type CurrentAppType =
   // 🗺️ Career
   | 'career'
+  // 🏛️ Civil Services & Arts
+  | 'upsc'
+  | 'music'
   // 📚 Education
   | 'bca'
   | 'techmaster'
@@ -103,7 +110,7 @@ interface AppSwitcherModalProps {
 
 interface AppItem {
   id: CurrentAppType;
-  category: 'Career' | 'Education' | 'Security' | 'Dev' | 'Psychology' | 'Diagrams' | 'Utilities';
+  category: 'Career' | 'Education' | 'Security' | 'Dev' | 'Psychology' | 'Diagrams' | 'Utilities' | 'Medical' | 'General';
   title: string;
   subtitle: string;
   tagline: string;
@@ -815,10 +822,58 @@ const ALL_APPS: AppItem[] = [
         <SukhanPenIcon size={22} />
       </div>
     )
+  },
+  {
+    id: 'medicore',
+    category: 'Medical',
+    title: 'MediCore Pro',
+    subtitle: 'Clinical Reference & Drug Vault',
+    tagline: 'Disease Matrix · OTC Care · IV Fluids · Pharmacy Rx Decoder',
+    description: 'Practical clinical reference for pharmacy & clinic owners. Disease matrix, drug-drug interactions, cannula gauge guide, and IV drip rate calculator.',
+    badge: 'Clinical Guide',
+    badgeColor: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+    hash: '#medicore',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-600 to-cyan-700 flex items-center justify-center text-white shadow-md">
+        <Stethoscope className="w-5 h-5 text-teal-200" />
+      </div>
+    )
+  },
+  {
+    id: 'upsc',
+    category: 'General',
+    title: 'UPSC CSE Civil Services Navigator',
+    subtitle: 'IAS, IPS & IFS Master Architecture',
+    tagline: 'Prelims GS-1 & CSAT · Mains GS 1-4 · Booklist · Model Answers',
+    description: 'Complete roadmap for UPSC CSE preparation. Standard booklist, P.E.S.T.L.E mains answer writing framework, daily 8-hour schedule, and Prelims PYQ simulator.',
+    badge: 'Civil Services',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    hash: '#upsc',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-600 via-orange-600 to-red-600 flex items-center justify-center text-white shadow-md">
+        <Award className="w-5 h-5 text-amber-200" />
+      </div>
+    )
+  },
+  {
+    id: 'music',
+    category: 'General',
+    title: 'SvaraPulse Musicology Studio',
+    subtitle: 'Acoustics, Ragas & Audio Engineering',
+    tagline: 'Web Audio Synthesizer · 10 Thaats · Western Modes · EQ & Mixing',
+    description: 'Comprehensive musicology workstation: interactive keyboard synthesizer, Hindustani ragas, Teentaal metronome, circle of fifths, and mixing principles.',
+    badge: 'Music & Audio',
+    badgeColor: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+    hash: '#music',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-pink-600 via-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
+        <Music className="w-5 h-5 text-pink-200" />
+      </div>
+    )
   }
 ];
 
-const CATEGORIES = ['All', 'Career', 'Education', 'Security', 'Dev', 'Psychology', 'Diagrams', 'Utilities'] as const;
+const CATEGORIES = ['All', 'Career', 'Education', 'Security', 'Dev', 'Medical', 'General', 'Psychology', 'Diagrams', 'Utilities'] as const;
 
 export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
   isOpen,
@@ -837,9 +892,21 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
       app.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       app.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       app.tagline.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      app.description.toLowerCase().includes(searchQuery.toLowerCase());
+      app.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.badge.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.hash.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  const featuredQuickApps: { id: CurrentAppType; label: string; icon: string; color: string }[] = [
+    { id: 'medicore', label: 'MediCore Pro', icon: '🩺', color: 'from-teal-600 to-cyan-600' },
+    { id: 'upsc', label: 'UPSC CSE Prep', icon: '🏛️', color: 'from-amber-600 to-orange-600' },
+    { id: 'music', label: 'SvaraPulse Music', icon: '🎵', color: 'from-pink-600 to-purple-600' },
+    { id: 'sukhan', label: 'Sukhan Poetry', icon: '✍️', color: 'from-[#59263C] to-[#C6A66B]' },
+    { id: 'compiler', label: 'C Code Runner', icon: '💻', color: 'from-blue-600 to-indigo-600' },
+    { id: 'career', label: 'TechCareer Hub', icon: '🗺️', color: 'from-emerald-600 to-teal-700' },
+    { id: 'atlas', label: 'VisualAtlas', icon: '⚡', color: 'from-cyan-600 to-blue-600' }
+  ];
 
   return (
     <div
@@ -858,11 +925,11 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
               <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
                 TechMaster Ultimate Ecosystem
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-cyan-950 text-cyan-400 border border-cyan-800">
-                  42+ Applications · Zero Lag
+                  45+ Applications · Zero Lag
                 </span>
               </h2>
               <p className="text-xs text-slate-400">
-                100% legal, defensive, educational suite across Education, Security, Dev, Career, Psychology, Diagrams & Utilities
+                Full-stack ecosystem across Career, Medical, UPSC, Music, Security, Dev, Diagrams & Utilities
               </p>
             </div>
           </div>
@@ -873,6 +940,27 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
           >
             <X size={18} />
           </button>
+        </div>
+
+        {/* Featured Direct Launch Shortcuts */}
+        <div className="px-4 sm:px-6 py-2.5 bg-slate-950/90 border-b border-slate-800 flex items-center gap-2 overflow-x-auto scrollbar-none">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-cyan-400" />
+            <span>Fast Jump:</span>
+          </span>
+          {featuredQuickApps.map(q => (
+            <button
+              key={q.id}
+              onClick={() => {
+                onSelectApp(q.id);
+                onClose();
+              }}
+              className={`px-3 py-1 rounded-xl text-xs font-bold flex items-center gap-1.5 shrink-0 transition-all cursor-pointer bg-gradient-to-r ${q.color} text-white shadow-md hover:scale-105`}
+            >
+              <span>{q.icon}</span>
+              <span>{q.label}</span>
+            </button>
+          ))}
         </div>
 
         {/* Search & Category Filter */}
@@ -899,7 +987,7 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search 42 apps..."
+              placeholder="Search all 45 apps (e.g. MediCore, UPSC, Music)..."
               className="pl-9 pr-4 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-500 outline-none focus:border-cyan-500 w-full sm:w-64"
             />
           </div>
