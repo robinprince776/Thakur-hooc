@@ -164,6 +164,10 @@ const MusicMasterApp = React.lazy(() =>
   import('./music/MusicMasterApp').then((m) => ({ default: m.MusicMasterApp }))
 );
 
+const TechNagarApp = React.lazy(() =>
+  import('./technagar/TechNagarApp').then((m) => ({ default: m.TechNagarApp }))
+);
+
 
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
@@ -320,6 +324,7 @@ export default function App() {
       if (h === '#medicore' || h === '#pharma' || h === '#pharmacy' || h === '#clinic') return 'medicore';
       if (h === '#upsc' || h === '#ias' || h === '#civilservices' || h === '#ips') return 'upsc';
       if (h === '#music' || h === '#svara' || h === '#ragas' || h === '#audio') return 'music';
+      if (h === '#technagar' || h === '#story' || h === '#chronicles') return 'technagar';
       return 'bca';
     } catch {
       return 'bca';
@@ -440,6 +445,8 @@ export default function App() {
         setCurrentApp('upsc');
       } else if (h === '#music' || h === '#svara' || h === '#ragas' || h === '#audio') {
         setCurrentApp('music');
+      } else if (h === '#technagar' || h === '#story' || h === '#chronicles') {
+        setCurrentApp('technagar');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -1463,6 +1470,29 @@ export default function App() {
             <AppErrorBoundary appName="SvaraPulse Music" onReset={handleReturnToBca}>
               <Suspense fallback={<AppLoadingSpinner appName="SvaraPulse Music" />}>
                 <MusicMasterApp
+                  onBackToBca={handleReturnToBca}
+                  onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+                  onSwitchApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+                />
+              </Suspense>
+              <AppSwitcherModal
+                isOpen={isAppSwitcherOpen}
+                onClose={() => setIsAppSwitcherOpen(false)}
+                currentApp={currentApp}
+                onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+              />
+            </AppErrorBoundary>
+          </div>
+        );
+      }
+
+      // --- RENDER APP: TechNagar Chronicles ---
+      if (currentApp === 'technagar') {
+        return (
+          <div className="min-h-screen bg-[#0F172A] text-slate-100 flex flex-col font-sans">
+            <AppErrorBoundary appName="TechNagar Chronicles" onReset={handleReturnToBca}>
+              <Suspense fallback={<AppLoadingSpinner appName="TechNagar Chronicles" />}>
+                <TechNagarApp
                   onBackToBca={handleReturnToBca}
                   onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
                   onSwitchApp={(appId) => handleSelectApp(appId as CurrentAppType)}

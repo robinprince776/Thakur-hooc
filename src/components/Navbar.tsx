@@ -227,14 +227,24 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="hidden xl:inline">Music Studio</span>
             </button>
 
-            {/* 45-Apps Suite Switcher */}
+            {/* TechNagar Chronicles Story Mode */}
+            <button
+              onClick={() => onSelectApp('technagar')}
+              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-emerald-500/40 bg-gradient-to-r from-blue-500/15 via-cyan-500/15 to-emerald-500/15 hover:from-blue-500/25 hover:to-emerald-500/25 text-emerald-300 hover:text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+              title="Open TechNagar Chronicles Story Mode (#technagar)"
+            >
+              <span>📖</span>
+              <span className="hidden xl:inline">TechNagar</span>
+            </button>
+
+            {/* 46-Apps Suite Switcher */}
             <button
               onClick={onOpenAppSwitcher}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold transition-all shadow-lg shadow-cyan-600/30 cursor-pointer"
-              title="Open 45-Apps Master Suite Switcher"
+              title="Open 46-Apps Master Suite Switcher"
             >
               <Grid className="w-3.5 h-3.5" />
-              <span>45+ Apps</span>
+              <span>46+ Apps</span>
             </button>
 
             {/* Dark / Light Toggle */}
@@ -321,6 +331,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Quick Links */}
             <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
               {[
+                { id: 'technagar' as CurrentAppType, label: '📖 TechNagar Story', icon: BookOpen },
                 { id: 'medicore' as CurrentAppType, label: '🩺 MediCore Pro', icon: Sparkles },
                 { id: 'upsc' as CurrentAppType, label: '🏛️ UPSC CSE Prep', icon: BookOpen },
                 { id: 'music' as CurrentAppType, label: '🎵 SvaraPulse Music', icon: Sparkles },

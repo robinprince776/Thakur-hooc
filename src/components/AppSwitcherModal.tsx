@@ -99,7 +99,9 @@ export type CurrentAppType =
   | 'regexmaster'
   | 'sukhan'
   // 🩺 Clinical & Pharma
-  | 'medicore';
+  | 'medicore'
+  // 📖 Story Mode
+  | 'technagar';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;
@@ -110,7 +112,7 @@ interface AppSwitcherModalProps {
 
 interface AppItem {
   id: CurrentAppType;
-  category: 'Career' | 'Education' | 'Security' | 'Dev' | 'Psychology' | 'Diagrams' | 'Utilities' | 'Medical' | 'General';
+  category: 'Career' | 'Education' | 'Security' | 'Dev' | 'Psychology' | 'Diagrams' | 'Utilities' | 'Medical' | 'General' | 'Story Mode';
   title: string;
   subtitle: string;
   tagline: string;
@@ -870,10 +872,26 @@ const ALL_APPS: AppItem[] = [
         <Music className="w-5 h-5 text-pink-200" />
       </div>
     )
+  },
+  {
+    id: 'technagar',
+    category: 'Story Mode',
+    title: 'TechNagar Chronicles',
+    subtitle: 'Technology Ki Kahani (Comic Chat)',
+    tagline: '18 Chapters · Aarav 👦 & Byte 🤖 · Web Speech TTS Audio · Beginners',
+    description: 'Interactive comic chat storybook explaining hardware, networking, security, programming, AI, physics and future tech in simple Hinglish with voice narration.',
+    badge: 'Story Mode',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    hash: '#technagar',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 via-cyan-600 to-emerald-600 flex items-center justify-center text-white shadow-md">
+        <BookOpen className="w-5 h-5 text-cyan-200" />
+      </div>
+    )
   }
 ];
 
-const CATEGORIES = ['All', 'Career', 'Education', 'Security', 'Dev', 'Medical', 'General', 'Psychology', 'Diagrams', 'Utilities'] as const;
+const CATEGORIES = ['All', 'Story Mode', 'Career', 'Education', 'Security', 'Dev', 'Medical', 'General', 'Psychology', 'Diagrams', 'Utilities'] as const;
 
 export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
   isOpen,
@@ -899,6 +917,7 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
   });
 
   const featuredQuickApps: { id: CurrentAppType; label: string; icon: string; color: string }[] = [
+    { id: 'technagar', label: 'TechNagar Story', icon: '👦🤖', color: 'from-blue-600 to-emerald-600' },
     { id: 'medicore', label: 'MediCore Pro', icon: '🩺', color: 'from-teal-600 to-cyan-600' },
     { id: 'upsc', label: 'UPSC CSE Prep', icon: '🏛️', color: 'from-amber-600 to-orange-600' },
     { id: 'music', label: 'SvaraPulse Music', icon: '🎵', color: 'from-pink-600 to-purple-600' },
