@@ -151,6 +151,90 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Card: Feynman AI Simulator */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('feynman') : (window.location.hash = '#feynman')}
+            className="group p-5 rounded-3xl bg-slate-900/80 hover:bg-slate-900 border border-purple-500/40 hover:border-purple-400/80 backdrop-blur-xl shadow-xl transition-all cursor-pointer flex flex-col justify-between hover:-translate-y-1 relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-xl pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-600 to-amber-500 flex items-center justify-center text-white shadow-md shadow-purple-500/20 text-lg">
+                  🧠⚡
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
+                  Mastery Lab · AI
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-purple-300 transition-colors">
+                Feynman AI Simulator
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                "Explain to a 10-year-old child". Jargon detector &amp; clarity scoring algorithm to test real understanding.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-purple-400 font-bold">
+              <span>Test Concept Mastery</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card: NeuroNet Second Brain */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('brain') : (window.location.hash = '#brain')}
+            className="group p-5 rounded-3xl bg-slate-900/80 hover:bg-slate-900 border border-cyan-500/40 hover:border-cyan-400/80 backdrop-blur-xl shadow-xl transition-all cursor-pointer flex flex-col justify-between hover:-translate-y-1 relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/10 rounded-full blur-xl pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-md shadow-cyan-500/20 text-lg">
+                  🌐💡
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">
+                  Second Brain
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
+                NeuroNet Knowledge Graph
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Interactive force-directed graph canvas connecting computing, medicine, cyber &amp; your custom notes.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-cyan-400 font-bold">
+              <span>Explore Synapses</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card: One-Click Portfolio */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('portfolio') : (window.location.hash = '#portfolio')}
+            className="group p-5 rounded-3xl bg-slate-900/80 hover:bg-slate-900 border border-emerald-500/40 hover:border-emerald-400/80 backdrop-blur-xl shadow-xl transition-all cursor-pointer flex flex-col justify-between hover:-translate-y-1 relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 text-lg">
+                  📄🚀
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+                  Career Booster
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
+                One-Click Portfolio
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Aggregates your progress across all 46+ apps. Instant executive resume, verified badges &amp; PDF export.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-emerald-400 font-bold">
+              <span>Generate My Resume</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
           {/* Card 1: TechNagar Chronicles */}
           <div
             onClick={() => onSelectApp ? onSelectApp('technagar') : (window.location.hash = '#technagar')}

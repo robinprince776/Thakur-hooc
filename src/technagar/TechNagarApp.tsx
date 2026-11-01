@@ -23,10 +23,15 @@ import {
   ShieldAlert,
   Flame,
   Award,
-  FastForward
+  FastForward,
+  Image as ImageIcon,
+  Grid,
+  MessageSquare,
+  Sparkle
 } from 'lucide-react';
 import { CHAPTERS_DATA, SEASONS_DATA } from './data/chaptersData';
 import { Chapter, DialogueItem, SeasonInfo } from './types';
+import { ChapterIllustration } from './components/ChapterIllustration';
 
 export interface TechNagarAppProps {
   onBackToBca?: () => void;
@@ -63,6 +68,7 @@ export const TechNagarApp: React.FC<TechNagarAppProps> = ({
   const [revealedDialogueCount, setRevealedDialogueCount] = useState<number>(2);
   const [isAutoPlayingChat, setIsAutoPlayingChat] = useState<boolean>(false);
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
+  const [viewMode, setViewMode] = useState<'split' | 'chat_only' | 'gallery'>('split');
 
   // Audio / Speech Synthesis State
   const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
@@ -422,20 +428,121 @@ export const TechNagarApp: React.FC<TechNagarAppProps> = ({
           </div>
         </div>
 
-        {/* Character Status Indicator */}
-        <div className="flex items-center justify-between px-2 mb-3 text-[11px] text-slate-400">
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-            <span className="font-bold text-blue-300">👦 Aarav (Curious Kid)</span>
+        {/* View Mode Toggle: Picture + Story / Chat Only / 18 Diagrams Gallery */}
+        <div className="flex items-center justify-between mb-4 bg-slate-900/60 p-1.5 rounded-2xl border border-white/5">
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setViewMode('split')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                viewMode === 'split'
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <ImageIcon className="w-3.5 h-3.5" />
+              <span>Picture + Story</span>
+            </button>
+            <button
+              onClick={() => setViewMode('chat_only')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                viewMode === 'chat_only'
+                  ? 'bg-slate-800 text-white shadow-md'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>Chat Only</span>
+            </button>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="font-bold text-emerald-300">🤖 Byte (AI Guide)</span>
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          </div>
+
+          <button
+            onClick={() => setViewMode(viewMode === 'gallery' ? 'split' : 'gallery')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+              viewMode === 'gallery'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-500/20'
+                : 'bg-purple-950/40 text-purple-300 border border-purple-500/30 hover:bg-purple-900/40'
+            }`}
+          >
+            <Grid className="w-3.5 h-3.5" />
+            <span>18 Diagrams Gallery</span>
+          </button>
         </div>
 
-        {/* Chat Bubbles Scroll Area */}
-        <div className="space-y-4 mb-4 select-text">
+        {/* Gallery View of All 18 Chapter Diagrams */}
+        {viewMode === 'gallery' ? (
+          <div className="space-y-6 mb-8 animate-fade-in select-text">
+            <div className="text-center space-y-1">
+              <h3 className="text-base sm:text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400">
+                🖼️ TechNagar Visual Concept Gallery
+              </h3>
+              <p className="text-xs text-slate-400">
+                Sabhi 18 chapters ke custom vector diagrams. Kisi bhi diagram pe click karke seedha us chapter ki kahani padhein!
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {CHAPTERS_DATA.map((ch) => (
+                <div
+                  key={ch.id}
+                  onClick={() => {
+                    setCurrentChapterId(ch.id);
+                    setViewMode('split');
+                  }}
+                  className={`p-3.5 rounded-3xl bg-slate-900/80 border transition-all cursor-pointer hover:-translate-y-1 hover:shadow-xl ${
+                    ch.id === activeChapter.id
+                      ? 'border-cyan-400 ring-2 ring-cyan-500/20'
+                      : 'border-white/10 hover:border-cyan-500/40'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 font-bold">
+                      Ch {ch.chapterNumber}: {ch.title}
+                    </span>
+                    <span className="text-[10px] text-cyan-400 font-mono">
+                      {ch.seasonTitle}
+                    </span>
+                  </div>
+                  <div className="pointer-events-none">
+                    <ChapterIllustration chapterId={ch.id} allowZoom={false} />
+                  </div>
+                  <div className="mt-2.5 flex items-center justify-between text-xs text-slate-400">
+                    <span className="truncate max-w-[180px] text-[11px]">{ch.tagline}</span>
+                    <span className="text-cyan-400 font-bold shrink-0 text-xs">Open Story &rarr;</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Top Concept Illustration in 'split' mode */}
+            {viewMode === 'split' && (
+              <div className="mb-4 animate-fade-in">
+                <div className="flex items-center justify-between px-2 mb-1.5 text-xs text-slate-400">
+                  <span className="font-mono text-cyan-400 font-bold flex items-center gap-1.5 text-[11px]">
+                    <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Visual Concept Diagram:</span>
+                  </span>
+                  <span className="text-[10px] text-slate-500">Bada dekhne ke liye tap karein</span>
+                </div>
+                <ChapterIllustration chapterId={activeChapter.id} />
+              </div>
+            )}
+
+            {/* Character Status Indicator */}
+            <div className="flex items-center justify-between px-2 mb-3 text-[11px] text-slate-400">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                <span className="font-bold text-blue-300">👦 Aarav (Curious Kid)</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold text-emerald-300">🤖 Byte (AI Guide)</span>
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              </div>
+            </div>
+
+            {/* Chat Bubbles Scroll Area */}
+            <div className="space-y-4 mb-4 select-text">
           {activeChapter.dialogues.slice(0, revealedDialogueCount).map((dialogue, idx) => {
             const isAarav = dialogue.char === 'Aarav';
             const isSpeakingThis = currentSpokenIndex === idx && isPlayingAudio;
@@ -443,53 +550,97 @@ export const TechNagarApp: React.FC<TechNagarAppProps> = ({
             return (
               <div
                 key={dialogue.id}
-                className={`flex items-start gap-2.5 transition-all duration-300 ${
+                className={`flex items-start gap-3 transition-all duration-300 animate-comic-pop relative ${
                   isAarav ? 'flex-row' : 'flex-row-reverse'
                 }`}
               >
-                {/* Character Avatar */}
-                <div
-                  className={`w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 shadow-md ${
-                    isAarav
-                      ? 'bg-gradient-to-tr from-blue-600 to-indigo-600 border border-blue-400/50 text-white'
-                      : 'bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-600 border border-emerald-400/50 text-white'
-                  }`}
-                >
-                  {isAarav ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-                </div>
-
-                {/* Message Bubble */}
-                <div
-                  className={`max-w-[82%] sm:max-w-[75%] p-3.5 rounded-3xl shadow-xl transition-all ${
-                    isAarav
-                      ? 'bg-blue-950/60 border border-blue-500/40 text-blue-50 rounded-tl-sm'
-                      : 'bg-slate-900/90 border border-emerald-500/40 text-emerald-50 rounded-tr-sm'
-                  } ${
-                    isSpeakingThis
-                      ? 'ring-2 ring-cyan-400 shadow-cyan-500/20 scale-[1.01]'
-                      : ''
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <span
-                      className={`text-[11px] font-bold font-mono ${
-                        isAarav ? 'text-blue-300' : 'text-emerald-300'
-                      }`}
-                    >
-                      {dialogue.char}
-                    </span>
-                    <button
-                      onClick={() => playSpeechForDialogue(idx)}
-                      className="p-1 rounded-md text-slate-500 hover:text-cyan-300 transition-colors cursor-pointer"
-                      title="Speak this bubble"
-                    >
-                      <Volume2 className="w-3 h-3" />
-                    </button>
+                {/* Comic Character Avatar with Animated Glow */}
+                <div className="relative group shrink-0">
+                  <div
+                    className={`w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 ${
+                      isAarav
+                        ? 'bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-400 border-2 border-blue-400 shadow-blue-500/30'
+                        : 'bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-400 border-2 border-emerald-400 shadow-emerald-500/30'
+                    }`}
+                  >
+                    {isAarav ? (
+                      <span className="text-xl">👦</span>
+                    ) : (
+                      <span className="text-xl animate-pulse">🤖</span>
+                    )}
                   </div>
 
-                  <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap font-sans">
-                    {dialogue.text}
-                  </p>
+                  {/* Comic Character Label */}
+                  <span
+                    className={`absolute -bottom-2 left-1/2 -translate-x-1/2 text-[9px] font-black font-mono px-1.5 py-0.2 rounded-full border shadow-sm uppercase ${
+                      isAarav
+                        ? 'bg-blue-950 text-blue-300 border-blue-500'
+                        : 'bg-emerald-950 text-emerald-300 border-emerald-500'
+                    }`}
+                  >
+                    {dialogue.char}
+                  </span>
+                </div>
+
+                {/* Comic Speech Balloon with Tail Pointer & Sound Effects */}
+                <div className="relative max-w-[82%] sm:max-w-[76%] group">
+                  {/* Comic Sound Effect Pop Badge */}
+                  {idx % 2 === 0 && (
+                    <div
+                      className={`absolute -top-3 ${
+                        isAarav ? '-left-2' : '-right-2'
+                      } z-20 px-2 py-0.5 rounded-full text-[9px] font-black font-mono text-slate-950 shadow-md uppercase tracking-wider transform -rotate-6 select-none ${
+                        isAarav
+                          ? 'bg-gradient-to-r from-amber-300 to-yellow-400 border border-amber-500 shadow-amber-400/40'
+                          : 'bg-gradient-to-r from-cyan-300 to-emerald-400 border border-cyan-500 shadow-cyan-400/40'
+                      }`}
+                    >
+                      {idx === 0 ? '💥 INTRO!' : isAarav ? '❓ KYA?!' : '⚡ BEEP!'}
+                    </div>
+                  )}
+
+                  {/* Speech Balloon Body */}
+                  <div
+                    className={`p-4 rounded-2xl shadow-[4px_4px_0px_rgba(0,0,0,0.8)] border-2 transition-all relative ${
+                      isAarav
+                        ? 'bg-slate-900 border-blue-400/70 text-blue-50 hover:border-blue-300'
+                        : 'bg-slate-900 border-emerald-400/70 text-emerald-50 hover:border-emerald-300'
+                    } ${
+                      isSpeakingThis
+                        ? 'ring-4 ring-cyan-400 shadow-cyan-500/40 scale-[1.02]'
+                        : ''
+                    }`}
+                  >
+                    {/* Comic Balloon Tail Pointer */}
+                    <div
+                      className={`absolute top-4 w-3 h-3 bg-slate-900 border-2 transform rotate-45 ${
+                        isAarav
+                          ? '-left-[7px] border-r-0 border-t-0 border-blue-400/70'
+                          : '-right-[7px] border-l-0 border-b-0 border-emerald-400/70'
+                      }`}
+                    />
+
+                    <div className="flex items-center justify-between gap-2 mb-1.5 relative z-10">
+                      <span
+                        className={`text-[11px] font-black font-mono tracking-wider ${
+                          isAarav ? 'text-blue-400' : 'text-emerald-400'
+                        }`}
+                      >
+                        {isAarav ? '👦 Aarav Bol Raha Hai:' : '🤖 Byte Samjha Raha Hai:'}
+                      </span>
+                      <button
+                        onClick={() => playSpeechForDialogue(idx)}
+                        className="p-1 rounded-md text-slate-400 hover:text-cyan-300 transition-colors cursor-pointer"
+                        title="Listen to this bubble"
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <p className="text-xs sm:text-sm font-medium leading-relaxed whitespace-pre-wrap font-sans relative z-10">
+                      {dialogue.text}
+                    </p>
+                  </div>
                 </div>
               </div>
             );
@@ -575,6 +726,24 @@ export const TechNagarApp: React.FC<TechNagarAppProps> = ({
               ))}
             </div>
 
+            {/* Visual Review Actions */}
+            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-white/5">
+              <button
+                onClick={() => setViewMode('split')}
+                className="px-3 py-1.5 rounded-xl bg-cyan-950/70 hover:bg-cyan-900 border border-cyan-500/30 text-cyan-300 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+              >
+                <ImageIcon className="w-3.5 h-3.5" />
+                <span>Chapter Diagram Review</span>
+              </button>
+              <button
+                onClick={() => setViewMode('gallery')}
+                className="px-3 py-1.5 rounded-xl bg-purple-950/70 hover:bg-purple-900 border border-purple-500/30 text-purple-300 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+              >
+                <Grid className="w-3.5 h-3.5" />
+                <span>All 18 Diagrams</span>
+              </button>
+            </div>
+
             {/* Bottom Navigation to Next Chapter */}
             <div className="pt-2 flex items-center justify-between border-t border-white/10">
               <button
@@ -604,6 +773,8 @@ export const TechNagarApp: React.FC<TechNagarAppProps> = ({
               )}
             </div>
           </div>
+        )}
+        </>
         )}
       </main>
 

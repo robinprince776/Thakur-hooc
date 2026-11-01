@@ -324,6 +324,66 @@ export const IvFluidsModule: React.FC = () => {
               <span>Standard Injection Angulations &amp; Anatomical Depths</span>
             </h3>
 
+            {/* Anatomical Cross-Section SVG Diagram */}
+            <div className="w-full rounded-2xl bg-slate-950 p-4 border border-cyan-500/20 overflow-hidden shadow-inner">
+              <svg viewBox="0 0 640 260" className="w-full h-auto select-none font-sans" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Background Sky / Surface */}
+                <rect width="640" height="260" rx="12" fill="#090D16" />
+
+                {/* Skin Layer 1: Epidermis (Pinkish-tan) */}
+                <rect x="20" y="110" width="600" height="22" fill="#EA580C" fillOpacity="0.3" stroke="#EA580C" strokeWidth="1" />
+                <text x="35" y="125" fill="#FDBA74" fontSize="10" fontWeight="bold">Epidermis (Surface Skin)</text>
+
+                {/* Skin Layer 2: Dermis */}
+                <rect x="20" y="132" width="600" height="30" fill="#9333EA" fillOpacity="0.25" stroke="#9333EA" strokeWidth="1" />
+                <text x="35" y="151" fill="#D8B4FE" fontSize="10" fontWeight="bold">Dermis (Capillary Bed)</text>
+
+                {/* Skin Layer 3: Subcutaneous Tissue (Yellow/Adipose) */}
+                <rect x="20" y="162" width="600" height="42" fill="#CA8A04" fillOpacity="0.25" stroke="#CA8A04" strokeWidth="1" />
+                <text x="35" y="186" fill="#FDE047" fontSize="10" fontWeight="bold">Subcutaneous Adipose Tissue (Fat)</text>
+
+                {/* Skin Layer 4: Muscle Layer (Deep Red) */}
+                <rect x="20" y="204" width="600" height="42" fill="#DC2626" fillOpacity="0.35" stroke="#DC2626" strokeWidth="1" />
+                <text x="35" y="229" fill="#FCA5A5" fontSize="10" fontWeight="bold">Muscle Layer (Deep Vascular Zone)</text>
+
+                {/* 1. Intramuscular Needle (90°) */}
+                <g transform="translate(100, 20)">
+                  <line x1="40" y1="5" x2="40" y2="195" stroke="#38BDF8" strokeWidth="3" strokeLinecap="round" />
+                  <polygon points="40,205 34,188 46,188" fill="#38BDF8" />
+                  <rect x="10" y="0" width="60" height="22" rx="4" fill="#0284C7" />
+                  <text x="40" y="15" textAnchor="middle" fill="#FFFFFF" fontSize="11" fontWeight="bold">IM: 90°</text>
+                  <text x="40" y="32" textAnchor="middle" fill="#38BDF8" fontSize="8" fontWeight="bold">Deep Muscle</text>
+                </g>
+
+                {/* 2. Subcutaneous Needle (45°) */}
+                <g transform="translate(230, 20)">
+                  <line x1="85" y1="5" x2="10" y2="155" stroke="#F59E0B" strokeWidth="3" strokeLinecap="round" />
+                  <polygon points="5,165 14,150 24,158" fill="#F59E0B" />
+                  <rect x="65" y="0" width="60" height="22" rx="4" fill="#D97706" />
+                  <text x="95" y="15" textAnchor="middle" fill="#FFFFFF" fontSize="11" fontWeight="bold">SC: 45°</text>
+                  <text x="95" y="32" textAnchor="middle" fill="#F59E0B" fontSize="8" fontWeight="bold">Fat Layer</text>
+                </g>
+
+                {/* 3. Intravenous Needle (25°) */}
+                <g transform="translate(370, 20)">
+                  <line x1="120" y1="15" x2="10" y2="128" stroke="#10B981" strokeWidth="3" strokeLinecap="round" />
+                  <polygon points="0,135 15,124 20,136" fill="#10B981" />
+                  <rect x="100" y="0" width="60" height="22" rx="4" fill="#059669" />
+                  <text x="130" y="15" textAnchor="middle" fill="#FFFFFF" fontSize="11" fontWeight="bold">IV: 25°</text>
+                  <text x="130" y="32" textAnchor="middle" fill="#10B981" fontSize="8" fontWeight="bold">Vein entry</text>
+                </g>
+
+                {/* 4. Intradermal Needle (10-15°) */}
+                <g transform="translate(490, 20)">
+                  <line x1="100" y1="45" x2="10" y2="105" stroke="#A855F7" strokeWidth="3" strokeLinecap="round" />
+                  <polygon points="0,110 16,102 18,114" fill="#A855F7" />
+                  <rect x="70" y="15" width="70" height="22" rx="4" fill="#7E22CE" />
+                  <text x="105" y="30" textAnchor="middle" fill="#FFFFFF" fontSize="10" fontWeight="bold">ID: 10-15°</text>
+                  <text x="105" y="47" textAnchor="middle" fill="#D8B4FE" fontSize="8" fontWeight="bold">Dermis Wheal</text>
+                </g>
+              </svg>
+            </div>
+
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {INJECTION_ANGLES.map((inj) => (
                 <div

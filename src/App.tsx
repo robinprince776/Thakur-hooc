@@ -15,7 +15,11 @@ import { OfflineNotesPad } from './components/OfflineNotesPad';
 import { BcaNotesView } from './components/BcaNotesView';
 import { BcaPracticeView } from './components/BcaPracticeView';
 import { AppSwitcherModal, CurrentAppType } from './components/AppSwitcherModal';
+import { TechNavigatorModal, TechNavigatorItem } from './components/TechNavigatorModal';
+import { StealthModeOverlay } from './components/StealthModeOverlay';
+import { ProjectXModal } from './projectx/ProjectXModal';
 import { useDirectChat } from './hooks/useDirectChat';
+import { useMobileBackHandler } from './hooks/useMobileBackHandler';
 import { playUnlockSound, playLockSound, triggerHaptic } from './utils/sound';
 import {
   BookmarkItem,
@@ -166,6 +170,22 @@ const MusicMasterApp = React.lazy(() =>
 
 const TechNagarApp = React.lazy(() =>
   import('./technagar/TechNagarApp').then((m) => ({ default: m.TechNagarApp }))
+);
+
+const FeynmanSimulatorApp = React.lazy(() =>
+  import('./feynman/FeynmanSimulatorApp').then((m) => ({ default: m.FeynmanSimulatorApp }))
+);
+
+const NeuroNetApp = React.lazy(() =>
+  import('./brain/NeuroNetApp').then((m) => ({ default: m.NeuroNetApp }))
+);
+
+const PortfolioApp = React.lazy(() =>
+  import('./portfolio/PortfolioApp').then((m) => ({ default: m.PortfolioApp }))
+);
+
+const ProjectXApp = React.lazy(() =>
+  import('./projectx/ProjectXApp').then((m) => ({ default: m.ProjectXApp }))
 );
 
 
@@ -325,11 +345,39 @@ export default function App() {
       if (h === '#upsc' || h === '#ias' || h === '#civilservices' || h === '#ips') return 'upsc';
       if (h === '#music' || h === '#svara' || h === '#ragas' || h === '#audio') return 'music';
       if (h === '#technagar' || h === '#story' || h === '#chronicles') return 'technagar';
+      if (h === '#feynman' || h === '#mastery' || h === '#explain') return 'feynman';
+      if (h === '#brain' || h === '#neuronet' || h === '#graph') return 'brain';
+      if (h === '#portfolio' || h === '#resume' || h === '#cv') return 'portfolio';
+      if (h === '#projectx' || h === '#vault') return 'projectx';
       return 'bca';
     } catch {
       return 'bca';
     }
   });
+
+  // Meta-Features State
+  const [isNavigatorOpen, setIsNavigatorOpen] = useState<boolean>(false);
+  const [isStealthActive, setIsStealthActive] = useState<boolean>(false);
+  const [isProjectXModalOpen, setIsProjectXModalOpen] = useState<boolean>(false);
+
+  // Global Keyboard Shortcuts (Ctrl+K for TechNavigator, Shift+Esc for Stealth Panic Mode)
+  useEffect(() => {
+    const handleGlobalKeys = (e: KeyboardEvent) => {
+      // Ctrl + K or Cmd + K -> TechNavigator Command Palette
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        setIsNavigatorOpen((prev) => !prev);
+      }
+      // Shift + Esc -> Stealth Mode Panic Button
+      if (e.shiftKey && e.key === 'Escape') {
+        e.preventDefault();
+        setIsStealthActive((prev) => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeys);
+    return () => window.removeEventListener('keydown', handleGlobalKeys);
+  }, []);
 
   // CalcVault State
   const [vaultView, setVaultView] = useState<CalcVaultView>('calculator');
@@ -350,6 +398,7 @@ export default function App() {
   });
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState<boolean>(false);
+  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
 
   // Sync URL hash with 13-App Suite
   useEffect(() => {
@@ -447,6 +496,14 @@ export default function App() {
         setCurrentApp('music');
       } else if (h === '#technagar' || h === '#story' || h === '#chronicles') {
         setCurrentApp('technagar');
+      } else if (h === '#feynman' || h === '#mastery' || h === '#explain') {
+        setCurrentApp('feynman');
+      } else if (h === '#brain' || h === '#neuronet' || h === '#graph') {
+        setCurrentApp('brain');
+      } else if (h === '#portfolio' || h === '#resume' || h === '#cv') {
+        setCurrentApp('portfolio');
+      } else if (h === '#projectx' || h === '#vault') {
+        setCurrentApp('projectx');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -473,54 +530,37 @@ export default function App() {
 
   const toggleTheme = () => setIsDark((prev) => !prev);
 
-  // App Selector Handler
+  // Universal Mobile Hardware Back Button & Swipe Navigation Interceptor
+  const { showExitToast } = useMobileBackHandler({
+    currentApp,
+    setCurrentApp,
+    activeTab,
+    setActiveTab,
+    isAppSwitcherOpen,
+    setIsAppSwitcherOpen,
+    isNavigatorOpen,
+    setIsNavigatorOpen,
+    isSettingsModalOpen,
+    setIsSettingsModalOpen,
+    isSearchOpen,
+    setIsSearchOpen,
+    isProjectXModalOpen,
+    setIsProjectXModalOpen,
+    isStealthActive,
+    setIsStealthActive,
+    vaultView,
+    setVaultView,
+  });
+
+  // App Selector Handler (Universal for all 46+ apps)
   const handleSelectApp = (app: CurrentAppType) => {
     setIsAppSwitcherOpen(false);
     setCurrentApp(app);
-    if (app === 'bca') window.location.hash = 'bcaverse';
-    else if (app === 'techmaster') window.location.hash = 'techmaster';
-    else if (app === 'compiler') window.location.hash = 'compiler';
-    else if (app === 'dev') window.location.hash = 'dev';
-    else if (app === 'docucraft') window.location.hash = 'docucraft';
-    else if (app === 'gitstudio') window.location.hash = 'gitstudio';
-    else if (app === 'cyber') window.location.hash = 'cyber';
-    else if (app === 'cyberpath') window.location.hash = 'cyberpath';
-    else if (app === 'sentinel') window.location.hash = 'sentinel';
-    else if (app === 'academy') window.location.hash = 'academy';
-    else if (app === 'netsec') window.location.hash = 'netsec';
-    else if (app === 'apix') window.location.hash = 'apix';
-    else if (app === 'recon') window.location.hash = 'recon';
-    else if (app === 'securecode') window.location.hash = 'securecode';
-    else if (app === 'cloudops') window.location.hash = 'cloudops';
-    else if (app === 'promptcraft') window.location.hash = 'promptcraft';
-    else if (app === 'calc') window.location.hash = 'calc';
-    else if (app === 'sukhan') window.location.hash = 'sukhan';
-    else if (app === 'career') window.location.hash = 'career';
-    else if (app === 'linux') window.location.hash = 'linux';
-    else if (app === 'pcxray') window.location.hash = 'pcxray';
-    else if (app === 'netviz') window.location.hash = 'netviz';
-    else if (app === 'dsa') window.location.hash = 'dsa';
-    else if (app === 'database') window.location.hash = 'database';
-    else if (app === 'cicd') window.location.hash = 'cicd';
-    else if (app === 'containers') window.location.hash = 'containers';
-    else if (app === 'cloudiam') window.location.hash = 'cloudiam';
-    else if (app === 'siem') window.location.hash = 'siem';
-    else if (app === 'threatintel') window.location.hash = 'threatintel';
-    else if (app === 'forensics') window.location.hash = 'forensics';
-    else if (app === 'cryptomaster') window.location.hash = 'cryptomaster';
-    else if (app === 'reversing') window.location.hash = 'reversing';
-    else if (app === 'focus') window.location.hash = 'focus';
-    else if (app === 'dataformat') window.location.hash = 'dataformat';
-    else if (app === 'regexmaster') window.location.hash = 'regexmaster';
-    else if (app === 'systemdesign') window.location.hash = 'systemdesign';
-    else if (app === 'compliance') window.location.hash = 'compliance';
-    else if (app === 'webperf') window.location.hash = 'webperf';
-    else if (app === 'threatmodel') window.location.hash = 'threatmodel';
-    else if (app === 'gitflow') window.location.hash = 'gitflow';
-    else if (app === 'mindshield') window.location.hash = 'mindshield';
-    else if (app === 'zenfocus') window.location.hash = 'zenfocus';
-    else if (app === 'atlas') window.location.hash = 'atlas';
-    else if (app === 'medicore') window.location.hash = 'medicore';
+    if (app === 'bca') {
+      window.location.hash = 'bcaverse';
+    } else {
+      window.location.hash = app;
+    }
   };
 
   const handleReturnToBca = () => {
@@ -589,7 +629,6 @@ export default function App() {
       return [];
     }
   });
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [prefilledSolverType, setPrefilledSolverType] = useState<NumberSystemType | null>(null);
   const [prefilledProgramId, setPrefilledProgramId] = useState<string | null>(null);
   const [prefilledTopicId, setPrefilledTopicId] = useState<string | null>(null);
@@ -1504,6 +1543,222 @@ export default function App() {
                 currentApp={currentApp}
                 onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
               />
+              <TechNavigatorModal
+                isOpen={isNavigatorOpen}
+                onClose={() => setIsNavigatorOpen(false)}
+                onSelectItem={(item) => {
+                  setIsNavigatorOpen(false);
+                  if (item.appTarget === 'bca') {
+                    handleReturnToBca();
+                    if (item.tabTarget) setActiveTab(item.tabTarget as any);
+                  } else {
+                    handleSelectApp(item.appTarget);
+                    if (item.hashTarget) window.location.hash = item.hashTarget;
+                  }
+                }}
+              />
+              <StealthModeOverlay
+                isActive={isStealthActive}
+                onExitStealth={() => setIsStealthActive(false)}
+              />
+              <ProjectXModal
+                isOpen={isProjectXModalOpen}
+                onClose={() => setIsProjectXModalOpen(false)}
+                onUnlocked={() => {
+                  setIsProjectXModalOpen(false);
+                  handleSelectApp('projectx' as CurrentAppType);
+                  window.location.hash = '#projectx';
+                }}
+              />
+            </AppErrorBoundary>
+          </div>
+        );
+      }
+
+      // --- RENDER APP: Feynman AI Mastery Lab ---
+      if (currentApp === 'feynman') {
+        return (
+          <div className="min-h-screen bg-[#0A0F1D] text-slate-100 flex flex-col font-sans">
+            <AppErrorBoundary appName="Feynman Mastery Lab" onReset={handleReturnToBca}>
+              <Suspense fallback={<AppLoadingSpinner appName="Feynman Mastery Lab" />}>
+                <FeynmanSimulatorApp
+                  onBackToHub={handleReturnToBca}
+                  onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+                  onSwitchApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+                />
+              </Suspense>
+              <AppSwitcherModal
+                isOpen={isAppSwitcherOpen}
+                onClose={() => setIsAppSwitcherOpen(false)}
+                currentApp={currentApp}
+                onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+              />
+              <TechNavigatorModal
+                isOpen={isNavigatorOpen}
+                onClose={() => setIsNavigatorOpen(false)}
+                onSelectItem={(item) => {
+                  setIsNavigatorOpen(false);
+                  if (item.appTarget === 'bca') {
+                    handleReturnToBca();
+                    if (item.tabTarget) setActiveTab(item.tabTarget as any);
+                  } else {
+                    handleSelectApp(item.appTarget);
+                    if (item.hashTarget) window.location.hash = item.hashTarget;
+                  }
+                }}
+              />
+              <StealthModeOverlay
+                isActive={isStealthActive}
+                onExitStealth={() => setIsStealthActive(false)}
+              />
+              <ProjectXModal
+                isOpen={isProjectXModalOpen}
+                onClose={() => setIsProjectXModalOpen(false)}
+                onUnlocked={() => {
+                  setIsProjectXModalOpen(false);
+                  handleSelectApp('projectx' as CurrentAppType);
+                  window.location.hash = '#projectx';
+                }}
+              />
+            </AppErrorBoundary>
+          </div>
+        );
+      }
+
+      // --- RENDER APP: NeuroNet Second Brain ---
+      if (currentApp === 'brain') {
+        return (
+          <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col font-sans">
+            <AppErrorBoundary appName="NeuroNet Second Brain" onReset={handleReturnToBca}>
+              <Suspense fallback={<AppLoadingSpinner appName="NeuroNet Knowledge Graph" />}>
+                <NeuroNetApp
+                  onBackToHub={handleReturnToBca}
+                  onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+                  onSwitchApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+                />
+              </Suspense>
+              <AppSwitcherModal
+                isOpen={isAppSwitcherOpen}
+                onClose={() => setIsAppSwitcherOpen(false)}
+                currentApp={currentApp}
+                onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+              />
+              <TechNavigatorModal
+                isOpen={isNavigatorOpen}
+                onClose={() => setIsNavigatorOpen(false)}
+                onSelectItem={(item) => {
+                  setIsNavigatorOpen(false);
+                  if (item.appTarget === 'bca') {
+                    handleReturnToBca();
+                    if (item.tabTarget) setActiveTab(item.tabTarget as any);
+                  } else {
+                    handleSelectApp(item.appTarget);
+                    if (item.hashTarget) window.location.hash = item.hashTarget;
+                  }
+                }}
+              />
+              <StealthModeOverlay
+                isActive={isStealthActive}
+                onExitStealth={() => setIsStealthActive(false)}
+              />
+              <ProjectXModal
+                isOpen={isProjectXModalOpen}
+                onClose={() => setIsProjectXModalOpen(false)}
+                onUnlocked={() => {
+                  setIsProjectXModalOpen(false);
+                  handleSelectApp('projectx' as CurrentAppType);
+                  window.location.hash = '#projectx';
+                }}
+              />
+            </AppErrorBoundary>
+          </div>
+        );
+      }
+
+      // --- RENDER APP: One-Click Portfolio ---
+      if (currentApp === 'portfolio') {
+        return (
+          <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col font-sans">
+            <AppErrorBoundary appName="My Portfolio" onReset={handleReturnToBca}>
+              <Suspense fallback={<AppLoadingSpinner appName="My Portfolio" />}>
+                <PortfolioApp
+                  onBackToHub={handleReturnToBca}
+                  onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+                />
+              </Suspense>
+              <AppSwitcherModal
+                isOpen={isAppSwitcherOpen}
+                onClose={() => setIsAppSwitcherOpen(false)}
+                currentApp={currentApp}
+                onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+              />
+              <TechNavigatorModal
+                isOpen={isNavigatorOpen}
+                onClose={() => setIsNavigatorOpen(false)}
+                onSelectItem={(item) => {
+                  setIsNavigatorOpen(false);
+                  if (item.appTarget === 'bca') {
+                    handleReturnToBca();
+                    if (item.tabTarget) setActiveTab(item.tabTarget as any);
+                  } else {
+                    handleSelectApp(item.appTarget);
+                    if (item.hashTarget) window.location.hash = item.hashTarget;
+                  }
+                }}
+              />
+              <StealthModeOverlay
+                isActive={isStealthActive}
+                onExitStealth={() => setIsStealthActive(false)}
+              />
+              <ProjectXModal
+                isOpen={isProjectXModalOpen}
+                onClose={() => setIsProjectXModalOpen(false)}
+                onUnlocked={() => {
+                  setIsProjectXModalOpen(false);
+                  handleSelectApp('projectx' as CurrentAppType);
+                  window.location.hash = '#projectx';
+                }}
+              />
+            </AppErrorBoundary>
+          </div>
+        );
+      }
+
+      // --- RENDER APP: Project-X Secret Cyber Lab ---
+      if (currentApp === 'projectx') {
+        return (
+          <div className="min-h-screen bg-black text-emerald-400 font-mono flex flex-col">
+            <AppErrorBoundary appName="Project-X Cyber Lab" onReset={handleReturnToBca}>
+              <Suspense fallback={<AppLoadingSpinner appName="Project-X Cyber Lab" />}>
+                <ProjectXApp
+                  onBackToHub={handleReturnToBca}
+                  onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+                />
+              </Suspense>
+              <AppSwitcherModal
+                isOpen={isAppSwitcherOpen}
+                onClose={() => setIsAppSwitcherOpen(false)}
+                currentApp={currentApp}
+                onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+              />
+              <TechNavigatorModal
+                isOpen={isNavigatorOpen}
+                onClose={() => setIsNavigatorOpen(false)}
+                onSelectItem={(item) => {
+                  setIsNavigatorOpen(false);
+                  if (item.appTarget === 'bca') {
+                    handleReturnToBca();
+                    if (item.tabTarget) setActiveTab(item.tabTarget as any);
+                  } else {
+                    handleSelectApp(item.appTarget);
+                    if (item.hashTarget) window.location.hash = item.hashTarget;
+                  }
+                }}
+              />
+              <StealthModeOverlay
+                isActive={isStealthActive}
+                onExitStealth={() => setIsStealthActive(false)}
+              />
             </AppErrorBoundary>
           </div>
         );
@@ -1664,6 +1919,9 @@ export default function App() {
         isDark={isDark}
         toggleTheme={toggleTheme}
         onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenNavigator={() => setIsNavigatorOpen(true)}
+        onToggleStealth={() => setIsStealthActive((prev) => !prev)}
+        onOpenProjectX={() => setIsProjectXModalOpen(true)}
         onSelectApp={handleSelectApp}
         onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
         bookmarkCount={bookmarks.length}
@@ -1771,13 +2029,54 @@ export default function App() {
         }}
       />
 
-      {/* 13-Apps Suite Switcher Modal */}
+      {/* 46-Apps Suite Switcher Modal */}
       <AppSwitcherModal
         isOpen={isAppSwitcherOpen}
         onClose={() => setIsAppSwitcherOpen(false)}
         currentApp={currentApp}
         onSelectApp={handleSelectApp}
       />
+
+      {/* TechNavigator Command Palette (Ctrl+K) */}
+      <TechNavigatorModal
+        isOpen={isNavigatorOpen}
+        onClose={() => setIsNavigatorOpen(false)}
+        onSelectItem={(item) => {
+          setIsNavigatorOpen(false);
+          if (item.appTarget === 'bca') {
+            handleReturnToBca();
+            if (item.tabTarget) setActiveTab(item.tabTarget as any);
+          } else {
+            handleSelectApp(item.appTarget);
+            if (item.hashTarget) window.location.hash = item.hashTarget;
+          }
+        }}
+      />
+
+      {/* Stealth Mode Panic Button Overlay (Shift+Esc) */}
+      <StealthModeOverlay
+        isActive={isStealthActive}
+        onExitStealth={() => setIsStealthActive(false)}
+      />
+
+      {/* Project-X 3-Cipher Hidden Vault Modal */}
+      <ProjectXModal
+        isOpen={isProjectXModalOpen}
+        onClose={() => setIsProjectXModalOpen(false)}
+        onUnlocked={() => {
+          setIsProjectXModalOpen(false);
+          handleSelectApp('projectx' as CurrentAppType);
+          window.location.hash = '#projectx';
+        }}
+      />
+
+      {/* Android Double-Back to Exit Toast */}
+      {showExitToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] px-4 py-2.5 rounded-2xl bg-slate-900/95 border border-cyan-500/50 text-white text-xs font-semibold shadow-2xl backdrop-blur-md flex items-center gap-2 animate-bounce-slow pointer-events-none select-none">
+          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+          <span>Press back again to exit / Dubara dabayein bahar jane ke liye</span>
+        </div>
+      )}
     </div>
   );
 }

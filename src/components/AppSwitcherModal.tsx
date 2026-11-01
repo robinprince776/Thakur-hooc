@@ -101,7 +101,12 @@ export type CurrentAppType =
   // 🩺 Clinical & Pharma
   | 'medicore'
   // 📖 Story Mode
-  | 'technagar';
+  | 'technagar'
+  // ⚡ Meta-Intelligence & Mastery
+  | 'feynman'
+  | 'brain'
+  | 'portfolio'
+  | 'projectx';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;
@@ -112,7 +117,7 @@ interface AppSwitcherModalProps {
 
 interface AppItem {
   id: CurrentAppType;
-  category: 'Career' | 'Education' | 'Security' | 'Dev' | 'Psychology' | 'Diagrams' | 'Utilities' | 'Medical' | 'General' | 'Story Mode';
+  category: 'Career' | 'Education' | 'Security' | 'Dev' | 'Psychology' | 'Diagrams' | 'Utilities' | 'Medical' | 'General' | 'Story Mode' | 'Meta-Intelligence';
   title: string;
   subtitle: string;
   tagline: string;
@@ -124,6 +129,72 @@ interface AppItem {
 }
 
 const ALL_APPS: AppItem[] = [
+  // ⚡ Meta-Intelligence (4 Apps)
+  {
+    id: 'feynman',
+    category: 'Meta-Intelligence',
+    title: 'Feynman AI Mastery Lab',
+    subtitle: 'Child Simplicity & Jargon Engine',
+    tagline: 'Explain to a 10-year-old · Real-time Clarity Score · Anti-Ratta',
+    description: 'Mastery evaluator built on Richard Feynman technique. Checks keyword comprehension, flags heavy academic jargon, and verifies intuitive everyday analogies.',
+    badge: 'Mastery Engine',
+    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    hash: '#feynman',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-600 to-amber-500 flex items-center justify-center text-white shadow-md">
+        <Brain className="w-5 h-5 text-purple-200" />
+      </div>
+    )
+  },
+  {
+    id: 'brain',
+    category: 'Diagrams',
+    title: 'NeuroNet Knowledge Graph',
+    subtitle: 'Interactive Force-Directed Synapse Map',
+    tagline: 'Canvas Physics · Node Exploration · Cross-Domain Synapses',
+    description: 'Dynamic second brain connecting computer architecture, DSA, cybersecurity, medicine, and your personal custom notes in an interactive canvas graph.',
+    badge: 'Second Brain',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#brain',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-md">
+        <Brain className="w-5 h-5 text-cyan-200" />
+      </div>
+    )
+  },
+  {
+    id: 'portfolio',
+    category: 'Career',
+    title: 'One-Click Portfolio',
+    subtitle: 'Automated Verified Resume & Competencies',
+    tagline: '46+ Modules Live Progress · PDF Print · Markdown Summary',
+    description: 'Aggregates your real activity and progress across all modules into an executive cyber portfolio ready for interviews and LinkedIn.',
+    badge: 'Career Booster',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    hash: '#portfolio',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-white shadow-md">
+        <FileText className="w-5 h-5 text-emerald-200" />
+      </div>
+    )
+  },
+  {
+    id: 'projectx',
+    category: 'Security',
+    title: 'Project-X Secret Vault',
+    subtitle: 'Classified Hacker Terminal & Lab',
+    tagline: 'Root Shell · Nmap · Matrix Rain · 3-Cipher Challenge',
+    description: 'Secret cyber lab unlocked by discovering 3 ciphers in TechNagar story. Features full interactive terminal and packet diagnostics.',
+    badge: 'Classified Level 5',
+    badgeColor: 'bg-red-500/20 text-red-300 border-red-500/30',
+    hash: '#projectx',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-700 to-black border border-emerald-500 flex items-center justify-center text-emerald-400 shadow-md">
+        <Lock className="w-5 h-5 text-emerald-300" />
+      </div>
+    )
+  },
+
   // 🎯 Career (1 App)
   {
     id: 'career',
