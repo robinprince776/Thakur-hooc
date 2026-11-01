@@ -116,7 +116,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 </div>
                 <span className="text-[11px] font-medium text-slate-400 hidden xs:block">
-                  TechMaster Suite · 45+ Apps
+                  TechMaster Suite · 60+ Apps
                 </span>
               </div>
             </button>
@@ -268,14 +268,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
-            {/* 46-Apps Suite Switcher */}
+            {/* 60-Apps Suite Switcher */}
             <button
               onClick={onOpenAppSwitcher}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold transition-all shadow-lg shadow-cyan-600/30 cursor-pointer"
-              title="Open 46-Apps Master Suite Switcher"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold transition-all shadow-lg shadow-cyan-600/30 spring-press cursor-pointer"
+              title="Open 60-Apps Master Suite Switcher"
             >
               <Grid className="w-3.5 h-3.5" />
-              <span>46+ Apps</span>
+              <span>60+ Apps</span>
             </button>
 
             {/* Dark / Light Toggle */}

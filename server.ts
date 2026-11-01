@@ -969,12 +969,36 @@ const start = async () => {
   const isProd = process.env.NODE_ENV === 'production';
 
   if (!isProd) {
+    const fs = await import('fs');
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa'
     });
     app.use(vite.middlewares);
+
+    // Fallback for HTML5 history API navigation in dev mode
+    app.use('*', async (req, res, next) => {
+      const url = req.originalUrl;
+      if (url.startsWith('/api') || url.startsWith('/ws')) {
+        return next();
+      }
+      try {
+        const indexPath = path.resolve(__dirname, 'index.html');
+        if (fs.existsSync(indexPath)) {
+          let template = fs.readFileSync(indexPath, 'utf-8');
+          template = await vite.transformIndexHtml(url, template);
+          res.status(200).set({ 'Content-Type': 'text/html' }).end(template);
+        } else {
+          next();
+        }
+      } catch (e) {
+        if (vite && typeof vite.ssrFixStacktrace === 'function') {
+          vite.ssrFixStacktrace(e as Error);
+        }
+        next(e);
+      }
+    });
   } else {
     const distPath = path.resolve(__dirname, 'dist');
     app.use(express.static(distPath));
@@ -983,10 +1007,42 @@ const start = async () => {
     });
   }
 
-  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-  server.listen(PORT, '0.0.0.0', () => {
-    console.log(`BCA Verse Server running on http://0.0.0.0:${PORT}`);
+  // Parse port & host from process.env or CLI flags (--port 3000 --host 0.0.0.0)
+  let PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+  let HOST = '0.0.0.0';
+
+  const args = process.argv.slice(2);
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--port' || args[i] === '-p') {
+      const p = parseInt(args[i + 1], 10);
+      if (!isNaN(p)) PORT = p;
+    }
+    if (args[i] === '--host') {
+      if (args[i + 1]) HOST = args[i + 1];
+    }
+  }
+
+  server.on('error', (err: any) => {
+    if (err.code === 'EADDRINUSE') {
+      console.warn(`Port ${PORT} in use, retrying in 500ms...`);
+      setTimeout(() => {
+        try {
+          server.close();
+        } catch {}
+        server.listen(PORT, HOST);
+      }, 500);
+    } else {
+      console.error('HTTP server runtime error:', err);
+    }
+  });
+
+  server.listen(PORT, HOST, () => {
+    console.log(`BCA Verse Server running on http://${HOST}:${PORT}`);
   });
 };
 
-start().catch(console.error);
+start().catch((err) => {
+  console.error('Fatal startup error in server.ts:', err);
+  process.exit(1);
+});
+

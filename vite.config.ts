@@ -30,6 +30,7 @@ export default defineConfig(() => {
             if (id.includes('/src/cyber/')) return 'app-cyber';
             if (id.includes('/src/devforge/')) return 'app-devforge';
             if (id.includes('/src/sukhan/')) return 'app-sukhan';
+            if (id.includes('/src/bcasuite/')) return 'app-bcasuite';
           },
         },
       },

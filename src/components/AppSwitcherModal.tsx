@@ -106,7 +106,31 @@ export type CurrentAppType =
   | 'feynman'
   | 'brain'
   | 'portfolio'
-  | 'projectx';
+  | 'projectx'
+  // 📚 Complete BCA 6-Semester Core Subjects
+  | 'python'
+  | 'java'
+  | 'cpp'
+  | 'webdev'
+  | 'dbms'
+  | 'maths'
+  | 'softwareeng'
+  | 'graphics'
+  | 'os'
+  | 'daa'
+  | 'internet'
+  | 'ai'
+  | 'ml'
+  | 'cloud'
+  | 'cybersec'
+  | 'mobile'
+  | 'datascience'
+  // 🚀 Out-of-the-Box Advanced Features
+  | 'exam'
+  | 'playground'
+  | 'visuallab'
+  | 'askai'
+  | 'placement';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;
@@ -129,6 +153,88 @@ interface AppItem {
 }
 
 const ALL_APPS: AppItem[] = [
+  // 🎓 Complete BCA Semester Suite & Advanced Labs
+  {
+    id: 'exam',
+    category: 'Education',
+    title: 'BCA Exam Simulator',
+    subtitle: 'MCQ Mock Test & Weakness Detector',
+    tagline: '10-Minute Timed Test · Negative Marking · Topic Diagnostics',
+    description: 'Comprehensive BCA exam simulator across all 6 semesters with instant scores and AI weakness detector.',
+    badge: 'Exam Simulator',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    hash: '#exam',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center text-white shadow-md">
+        <Award className="w-5 h-5 text-amber-200" />
+      </div>
+    )
+  },
+  {
+    id: 'playground',
+    category: 'Dev',
+    title: 'Live Code Playground',
+    subtitle: 'Python, Java, C++, JS In-Browser',
+    tagline: 'Multi-Language Runner · Terminal Output · AI Explainer',
+    description: 'Run Python, Java, C++, and JavaScript directly in browser with live terminal, runtime stats, and instant AI tutor explanations.',
+    badge: 'Code Runner',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#playground',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-md">
+        <Code2 className="w-5 h-5 text-cyan-200" />
+      </div>
+    )
+  },
+  {
+    id: 'visuallab',
+    category: 'Diagrams',
+    title: 'Visual DBMS & OS Lab',
+    subtitle: 'ER Diagrams, SQL Joins & Gantt Chart',
+    tagline: 'Interactive Relational Models · Process Scheduling',
+    description: 'Interactive ER Diagram builder, SQL Table Join Visualizer (Inner, Left, Right, Full), and OS CPU Scheduler Gantt Chart.',
+    badge: 'Visual Lab',
+    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    hash: '#visuallab',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
+        <Layers className="w-5 h-5 text-purple-200" />
+      </div>
+    )
+  },
+  {
+    id: 'askai',
+    category: 'Education',
+    title: 'AI BCA Doubt Solver',
+    subtitle: 'Step-by-Step Concepts & Viva Tips',
+    tagline: 'Instant Explanations · Sem 1 to 6 Syllabus · Code Samples',
+    description: 'Interactive AI tutor for BCA students. Ask doubts in Python, Java, DBMS, OS, DAA, AI, Cloud, and get structured explanations.',
+    badge: 'AI Doubt Solver',
+    badgeColor: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+    hash: '#askai',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-500 to-emerald-600 flex items-center justify-center text-white shadow-md">
+        <Brain className="w-5 h-5 text-teal-200" />
+      </div>
+    )
+  },
+  {
+    id: 'placement',
+    category: 'Career',
+    title: 'BCA Placement Prep Hub',
+    subtitle: 'TCS, Infosys, Wipro, Accenture Hub',
+    tagline: 'Technical Questions · Aptitude Solvers · Winning HR Answers',
+    description: 'Top IT company recruitment patterns, aptitude tests with step-by-step solutions, and HR round interview answer templates.',
+    badge: 'Placement Hub',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    hash: '#placement',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md">
+        <Briefcase className="w-5 h-5 text-emerald-200" />
+      </div>
+    )
+  },
+
   // ⚡ Meta-Intelligence (4 Apps)
   {
     id: 'feynman',

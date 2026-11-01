@@ -123,6 +123,204 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
+      {/* 🎓 COMPLETE BCA 6-SEMESTER ACADEMIC HUB & ADVANCED LABS */}
+      <section className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 mb-1">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Semesters 1 to 6 Syllabus · 5 Advanced Interactive Labs</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              BCA 6-Semester Academic Suite &amp; Labs
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+              Exam Simulator, Multi-language playground, visual ER/OS Gantt charts, AI tutor, and placement prep.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onSelectApp ? onSelectApp('python' as any) : (window.location.hash = '#python')}
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold shadow-md hover:from-amber-400 hover:to-orange-500 spring-press cursor-pointer flex items-center gap-1.5"
+            >
+              <span>Explore 6 Semesters</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Card 1: Exam Simulator */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('exam' as any) : (window.location.hash = '#exam')}
+            className="group p-5 rounded-3xl glass-card border-amber-500/30 hover:border-amber-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between glass-card-hover relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-full blur-xl pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center text-white shadow-md text-lg">
+                  🎯
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
+                  Timed Test &amp; AI Diagnosis
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+                BCA Exam Simulator
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                MCQ Mock test with negative marking (-0.25), real-time countdown timer, scorecard, and topic weakness detector.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-amber-400 font-bold">
+              <span>Start 10-Min Mock Exam</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card 2: Multi-Language Code Playground */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('playground' as any) : (window.location.hash = '#playground')}
+            className="group p-5 rounded-3xl glass-card border-cyan-500/30 hover:border-cyan-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between glass-card-hover relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/10 rounded-full blur-xl pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-md text-lg">
+                  🧑‍💻
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">
+                  Python · Java · C++ · JS
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
+                Live Code Playground
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                In-browser compiler simulation with live stdout terminal, memory/time stats, and "Explain Code" AI tutor.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-cyan-400 font-bold">
+              <span>Run Code In-Browser</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card 3: Visual DBMS & OS Lab */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('visuallab' as any) : (window.location.hash = '#visuallab')}
+            className="group p-5 rounded-3xl glass-card border-purple-500/30 hover:border-purple-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between glass-card-hover relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-xl pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md text-lg">
+                  📊
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
+                  ER · Joins · Gantt Chart
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-purple-300 transition-colors">
+                Visual DBMS &amp; OS Lab
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Interactive ER Diagram builder, SQL Table Join Visualizer (Inner/Left/Right/Full), and OS Gantt Chart CPU scheduler.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-purple-400 font-bold">
+              <span>Launch Visual Labs</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card 4: AI BCA Doubt Solver */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('askai' as any) : (window.location.hash = '#askai')}
+            className="group p-5 rounded-3xl glass-card border-teal-500/30 hover:border-teal-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between glass-card-hover relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-teal-500/10 rounded-full blur-xl pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-teal-500 to-emerald-600 flex items-center justify-center text-white shadow-md text-lg">
+                  🧠
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 font-bold">
+                  AI Concept Tutor
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-teal-300 transition-colors">
+                AI BCA Doubt Solver
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Ask any question from any of the 6 semesters. Get instant step-by-step logic, code snippets, and exam viva tips.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-teal-400 font-bold">
+              <span>Ask a Doubt</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card 5: Placement Prep Hub */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('placement' as any) : (window.location.hash = '#placement')}
+            className="group p-5 rounded-3xl glass-card border-emerald-500/30 hover:border-emerald-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between glass-card-hover relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md text-lg">
+                  🏆
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+                  TCS · Infosys · Wipro · Accenture
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
+                Placement Prep Hub
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Company recruitment patterns, quantitative/logical aptitude questions with solutions, and HR interview answers.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-emerald-400 font-bold">
+              <span>View IT Prep Material</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card 6: 6-Semester Syllabus Explorer */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('python' as any) : (window.location.hash = '#python')}
+            className="group p-5 rounded-3xl glass-card border-blue-500/30 hover:border-blue-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between glass-card-hover relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-xl pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md text-lg">
+                  📚
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 font-bold">
+                  Sem 1 to Sem 6
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors">
+                6-Semester Course Suite
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Python, Java, C++, DBMS, Maths, Software Eng, Computer Graphics, Operating Systems, DAA, AI/ML, Cloud, and Mobile.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-blue-400 font-bold">
+              <span>Browse All Subjects</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ⭐ FLAGSHIP APPLICATIONS & CLINICAL REFERENCE HUB */}
       <section className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">

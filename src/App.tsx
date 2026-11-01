@@ -188,6 +188,30 @@ const ProjectXApp = React.lazy(() =>
   import('./projectx/ProjectXApp').then((m) => ({ default: m.ProjectXApp }))
 );
 
+const BcaSemesterSuiteApp = React.lazy(() =>
+  import('./bcasuite/BcaSemesterSuiteApp').then((m) => ({ default: m.BcaSemesterSuiteApp }))
+);
+
+const BcaExamSimulatorApp = React.lazy(() =>
+  import('./bcasuite/BcaExamSimulatorApp').then((m) => ({ default: m.BcaExamSimulatorApp }))
+);
+
+const MultiCodePlaygroundApp = React.lazy(() =>
+  import('./bcasuite/MultiCodePlaygroundApp').then((m) => ({ default: m.MultiCodePlaygroundApp }))
+);
+
+const VisualDbmsOsLabApp = React.lazy(() =>
+  import('./bcasuite/VisualDbmsOsLabApp').then((m) => ({ default: m.VisualDbmsOsLabApp }))
+);
+
+const BcaDoubtSolverApp = React.lazy(() =>
+  import('./bcasuite/BcaDoubtSolverApp').then((m) => ({ default: m.BcaDoubtSolverApp }))
+);
+
+const PlacementPrepApp = React.lazy(() =>
+  import('./bcasuite/PlacementPrepApp').then((m) => ({ default: m.PlacementPrepApp }))
+);
+
 
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
@@ -349,6 +373,28 @@ export default function App() {
       if (h === '#brain' || h === '#neuronet' || h === '#graph') return 'brain';
       if (h === '#portfolio' || h === '#resume' || h === '#cv') return 'portfolio';
       if (h === '#projectx' || h === '#vault') return 'projectx';
+      if (h === '#exam') return 'exam';
+      if (h === '#playground') return 'playground';
+      if (h === '#visuallab') return 'visuallab';
+      if (h === '#askai') return 'askai';
+      if (h === '#placement') return 'placement';
+      if (h === '#python') return 'python';
+      if (h === '#java') return 'java';
+      if (h === '#cpp') return 'cpp';
+      if (h === '#webdev') return 'webdev';
+      if (h === '#dbms') return 'dbms';
+      if (h === '#maths') return 'maths';
+      if (h === '#softwareeng') return 'softwareeng';
+      if (h === '#graphics') return 'graphics';
+      if (h === '#os') return 'os';
+      if (h === '#daa') return 'daa';
+      if (h === '#internet') return 'internet';
+      if (h === '#ai') return 'ai';
+      if (h === '#ml') return 'ml';
+      if (h === '#cloud') return 'cloud';
+      if (h === '#cybersec') return 'cybersec';
+      if (h === '#mobile') return 'mobile';
+      if (h === '#datascience') return 'datascience';
       return 'bca';
     } catch {
       return 'bca';
@@ -504,6 +550,50 @@ export default function App() {
         setCurrentApp('portfolio');
       } else if (h === '#projectx' || h === '#vault') {
         setCurrentApp('projectx');
+      } else if (h === '#exam') {
+        setCurrentApp('exam');
+      } else if (h === '#playground') {
+        setCurrentApp('playground');
+      } else if (h === '#visuallab') {
+        setCurrentApp('visuallab');
+      } else if (h === '#askai') {
+        setCurrentApp('askai');
+      } else if (h === '#placement') {
+        setCurrentApp('placement');
+      } else if (h === '#python') {
+        setCurrentApp('python');
+      } else if (h === '#java') {
+        setCurrentApp('java');
+      } else if (h === '#cpp') {
+        setCurrentApp('cpp');
+      } else if (h === '#webdev') {
+        setCurrentApp('webdev');
+      } else if (h === '#dbms') {
+        setCurrentApp('dbms');
+      } else if (h === '#maths') {
+        setCurrentApp('maths');
+      } else if (h === '#softwareeng') {
+        setCurrentApp('softwareeng');
+      } else if (h === '#graphics') {
+        setCurrentApp('graphics');
+      } else if (h === '#os') {
+        setCurrentApp('os');
+      } else if (h === '#daa') {
+        setCurrentApp('daa');
+      } else if (h === '#internet') {
+        setCurrentApp('internet');
+      } else if (h === '#ai') {
+        setCurrentApp('ai');
+      } else if (h === '#ml') {
+        setCurrentApp('ml');
+      } else if (h === '#cloud') {
+        setCurrentApp('cloud');
+      } else if (h === '#cybersec') {
+        setCurrentApp('cybersec');
+      } else if (h === '#mobile') {
+        setCurrentApp('mobile');
+      } else if (h === '#datascience') {
+        setCurrentApp('datascience');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -685,6 +775,151 @@ export default function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  // --- RENDER APP: BCA Exam Simulator ---
+  if (currentApp === 'exam') {
+    return (
+      <AppErrorBoundary appName="BCA Exam Simulator" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="BCA Exam Simulator" />}>
+          <BcaExamSimulatorApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Multi-Language Code Playground ---
+  if (currentApp === 'playground') {
+    return (
+      <AppErrorBoundary appName="Code Playground" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Code Playground" />}>
+          <MultiCodePlaygroundApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Visual DBMS & OS Lab ---
+  if (currentApp === 'visuallab') {
+    return (
+      <AppErrorBoundary appName="Visual DBMS & OS Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Visual DBMS & OS Lab" />}>
+          <VisualDbmsOsLabApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: AI BCA Doubt Solver ---
+  if (currentApp === 'askai') {
+    return (
+      <AppErrorBoundary appName="BCA Doubt Solver" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="BCA Doubt Solver" />}>
+          <BcaDoubtSolverApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Placement Prep Hub ---
+  if (currentApp === 'placement') {
+    return (
+      <AppErrorBoundary appName="Placement Prep Hub" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Placement Prep Hub" />}>
+          <PlacementPrepApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: 6-Semester Core BCA Subjects ---
+  if (
+    currentApp === 'python' ||
+    currentApp === 'java' ||
+    currentApp === 'cpp' ||
+    currentApp === 'webdev' ||
+    currentApp === 'dbms' ||
+    currentApp === 'maths' ||
+    currentApp === 'softwareeng' ||
+    currentApp === 'graphics' ||
+    currentApp === 'os' ||
+    currentApp === 'daa' ||
+    currentApp === 'internet' ||
+    currentApp === 'ai' ||
+    currentApp === 'ml' ||
+    currentApp === 'cloud' ||
+    currentApp === 'cybersec' ||
+    currentApp === 'mobile' ||
+    currentApp === 'datascience'
+  ) {
+    return (
+      <AppErrorBoundary appName="BCA Academic Suite" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="BCA Academic Suite" />}>
+          <BcaSemesterSuiteApp
+            initialSubject={currentApp}
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
 
   // --- RENDER APP 1: TechMaster 2000+ ---
   if (currentApp === 'techmaster') {

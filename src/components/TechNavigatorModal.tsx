@@ -167,56 +167,145 @@ export const NAVIGATOR_ITEMS: TechNavigatorItem[] = [
     hashTarget: '#projectx',
     keywords: ['projectx', 'vault', 'secret', 'hacker', 'matrix', 'terminal', 'hidden']
   },
-  // Core BCA Topics & Solvers
   {
-    id: 'logic-solver',
-    title: 'Logic & Number System Solver',
+    id: 'exam',
+    title: 'BCA Exam Simulator & Mock Test',
     category: 'Tool',
-    description: 'Binary, Octal, Hexadecimal conversions with remainder table step-by-step.',
-    icon: Cpu,
-    appTarget: 'bca',
-    tabTarget: 'logic-solver',
-    keywords: ['binary', 'decimal', 'hex', 'octal', 'conversion', 'complements', 'logic gates']
+    description: 'Timed university mock exam, negative marking (-0.25), scorecard, and Weakness Detector.',
+    icon: GraduationCap,
+    appTarget: 'exam' as CurrentAppType,
+    hashTarget: '#exam',
+    keywords: ['exam', 'test', 'mock', 'mcq', 'scorecard', 'timer', 'questions', 'bca exam', 'quiz']
   },
   {
-    id: 'c-programs',
-    title: '45+ Ready C Programs',
-    category: 'Topic',
-    description: 'Fibonacci, Prime numbers, Bubble sort, Matrix multiplication with dry-run.',
+    id: 'playground',
+    title: 'Live Multi-Language Playground',
+    category: 'Tool',
+    description: 'In-browser compiler & runner for Python, Java, C++, and JavaScript with AI Explainer.',
     icon: Terminal,
-    appTarget: 'bca',
-    tabTarget: 'c-generator',
-    keywords: ['c programs', 'fibonacci', 'prime', 'bubble sort', 'palindrome', 'armstrong']
+    appTarget: 'playground' as CurrentAppType,
+    hashTarget: '#playground',
+    keywords: ['playground', 'compiler', 'python', 'java', 'cpp', 'javascript', 'runner', 'code editor', 'ide']
   },
   {
-    id: 'computer-fundamentals',
-    title: 'Computer Fundamentals Notes',
-    category: 'Exam Note',
-    description: 'Von Neumann, 1st-5th Generations, RAM vs ROM, Operating System notes.',
-    icon: FileText,
-    appTarget: 'bca',
-    tabTarget: 'fundamentals',
-    keywords: ['fundamentals', 'von neumann', 'generations', 'ram rom', 'hardware']
-  },
-  {
-    id: 'osi-topic',
-    title: 'OSI 7 Layers Network Visualizer',
-    category: 'Topic',
-    description: 'Physical, Data Link, Network, Transport, Session, Presentation, Application.',
-    icon: Layers,
-    appTarget: 'netviz',
-    hashTarget: '#netviz',
-    keywords: ['osi', 'tcp', 'ip', 'layers', 'packets', 'networking']
-  },
-  {
-    id: 'sql-topic',
-    title: 'SQL Playground & DB Designer',
+    id: 'visuallab',
+    title: 'Visual DBMS & OS Lab',
     category: 'Tool',
-    description: 'Practice SELECT, JOIN, GROUP BY, and schema creation in client-side SQL.',
+    description: 'Interactive ER Diagram builder, SQL Join table animator, and OS CPU Gantt Scheduler.',
     icon: Cpu,
-    appTarget: 'database',
-    hashTarget: '#database',
-    keywords: ['sql', 'query', 'database', 'postgres', 'mysql', 'tables', 'schema']
+    appTarget: 'visuallab' as CurrentAppType,
+    hashTarget: '#visuallab',
+    keywords: ['visuallab', 'er diagram', 'sql join', 'cpu scheduler', 'gantt chart', 'fcfs', 'sjf', 'round robin', 'dbms lab', 'os lab']
+  },
+  {
+    id: 'askai',
+    title: 'AI BCA Doubt Solver',
+    category: 'Tool',
+    description: '24/7 client-side smart doubt solver for BCA concepts, viva prep, and algorithm breakdowns.',
+    icon: Sparkles,
+    appTarget: 'askai' as CurrentAppType,
+    hashTarget: '#askai',
+    keywords: ['askai', 'ai tutor', 'doubt', 'solver', 'viva', 'explain', 'bcnf', 'deadlock', 'pointers']
+  },
+  {
+    id: 'placement',
+    title: 'Placement Prep Hub',
+    category: 'App',
+    description: 'TCS, Infosys, Wipro hiring patterns, quantitative aptitude solvers, and winning HR interview answers.',
+    icon: Zap,
+    appTarget: 'placement' as CurrentAppType,
+    hashTarget: '#placement',
+    keywords: ['placement', 'tcs', 'infosys', 'wipro', 'accenture', 'aptitude', 'hr round', 'interview', 'jobs', 'campus']
+  },
+  {
+    id: 'bca-python',
+    title: 'Python Programming (Sem 1 & 2)',
+    category: 'Topic',
+    description: 'Variables, loops, OOP, NumPy/Pandas, and file handling interactive notes & code.',
+    icon: Terminal,
+    appTarget: 'python' as CurrentAppType,
+    hashTarget: '#python',
+    keywords: ['python', 'oop', 'pandas', 'numpy', 'functions', 'sem 1', 'sem 2']
+  },
+  {
+    id: 'bca-java',
+    title: 'Java Programming (Sem 1 & 2)',
+    category: 'Topic',
+    description: 'Core Java, OOP, Exception handling, Collections Framework, and Multithreading.',
+    icon: Terminal,
+    appTarget: 'java' as CurrentAppType,
+    hashTarget: '#java',
+    keywords: ['java', 'jvm', 'oop', 'collections', 'multithreading', 'exception', 'inheritance']
+  },
+  {
+    id: 'bca-cpp',
+    title: 'C++ & Object Oriented Programming',
+    category: 'Topic',
+    description: 'Classes, Objects, Inheritance, Polymorphism, and STL Vectors & Maps.',
+    icon: Terminal,
+    appTarget: 'cpp' as CurrentAppType,
+    hashTarget: '#cpp',
+    keywords: ['cpp', 'c++', 'stl', 'vectors', 'classes', 'polymorphism', 'templates']
+  },
+  {
+    id: 'bca-dbms',
+    title: 'DBMS & Relational Database Design',
+    category: 'Topic',
+    description: 'Normalization (1NF to BCNF), ER Diagrams, SQL Queries, and Triggers.',
+    icon: Cpu,
+    appTarget: 'dbms' as CurrentAppType,
+    hashTarget: '#dbms',
+    keywords: ['dbms', 'sql', 'normalization', 'bcnf', '3nf', 'relational', 'keys', 'joins']
+  },
+  {
+    id: 'bca-os',
+    title: 'Operating Systems (Sem 3 & 4)',
+    category: 'Topic',
+    description: 'Process scheduling, Bankers algorithm, Paging, Segmentation, and Deadlock.',
+    icon: Cpu,
+    appTarget: 'os' as CurrentAppType,
+    hashTarget: '#os',
+    keywords: ['os', 'operating systems', 'deadlock', 'banker', 'paging', 'virtual memory', 'semaphores']
+  },
+  {
+    id: 'bca-daa',
+    title: 'Design & Analysis of Algorithms (DAA)',
+    category: 'Topic',
+    description: 'Time/space complexity, Greedy, Dynamic Programming, and Backtracking (N-Queens).',
+    icon: Brain,
+    appTarget: 'daa' as CurrentAppType,
+    hashTarget: '#daa',
+    keywords: ['daa', 'algorithms', 'knapsack', 'dynamic programming', 'greedy', 'n-queens', 'time complexity']
+  },
+  {
+    id: 'bca-ai',
+    title: 'Artificial Intelligence & Search (Sem 5 & 6)',
+    category: 'Topic',
+    description: 'BFS, DFS, A* Search, Alpha-Beta pruning, Knowledge Representation, and Expert Systems.',
+    icon: Brain,
+    appTarget: 'ai' as CurrentAppType,
+    hashTarget: '#ai',
+    keywords: ['ai', 'artificial intelligence', 'a star', 'heuristic', 'expert systems', 'search']
+  },
+  {
+    id: 'bca-cloud',
+    title: 'Cloud Computing (Sem 5 & 6)',
+    category: 'Topic',
+    description: 'IaaS, PaaS, SaaS, AWS, Azure, GCP, Serverless, and Containerization (Docker).',
+    icon: Cpu,
+    appTarget: 'cloud' as CurrentAppType,
+    hashTarget: '#cloud',
+    keywords: ['cloud', 'aws', 'docker', 'iaas', 'paas', 'saas', 'kubernetes', 'serverless']
+  },
+  {
+    id: 'bca-cybersec',
+    title: 'Cyber Security & Cryptography',
+    category: 'Topic',
+    description: 'CIA Triad, SQLi, XSS, Firewall, Ethical Hacking, and Cryptographic Ciphers.',
+    icon: Shield,
+    appTarget: 'cybersec' as CurrentAppType,
+    hashTarget: '#cybersec',
+    keywords: ['cybersec', 'cyber security', 'sqli', 'xss', 'firewall', 'cia triad', 'ethical hacking']
   }
 ];
 
