@@ -212,6 +212,46 @@ const PlacementPrepApp = React.lazy(() =>
   import('./bcasuite/PlacementPrepApp').then((m) => ({ default: m.PlacementPrepApp }))
 );
 
+// 🧪 Elite Labs (5 Advanced Apps)
+const ForensicCyberLabApp = React.lazy(() =>
+  import('./elitelabs/ForensicCyberLabApp').then((m) => ({ default: m.ForensicCyberLabApp }))
+);
+const QuantumVisualizerApp = React.lazy(() =>
+  import('./elitelabs/QuantumVisualizerApp').then((m) => ({ default: m.QuantumVisualizerApp }))
+);
+const HardwareIotLabApp = React.lazy(() =>
+  import('./elitelabs/HardwareIotLabApp').then((m) => ({ default: m.HardwareIotLabApp }))
+);
+const SystemDesignCanvasApp = React.lazy(() =>
+  import('./elitelabs/SystemDesignCanvasApp').then((m) => ({ default: m.SystemDesignCanvasApp }))
+);
+const TechWealthApp = React.lazy(() =>
+  import('./elitelabs/TechWealthApp').then((m) => ({ default: m.TechWealthApp }))
+);
+
+// 🚀 Next-Gen Labs (5 Production Simulators)
+const RoboticsSimulatorApp = React.lazy(() =>
+  import('./nextgen/RoboticsSimulatorApp').then((m) => ({ default: m.RoboticsSimulatorApp }))
+);
+const GeointSimulatorApp = React.lazy(() =>
+  import('./nextgen/GeointSimulatorApp').then((m) => ({ default: m.GeointSimulatorApp }))
+);
+const ComputerVisionLabApp = React.lazy(() =>
+  import('./nextgen/ComputerVisionLabApp').then((m) => ({ default: m.ComputerVisionLabApp }))
+);
+const OnionRoutingApp = React.lazy(() =>
+  import('./nextgen/OnionRoutingApp').then((m) => ({ default: m.OnionRoutingApp }))
+);
+const GameEngineSandboxApp = React.lazy(() =>
+  import('./nextgen/GameEngineSandboxApp').then((m) => ({ default: m.GameEngineSandboxApp }))
+);
+
+// OS Architecture Components
+import { useOsStore } from './store/useOsStore';
+import { OsTopBar } from './components/OsTopBar';
+import { OsSidebar } from './components/OsSidebar';
+import { SkeletonLoader } from './components/SkeletonLoader';
+
 
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
@@ -395,6 +435,16 @@ export default function App() {
       if (h === '#cybersec') return 'cybersec';
       if (h === '#mobile') return 'mobile';
       if (h === '#datascience') return 'datascience';
+      if (h === '#forensics') return 'forensics';
+      if (h === '#quantum') return 'quantum';
+      if (h === '#iot') return 'iot';
+      if (h === '#sysdesign') return 'sysdesign';
+      if (h === '#wealth') return 'wealth';
+      if (h === '#robotics') return 'robotics';
+      if (h === '#geoint') return 'geoint';
+      if (h === '#vision') return 'vision';
+      if (h === '#onion') return 'onion';
+      if (h === '#gamedev') return 'gamedev';
       return 'bca';
     } catch {
       return 'bca';
@@ -445,6 +495,7 @@ export default function App() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
   // Sync URL hash with 13-App Suite
   useEffect(() => {
@@ -594,6 +645,26 @@ export default function App() {
         setCurrentApp('mobile');
       } else if (h === '#datascience') {
         setCurrentApp('datascience');
+      } else if (h === '#forensics') {
+        setCurrentApp('forensics');
+      } else if (h === '#quantum') {
+        setCurrentApp('quantum');
+      } else if (h === '#iot') {
+        setCurrentApp('iot');
+      } else if (h === '#sysdesign') {
+        setCurrentApp('sysdesign');
+      } else if (h === '#wealth') {
+        setCurrentApp('wealth');
+      } else if (h === '#robotics') {
+        setCurrentApp('robotics');
+      } else if (h === '#geoint') {
+        setCurrentApp('geoint');
+      } else if (h === '#vision') {
+        setCurrentApp('vision');
+      } else if (h === '#onion') {
+        setCurrentApp('onion');
+      } else if (h === '#gamedev') {
+        setCurrentApp('gamedev');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -636,6 +707,8 @@ export default function App() {
     setIsSearchOpen,
     isProjectXModalOpen,
     setIsProjectXModalOpen,
+    isSidebarOpen,
+    setIsSidebarOpen,
     isStealthActive,
     setIsStealthActive,
     vaultView,
@@ -907,6 +980,216 @@ export default function App() {
           <BcaSemesterSuiteApp
             initialSubject={currentApp}
             onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Forensic Cyber Lab (Elite Labs) ---
+  if (currentApp === 'forensics') {
+    return (
+      <AppErrorBoundary appName="Forensic Cyber Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<SkeletonLoader appName="Forensic Cyber Lab" />}>
+          <ForensicCyberLabApp
+            onBackToHub={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Quantum Computing Visualizer (Elite Labs) ---
+  if (currentApp === 'quantum') {
+    return (
+      <AppErrorBoundary appName="Quantum Visualizer" onReset={handleReturnToBca}>
+        <Suspense fallback={<SkeletonLoader appName="Quantum Computing Visualizer" />}>
+          <QuantumVisualizerApp
+            onBackToHub={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Hardware & IoT Lab (Elite Labs) ---
+  if (currentApp === 'iot') {
+    return (
+      <AppErrorBoundary appName="Hardware & IoT Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<SkeletonLoader appName="Hardware & IoT Lab" />}>
+          <HardwareIotLabApp
+            onBackToHub={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: System Design Canvas (Elite Labs) ---
+  if (currentApp === 'sysdesign') {
+    return (
+      <AppErrorBoundary appName="System Design Canvas" onReset={handleReturnToBca}>
+        <Suspense fallback={<SkeletonLoader appName="System Design Canvas" />}>
+          <SystemDesignCanvasApp
+            onBackToHub={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: TechWealth (Elite Labs) ---
+  if (currentApp === 'wealth') {
+    return (
+      <AppErrorBoundary appName="TechWealth" onReset={handleReturnToBca}>
+        <Suspense fallback={<SkeletonLoader appName="TechWealth Finance" />}>
+          <TechWealthApp
+            onBackToHub={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Drone & Robotics Simulator (Next-Gen Labs) ---
+  if (currentApp === 'robotics') {
+    return (
+      <AppErrorBoundary appName="Drone Robotics Simulator" onReset={handleReturnToBca}>
+        <Suspense fallback={<SkeletonLoader appName="Drone & Robotics Simulator" />}>
+          <RoboticsSimulatorApp
+            onBackToHub={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Satellite & GEOINT (Next-Gen Labs) ---
+  if (currentApp === 'geoint') {
+    return (
+      <AppErrorBoundary appName="Satellite GEOINT Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<SkeletonLoader appName="Satellite & GEOINT" />}>
+          <GeointSimulatorApp
+            onBackToHub={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Computer Vision Lab (Next-Gen Labs) ---
+  if (currentApp === 'vision') {
+    return (
+      <AppErrorBoundary appName="Computer Vision Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<SkeletonLoader appName="Computer Vision Lab" />}>
+          <ComputerVisionLabApp
+            onBackToHub={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Onion Routing & Tor (Next-Gen Labs) ---
+  if (currentApp === 'onion') {
+    return (
+      <AppErrorBoundary appName="Onion Routing Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<SkeletonLoader appName="Onion Routing Lab" />}>
+          <OnionRoutingApp
+            onBackToHub={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: Game Engine & Physics (Next-Gen Labs) ---
+  if (currentApp === 'gamedev') {
+    return (
+      <AppErrorBoundary appName="Game Engine Sandbox" onReset={handleReturnToBca}>
+        <Suspense fallback={<SkeletonLoader appName="Game Engine Sandbox" />}>
+          <GameEngineSandboxApp
+            onBackToHub={handleReturnToBca}
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
             onSelectApp={handleSelectApp}
           />
@@ -1407,27 +1690,6 @@ export default function App() {
       <AppErrorBoundary appName="Threat Intel & IOC Extractor" onReset={handleReturnToBca}>
         <Suspense fallback={<AppLoadingSpinner appName="Threat Intel & IOC Extractor" />}>
           <ThreatIntelApp
-            onBackToBca={handleReturnToBca}
-            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
-            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
-          />
-        </Suspense>
-        <AppSwitcherModal
-          isOpen={isAppSwitcherOpen}
-          onClose={() => setIsAppSwitcherOpen(false)}
-          currentApp={currentApp}
-          onSelectApp={handleSelectApp}
-        />
-      </AppErrorBoundary>
-    );
-  }
-
-  // --- RENDER APP: Digital Forensics Workbench ---
-  if (currentApp === 'forensics') {
-    return (
-      <AppErrorBoundary appName="Digital Forensics Workbench" onReset={handleReturnToBca}>
-        <Suspense fallback={<AppLoadingSpinner appName="Digital Forensics Workbench" />}>
-          <DigitalForensicsApp
             onBackToBca={handleReturnToBca}
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
             onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
@@ -2157,6 +2419,7 @@ export default function App() {
         onOpenNavigator={() => setIsNavigatorOpen(true)}
         onToggleStealth={() => setIsStealthActive((prev) => !prev)}
         onOpenProjectX={() => setIsProjectXModalOpen(true)}
+        onOpenSidebar={() => setIsSidebarOpen(true)}
         onSelectApp={handleSelectApp}
         onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
         bookmarkCount={bookmarks.length}
@@ -2303,6 +2566,20 @@ export default function App() {
           handleSelectApp('projectx' as CurrentAppType);
           window.location.hash = '#projectx';
         }}
+      />
+
+      {/* OS Navigation Sidebar Drawer */}
+      <OsSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        onSelectApp={handleSelectApp}
+        currentApp={currentApp}
+        onOpenSettings={() => setIsSettingsModalOpen(true)}
+        onOpenPortfolio={() => {
+          handleSelectApp('portfolio' as CurrentAppType);
+          window.location.hash = '#portfolio';
+        }}
+        onToggleStealth={() => setIsStealthActive((prev) => !prev)}
       />
 
       {/* Android Double-Back to Exit Toast */}

@@ -130,7 +130,18 @@ export type CurrentAppType =
   | 'playground'
   | 'visuallab'
   | 'askai'
-  | 'placement';
+  | 'placement'
+  // 🧪 Elite Labs
+  | 'quantum'
+  | 'iot'
+  | 'sysdesign'
+  | 'wealth'
+  // 🚀 Next-Gen Labs
+  | 'robotics'
+  | 'geoint'
+  | 'vision'
+  | 'onion'
+  | 'gamedev';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;

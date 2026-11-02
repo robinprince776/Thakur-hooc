@@ -3,6 +3,7 @@ import { Cpu, Terminal, ArrowRight, Zap, CheckCircle2, BookOpen, Sparkles, Layer
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 import { OmnitrixLogo } from './OmnitrixLogo';
 import { ActiveTab } from './Navbar';
+import { OsWidgets } from './OsWidgets';
 
 interface HomePageProps {
   onNavigate: (tab: ActiveTab, prefill?: { type?: string; input?: string; cProgramId?: string }) => void;
@@ -320,6 +321,319 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
         </div>
       </section>
+
+      {/* 🧪 ELITE LABS HUB (5 PRODUCTION APPS) */}
+      <section className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-400 mb-1">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Advanced Engineering · 5 New Systems</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              🧪 Elite Labs
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+              Digital Forensics, 3D Quantum Bloch Sphere, Hardware &amp; IoT Pinouts, System Design load testing, and Engineer Wealth calculators.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Elite 1: Forensics */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('forensics') : (window.location.hash = '#forensics')}
+            className="group p-5 rounded-3xl os-glass-card border-cyan-500/30 hover:border-cyan-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between os-glass-card-interactive"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-md text-lg">
+                  🔍
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">
+                  DFIR Lab
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
+                Forensic Cyber Lab
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                EXIF camera GPS metadata viewer, magic bytes signature checker, LSB steganography decoder, and raw hex viewer.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-cyan-400 font-bold">
+              <span>Inspect Evidence</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Elite 2: Quantum */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('quantum') : (window.location.hash = '#quantum')}
+            className="group p-5 rounded-3xl os-glass-card border-purple-500/30 hover:border-purple-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between os-glass-card-interactive"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md text-lg">
+                  ⚛️
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
+                  Qubit 3D
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-purple-300 transition-colors">
+                Quantum Computing Visualizer
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                3D Bloch Sphere canvas, superposition states, Pauli-X/Hadamard gates, and Grover search algorithm speedup race.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-purple-400 font-bold">
+              <span>Enter Quantum Lab</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Elite 3: Hardware & IoT */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('iot') : (window.location.hash = '#iot')}
+            className="group p-5 rounded-3xl os-glass-card border-emerald-500/30 hover:border-emerald-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between os-glass-card-interactive"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 flex items-center justify-center text-white shadow-md text-lg">
+                  ⚡
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+                  Hardware &amp; IoT
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
+                Hardware &amp; IoT Lab
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Raspberry Pi 4 &amp; Arduino 40-pin GPIO pinout, virtual breadboard circuit sandbox with burnout protection, and Flipper Zero frequencies.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-emerald-400 font-bold">
+              <span>Build Circuit</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Elite 4: System Design Canvas */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('sysdesign') : (window.location.hash = '#sysdesign')}
+            className="group p-5 rounded-3xl os-glass-card border-amber-500/30 hover:border-amber-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between os-glass-card-interactive"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-600 to-orange-600 flex items-center justify-center text-white shadow-md text-lg">
+                  📐
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
+                  Scale &amp; Stress
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+                System Design Canvas
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Distributed architecture topology canvas: Nginx load balancers, Redis in-memory cache, and traffic stress simulator with 504 crash detection.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-amber-400 font-bold">
+              <span>Stress Test Architecture</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* Elite 5: TechWealth */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('wealth') : (window.location.hash = '#wealth')}
+            className="group p-5 rounded-3xl os-glass-card border-rose-500/30 hover:border-rose-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between os-glass-card-interactive"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-600 to-pink-600 flex items-center justify-center text-white shadow-md text-lg">
+                  💰
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold">
+                  Finance &amp; Tax
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-rose-300 transition-colors">
+                TechWealth: Finance for Geeks
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                SIP compounding growth curves, crypto wallet and drainer scam analyzer, and India New Tax Regime monthly take-home salary calculator.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-rose-400 font-bold">
+              <span>Calculate Wealth &amp; Tax</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 🚀 NEXT-GEN LABS HUB (5 PRODUCTION SIMULATORS) */}
+      <section className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 mb-1">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Cutting-Edge Visual Simulators · Zero Lag</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              🚀 Next-Gen Labs
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+              Drone flight physics &amp; PID control, Satellite GEOINT trilateration, CNN computer vision, Onion routing, and Doom-style raycasting.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* NextGen 1: Robotics */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('robotics') : (window.location.hash = '#robotics')}
+            className="group p-5 rounded-3xl os-glass-card border-cyan-500/30 hover:border-cyan-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between os-glass-card-interactive"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-600 to-teal-600 flex items-center justify-center text-white shadow-md text-lg">
+                  🛸
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">
+                  Robotics
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
+                Drone &amp; Robotics Simulator
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                2D Quadcopter aerodynamic canvas physics with mobile touch controls, live PID altitude stabilizer graph, and A* pathfinding maze solver.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-cyan-400 font-bold">
+              <span>Fly Quadcopter</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* NextGen 2: GEOINT */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('geoint') : (window.location.hash = '#geoint')}
+            className="group p-5 rounded-3xl os-glass-card border-blue-500/30 hover:border-blue-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between os-glass-card-interactive"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md text-lg">
+                  🛰️
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 font-bold">
+                  GEOINT
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors">
+                Satellite &amp; Geospatial Intel
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                3-Satellite orbital GPS trilateration radar sweep, tactical EXIF photo coordinate mapping, and 3D terrain wireframe elevation slices.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-blue-400 font-bold">
+              <span>Acquire Radar Fix</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* NextGen 3: Vision */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('vision') : (window.location.hash = '#vision')}
+            className="group p-5 rounded-3xl os-glass-card border-purple-500/30 hover:border-purple-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between os-glass-card-interactive"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-600 flex items-center justify-center text-white shadow-md text-lg">
+                  👁️
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
+                  Vision AI
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-purple-300 transition-colors">
+                Computer Vision &amp; Biometrics Lab
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Interactive CNN 3x3 convolution kernels (Sobel/Blur/Ridge), Dlib 68-point face landmark mesh estimator, and OCR pixel binarization.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-purple-400 font-bold">
+              <span>Analyze Features</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* NextGen 4: Onion Routing */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('onion') : (window.location.hash = '#onion')}
+            className="group p-5 rounded-3xl os-glass-card border-emerald-500/30 hover:border-emerald-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between os-glass-card-interactive"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-green-700 flex items-center justify-center text-white shadow-md text-lg">
+                  🧅
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+                  Privacy Lab
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
+                Onion Routing &amp; Tor Concepts
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Step-by-step 3-relay circuit simulation (Guard &rarr; Middle &rarr; Exit), interactive layer-by-layer peeling, and PGP key exchange demo.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-emerald-400 font-bold">
+              <span>Peel Onion Circuit</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
+          {/* NextGen 5: Game Engine */}
+          <div
+            onClick={() => onSelectApp ? onSelectApp('gamedev') : (window.location.hash = '#gamedev')}
+            className="group p-5 rounded-3xl os-glass-card border-amber-500/30 hover:border-amber-400/70 shadow-xl transition-all cursor-pointer flex flex-col justify-between os-glass-card-interactive"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-600 to-red-600 flex items-center justify-center text-white shadow-md text-lg">
+                  🎮
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
+                  Engine &amp; 3D
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+                Game Engine &amp; 2D Physics Sandbox
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                2D rigid body canvas with bounce restitution, fixed time step loop visualizer, and classic 1993 Doom-style 2D to 3D raycasting.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-amber-400 font-bold">
+              <span>Launch Physics Sandbox</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 📊 SMART OS DASHBOARD WIDGETS (CONTINUE LEARNING, STREAK, QUICK NOTES) */}
+      <OsWidgets onLaunchApp={(appId) => onSelectApp ? onSelectApp(appId) : (window.location.hash = '#' + appId)} />
 
       {/* ⭐ FLAGSHIP APPLICATIONS & CLINICAL REFERENCE HUB */}
       <section className="space-y-4">

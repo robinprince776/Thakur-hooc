@@ -18,6 +18,8 @@ export interface UseMobileBackHandlerProps {
   setIsSearchOpen: (open: boolean) => void;
   isProjectXModalOpen: boolean;
   setIsProjectXModalOpen: (open: boolean) => void;
+  isSidebarOpen?: boolean;
+  setIsSidebarOpen?: (open: boolean) => void;
   isStealthActive: boolean;
   setIsStealthActive: (active: boolean) => void;
   vaultView: CalcVaultView;
@@ -39,6 +41,8 @@ export function useMobileBackHandler({
   setIsSearchOpen,
   isProjectXModalOpen,
   setIsProjectXModalOpen,
+  isSidebarOpen,
+  setIsSidebarOpen,
   isStealthActive,
   setIsStealthActive,
   vaultView,
@@ -56,6 +60,7 @@ export function useMobileBackHandler({
     isSettingsModalOpen,
     isSearchOpen,
     isProjectXModalOpen,
+    isSidebarOpen,
     isStealthActive,
     vaultView,
   });
@@ -69,6 +74,7 @@ export function useMobileBackHandler({
       isSettingsModalOpen,
       isSearchOpen,
       isProjectXModalOpen,
+      isSidebarOpen,
       isStealthActive,
       vaultView,
     };
@@ -80,6 +86,7 @@ export function useMobileBackHandler({
     isSettingsModalOpen,
     isSearchOpen,
     isProjectXModalOpen,
+    isSidebarOpen,
     isStealthActive,
     vaultView,
   ]);
@@ -148,6 +155,14 @@ export function useMobileBackHandler({
       isNavigatingRef.current = true;
 
       // 1. Close any open modal
+      if (s.isSidebarOpen && setIsSidebarOpen) {
+        setIsSidebarOpen(false);
+        try {
+          window.history.pushState({ bcaGuard: 'active' }, '');
+        } catch {}
+        return;
+      }
+
       if (s.isNavigatorOpen) {
         setIsNavigatorOpen(false);
         try {

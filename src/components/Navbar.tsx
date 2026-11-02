@@ -50,6 +50,7 @@ interface NavbarProps {
   onOpenNavigator?: () => void;
   onToggleStealth?: () => void;
   onOpenProjectX?: () => void;
+  onOpenSidebar?: () => void;
   onSelectApp: (app: CurrentAppType) => void;
   onOpenAppSwitcher: () => void;
   onForceUpdateApp?: () => void;
@@ -65,6 +66,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenNavigator,
   onToggleStealth,
   onOpenProjectX,
+  onOpenSidebar,
   onSelectApp,
   onOpenAppSwitcher,
   onForceUpdateApp,
@@ -97,7 +99,17 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo & Name */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            {onOpenSidebar && (
+              <button
+                onClick={onOpenSidebar}
+                className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-cyan-400 border border-white/5 cursor-pointer spring-press transition-all"
+                title="Open OS Hubs Sidebar"
+              >
+                <Menu className="w-4 h-4 text-cyan-400" />
+              </button>
+            )}
+
             <button
               onClick={() => {
                 setActiveTab('notes');
@@ -116,7 +128,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 </div>
                 <span className="text-[11px] font-medium text-slate-400 hidden xs:block">
-                  TechMaster Suite · 60+ Apps
+                  TechMaster Suite · 70+ Apps
                 </span>
               </div>
             </button>

@@ -1,0 +1,140 @@
+/* =========================================================
+   Glassmorphism 2.0 Design System Tokens
+   OS-Level Unified Variables & Utility Classes
+   ========================================================= */
+
+:root {
+  /* Dark Glass Theme (Default) */
+  --bg-primary: #070B14;
+  --bg-secondary: #0D1424;
+  --glass-bg: rgba(13, 20, 36, 0.72);
+  --glass-bg-hover: rgba(22, 34, 60, 0.85);
+  --glass-card: rgba(255, 255, 255, 0.04);
+  --glass-card-hover: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-border-hover: rgba(56, 189, 248, 0.40);
+  --glass-border-active: rgba(14, 165, 233, 0.60);
+  --glass-input: rgba(10, 16, 30, 0.85);
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --neon-cyan: #06B6D4;
+  --neon-blue: #3B82F6;
+  --neon-emerald: #10B981;
+  --neon-amber: #F59E0B;
+  --neon-rose: #F43F5E;
+  --neon-purple: #A855F7;
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --shadow-neon: 0 0 20px rgba(6, 182, 212, 0.25);
+}
+
+.theme-light {
+  /* Frosted Light Glass Theme */
+  --bg-primary: #F1F5F9;
+  --bg-secondary: #E2E8F0;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-bg-hover: rgba(255, 255, 255, 0.95);
+  --glass-card: rgba(255, 255, 255, 0.70);
+  --glass-card-hover: rgba(255, 255, 255, 0.90);
+  --glass-border: rgba(15, 23, 42, 0.12);
+  --glass-border-hover: rgba(2, 132, 199, 0.45);
+  --glass-border-active: rgba(2, 132, 199, 0.70);
+  --glass-input: rgba(255, 255, 255, 0.95);
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --neon-cyan: #0284C7;
+  --neon-blue: #2563EB;
+  --neon-emerald: #059669;
+  --neon-amber: #D97706;
+  --neon-rose: #E11D48;
+  --neon-purple: #9333EA;
+  --shadow-glass: 0 8px 28px 0 rgba(0, 0, 0, 0.08);
+  --shadow-neon: 0 0 20px rgba(2, 132, 199, 0.20);
+}
+
+/* Glassmorphism 2.0 Base Utilities */
+.os-glass-card {
+  background: var(--glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.os-glass-card-interactive {
+  background: var(--glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.os-glass-card-interactive:hover {
+  background: var(--glass-card-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-neon), var(--shadow-glass);
+}
+
+.os-glass-card-interactive:active {
+  transform: scale(0.98);
+}
+
+.os-glass-input {
+  background: var(--glass-input);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.os-glass-input:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
+  outline: none;
+}
+
+.os-btn-primary {
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.os-btn-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.4);
+}
+
+.os-btn-primary:active {
+  transform: scale(0.97);
+}
+
+.os-btn-ghost {
+  background: var(--glass-card);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+
+.os-btn-ghost:hover {
+  background: var(--glass-card-hover);
+  border-color: var(--glass-border-hover);
+}
+
+.os-btn-ghost:active {
+  transform: scale(0.97);
+}
+
+/* Animations */
+@keyframes osPulseSlow {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+.animate-os-pulse {
+  animation: osPulseSlow 4s infinite ease-in-out;
+}

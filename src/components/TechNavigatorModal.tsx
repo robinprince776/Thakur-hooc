@@ -306,6 +306,108 @@ export const NAVIGATOR_ITEMS: TechNavigatorItem[] = [
     appTarget: 'cybersec' as CurrentAppType,
     hashTarget: '#cybersec',
     keywords: ['cybersec', 'cyber security', 'sqli', 'xss', 'firewall', 'cia triad', 'ethical hacking']
+  },
+  // 🧪 Elite Labs
+  {
+    id: 'forensics',
+    title: 'Forensic Cyber Lab',
+    category: 'Tool',
+    description: 'File metadata viewer, EXIF parser, magic bytes signature checker & LSB stego decoder.',
+    icon: Shield,
+    appTarget: 'forensics' as CurrentAppType,
+    hashTarget: '#forensics',
+    keywords: ['forensics', 'exif', 'magic bytes', 'stego', 'steganography', 'hex', 'metadata', 'gps', 'dfir']
+  },
+  {
+    id: 'quantum',
+    title: 'Quantum Computing Visualizer',
+    category: 'Tool',
+    description: 'Interactive Bloch Sphere 3D canvas, Qubit superposition, Pauli-X, Hadamard & Grover race.',
+    icon: Sparkles,
+    appTarget: 'quantum' as CurrentAppType,
+    hashTarget: '#quantum',
+    keywords: ['quantum', 'qubit', 'bloch sphere', 'superposition', 'hadamard', 'pauli', 'grover', 'physics']
+  },
+  {
+    id: 'iot',
+    title: 'Hardware & IoT Lab',
+    category: 'Tool',
+    description: 'Raspberry Pi / Arduino 40-pin GPIO interactive pinout, virtual breadboard & Flipper Zero RFID/NFC.',
+    icon: Cpu,
+    appTarget: 'iot' as CurrentAppType,
+    hashTarget: '#iot',
+    keywords: ['iot', 'hardware', 'gpio', 'raspberry pi', 'arduino', 'breadboard', 'flipper', 'rfid', 'nfc']
+  },
+  {
+    id: 'sysdesign',
+    title: 'System Design Canvas',
+    category: 'Tool',
+    description: 'Interactive whiteboard cloud topology designer with live traffic load generator & crash simulator.',
+    icon: Layers,
+    appTarget: 'sysdesign' as CurrentAppType,
+    hashTarget: '#sysdesign',
+    keywords: ['system design', 'sysdesign', 'architecture', 'load balancer', 'redis', 'cache', 'traffic', 'scale', '504']
+  },
+  {
+    id: 'wealth',
+    title: 'TechWealth (Finance for Geeks)',
+    category: 'Tool',
+    description: 'SIP compounding growth curve, crypto wallet/phishing scam checker & India New Tax Regime salary.',
+    icon: Zap,
+    appTarget: 'wealth' as CurrentAppType,
+    hashTarget: '#wealth',
+    keywords: ['wealth', 'finance', 'sip', 'tax', 'salary', 'scam', 'crypto', 'in-hand', 'compounding', 'fire']
+  },
+  // 🚀 Next-Gen Labs
+  {
+    id: 'robotics',
+    title: 'Drone & Robotics Simulator',
+    category: 'Tool',
+    description: '2D quadcopter flight physics on Canvas, PID altitude stabilizer & A* pathfinding maze solver.',
+    icon: Zap,
+    appTarget: 'robotics' as CurrentAppType,
+    hashTarget: '#robotics',
+    keywords: ['drone', 'robotics', 'quadcopter', 'pid', 'a*', 'pathfinding', 'flight', 'physics', 'aerodynamics']
+  },
+  {
+    id: 'geoint',
+    title: 'Satellite & Geospatial Intel (GEOINT)',
+    category: 'Tool',
+    description: '3-satellite GPS trilateration radar, tactical EXIF coordinate locator & 3D SAR terrain wireframe.',
+    icon: Compass,
+    appTarget: 'geoint' as CurrentAppType,
+    hashTarget: '#geoint',
+    keywords: ['geoint', 'satellite', 'gps', 'trilateration', 'radar', 'elevation', 'terrain', 'coordinates', 'intel']
+  },
+  {
+    id: 'vision',
+    title: 'Computer Vision & Biometrics Lab',
+    category: 'Tool',
+    description: 'CNN 3x3 convolution kernels (Sobel/Blur), Dlib 68-point face landmark mesh & OCR pipeline.',
+    icon: Sparkles,
+    appTarget: 'vision' as CurrentAppType,
+    hashTarget: '#vision',
+    keywords: ['vision', 'cnn', 'convolution', 'sobel', 'face', 'landmarks', 'dlib', 'biometrics', 'ocr']
+  },
+  {
+    id: 'onion',
+    title: 'Onion Routing & Tor Concepts',
+    category: 'Tool',
+    description: '3-hop circuit encryption peeling (Guard/Middle/Exit nodes), PGP key exchange demo & disclaimer.',
+    icon: Lock,
+    appTarget: 'onion' as CurrentAppType,
+    hashTarget: '#onion',
+    keywords: ['onion', 'tor', 'dark web', 'privacy', 'pgp', 'encryption', 'guard', 'exit relay', 'circuit']
+  },
+  {
+    id: 'gamedev',
+    title: 'Game Engine & Physics Sandbox',
+    category: 'Tool',
+    description: '2D rigid-body restitution physics canvas, fixed time step loop & classic Doom 2D-to-3D raycasting.',
+    icon: Terminal,
+    appTarget: 'gamedev' as CurrentAppType,
+    hashTarget: '#gamedev',
+    keywords: ['gamedev', 'game engine', 'physics', 'sandbox', 'raycasting', 'doom', 'gameloop', 'gravity', 'collision']
   }
 ];
 
