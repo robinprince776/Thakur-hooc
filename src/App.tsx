@@ -246,6 +246,14 @@ const GameEngineSandboxApp = React.lazy(() =>
   import('./nextgen/GameEngineSandboxApp').then((m) => ({ default: m.GameEngineSandboxApp }))
 );
 
+// 🕵️‍♂️ Threat Intelligence & Mobile Security
+const CyberCrimeMatrixApp = React.lazy(() =>
+  import('./cybercrime/CyberCrimeMatrixApp').then((m) => ({ default: m.CyberCrimeMatrixApp }))
+);
+const MobileSecLabApp = React.lazy(() =>
+  import('./cybercrime/MobileSecLabApp').then((m) => ({ default: m.MobileSecLabApp }))
+);
+
 // OS Architecture Components
 import { useOsStore } from './store/useOsStore';
 import { OsTopBar } from './components/OsTopBar';
@@ -445,6 +453,8 @@ export default function App() {
       if (h === '#vision') return 'vision';
       if (h === '#onion') return 'onion';
       if (h === '#gamedev') return 'gamedev';
+      if (h === '#crimematrix' || h === '#crime' || h === '#ss7') return 'crimematrix';
+      if (h === '#mobilesec' || h === '#smishing' || h === '#eviltwin') return 'mobilesec';
       return 'bca';
     } catch {
       return 'bca';
@@ -665,6 +675,10 @@ export default function App() {
         setCurrentApp('onion');
       } else if (h === '#gamedev') {
         setCurrentApp('gamedev');
+      } else if (h === '#crimematrix' || h === '#crime' || h === '#ss7') {
+        setCurrentApp('crimematrix');
+      } else if (h === '#mobilesec' || h === '#smishing' || h === '#eviltwin') {
+        setCurrentApp('mobilesec');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -1192,6 +1206,48 @@ export default function App() {
             onBackToHub={handleReturnToBca}
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
             onSelectApp={handleSelectApp}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: CyberCrime Matrix (#crimematrix) ---
+  if (currentApp === 'crimematrix') {
+    return (
+      <AppErrorBoundary appName="CyberCrime Matrix" onReset={handleReturnToBca}>
+        <Suspense fallback={<SkeletonLoader appName="CyberCrime Matrix" />}>
+          <CyberCrimeMatrixApp
+            onBackToHub={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: MobileSec Lab (#mobilesec) ---
+  if (currentApp === 'mobilesec') {
+    return (
+      <AppErrorBoundary appName="MobileSec Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<SkeletonLoader appName="MobileSec Lab" />}>
+          <MobileSecLabApp
+            onBackToHub={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
           />
         </Suspense>
         <AppSwitcherModal

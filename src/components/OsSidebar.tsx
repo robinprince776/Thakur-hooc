@@ -20,7 +20,9 @@ import {
   Radio,
   Compass,
   Layers,
-  ArrowRight
+  ArrowRight,
+  ShieldAlert,
+  Smartphone
 } from 'lucide-react';
 import { CurrentAppType } from './AppSwitcherModal';
 import { OmnitrixLogo } from './OmnitrixLogo';
@@ -51,6 +53,17 @@ interface HubCategory {
 }
 
 const OS_HUBS: HubCategory[] = [
+  {
+    id: 'threatsec',
+    name: '🕵️‍♂️ Threat Intelligence & Mobile Security',
+    icon: ShieldAlert,
+    badge: 'NEW',
+    color: 'from-rose-500 to-amber-600',
+    apps: [
+      { id: 'crimematrix', name: 'CyberCrime Matrix', desc: 'SIM swap, Deepfake audio, SPF spoof & RAT C2', tag: 'Threats' },
+      { id: 'mobilesec', name: 'MobileSec Lab', desc: 'Smishing scanner, OS permissions & Evil Twin', tag: 'Mobile' }
+    ]
+  },
   {
     id: 'elitelabs',
     name: '🧪 Elite Labs',
@@ -164,6 +177,7 @@ export const OsSidebar: React.FC<OsSidebarProps> = ({
   onToggleStealth
 }) => {
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
+    threatsec: true,
     elitelabs: true,
     nextgen: true,
     academic: true

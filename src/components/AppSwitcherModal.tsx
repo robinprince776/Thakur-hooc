@@ -39,7 +39,8 @@ import {
   Music,
   Award,
   Stethoscope,
-  HeartPulse
+  HeartPulse,
+  Smartphone
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 import { OmnitrixLogo } from './OmnitrixLogo';
@@ -141,7 +142,10 @@ export type CurrentAppType =
   | 'geoint'
   | 'vision'
   | 'onion'
-  | 'gamedev';
+  | 'gamedev'
+  // 🕵️‍♂️ Threat Intelligence & Mobile Security
+  | 'crimematrix'
+  | 'mobilesec';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;
@@ -1074,6 +1078,39 @@ const ALL_APPS: AppItem[] = [
     icon: (
       <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 via-cyan-600 to-emerald-600 flex items-center justify-center text-white shadow-md">
         <BookOpen className="w-5 h-5 text-cyan-200" />
+      </div>
+    )
+  },
+  // 🕵️‍♂️ Threat Intelligence & Mobile Security
+  {
+    id: 'crimematrix',
+    category: 'Security',
+    title: 'CyberCrime Matrix',
+    subtitle: 'Threat Anatomy & Exploitation Mechanics',
+    tagline: 'SIM Swap · Deepfake Voice AI · SPF/DKIM Spoof · RAT C2 · OSINT',
+    description: '100% educational & defensive simulators detailing technical working of modern cybercrimes and blue-team defense playbooks.',
+    badge: 'Threat Intel',
+    badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    hash: '#crimematrix',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-600 flex items-center justify-center text-white shadow-md">
+        <ShieldAlert className="w-5 h-5 text-rose-200" />
+      </div>
+    )
+  },
+  {
+    id: 'mobilesec',
+    category: 'Security',
+    title: 'MobileSec Lab',
+    subtitle: 'Smartphone Internals & Wireless Threats',
+    tagline: 'Smishing Scanner · OS Stack Permissions · Evil Twin Wi-Fi · ADB God Mode',
+    description: 'Hands-on defensive mobile lab covering Android architecture, accessibility privilege escalation, rogue Wi-Fi packet sniffing, and CEIR forensics.',
+    badge: 'Mobile Security',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#mobilesec',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-teal-600 flex items-center justify-center text-white shadow-md">
+        <Smartphone className="w-5 h-5 text-cyan-200" />
       </div>
     )
   }

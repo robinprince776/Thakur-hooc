@@ -19,7 +19,9 @@ import {
   GraduationCap,
   Sparkles,
   Command,
-  CornerDownLeft
+  CornerDownLeft,
+  ShieldAlert,
+  Smartphone
 } from 'lucide-react';
 import { CurrentAppType } from './AppSwitcherModal';
 
@@ -36,6 +38,63 @@ export interface TechNavigatorItem {
 }
 
 export const NAVIGATOR_ITEMS: TechNavigatorItem[] = [
+  // 🕵️‍♂️ Threat Intelligence & Mobile Security
+  {
+    id: 'crimematrix',
+    title: 'CyberCrime Matrix',
+    category: 'App',
+    description: 'Anatomy of SIM Swap, Deepfake Audio Voice Cloning, SPF/DKIM spoofing, Android RAT & OSINT.',
+    icon: ShieldAlert,
+    appTarget: 'crimematrix',
+    hashTarget: '#crimematrix',
+    keywords: [
+      'crime',
+      'crimematrix',
+      'sim swap',
+      'ss7',
+      'deepfake',
+      'voice cloning',
+      'audio',
+      'spf',
+      'dkim',
+      'dmarc',
+      'email spoofing',
+      'rat',
+      'trojan',
+      'c2',
+      'accessibility',
+      'osint',
+      'identity theft',
+      'phishing'
+    ]
+  },
+  {
+    id: 'mobilesec',
+    title: 'MobileSec Lab',
+    category: 'App',
+    description: 'Smartphone internals, Smishing heuristic scanner, Android OS layers, Evil Twin Wi-Fi & ADB.',
+    icon: Smartphone,
+    appTarget: 'mobilesec',
+    hashTarget: '#mobilesec',
+    keywords: [
+      'mobilesec',
+      'mobile',
+      'smishing',
+      'sms phishing',
+      'evil twin',
+      'fake wifi',
+      'pineapple',
+      'adb',
+      'android debug bridge',
+      'juice jacking',
+      'permissions',
+      'privilege escalation',
+      'forensics',
+      'ceir',
+      'imei',
+      'ble mesh'
+    ]
+  },
   // Flagship Apps
   {
     id: 'technagar',
