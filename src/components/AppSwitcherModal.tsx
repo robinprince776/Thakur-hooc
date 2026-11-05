@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   X,
   Cpu,
@@ -145,7 +145,10 @@ export type CurrentAppType =
   | 'gamedev'
   // 🕵️‍♂️ Threat Intelligence & Mobile Security
   | 'crimematrix'
-  | 'mobilesec';
+  | 'mobilesec'
+  // 🎮 Gamification, Quiz & Skill Mastery
+  | 'myquiz'
+  | 'skilltree';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;
@@ -1113,6 +1116,38 @@ const ALL_APPS: AppItem[] = [
         <Smartphone className="w-5 h-5 text-cyan-200" />
       </div>
     )
+  },
+  {
+    id: 'myquiz',
+    category: 'Education',
+    title: 'My Quiz & Active Recall',
+    subtitle: 'Custom Decks, Timed Drills & Note Importer',
+    tagline: 'Custom Quiz Builder · Speed Drills · Spaced Repetition · XP Rewards',
+    description: 'Active recall engine with custom deck creation, automated question importing from notes, timed practice modes, and performance analytics.',
+    badge: 'Active Recall',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#myquiz',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white shadow-md">
+        <Brain className="w-5 h-5 text-cyan-200" />
+      </div>
+    )
+  },
+  {
+    id: 'skilltree',
+    category: 'Education',
+    title: 'RPG Skill Tree Engine',
+    subtitle: 'Interactive Node Graph & Competency Progression',
+    tagline: 'Visual Dependency Graph · Tier Unlocks · Boss Challenges',
+    description: 'Gamified skill tree spanning Foundation, Intermediate, Advanced, and Expert tiers with prerequisite locking and XP bonuses.',
+    badge: 'RPG Tree',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    hash: '#skilltree',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-md">
+        <GitBranch className="w-5 h-5 text-emerald-200" />
+      </div>
+    )
   }
 ];
 
@@ -1126,20 +1161,28 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [displayCount, setDisplayCount] = useState<number>(24);
 
   if (!isOpen) return null;
 
-  const filteredApps = ALL_APPS.filter((app) => {
-    const matchesCategory = selectedCategory === 'All' || app.category === selectedCategory;
-    const matchesSearch =
-      app.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      app.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      app.tagline.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      app.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      app.badge.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      app.hash.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const filteredApps = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return ALL_APPS.filter((app) => {
+      const matchesCategory = selectedCategory === 'All' || app.category === selectedCategory;
+      if (!matchesCategory) return false;
+      if (!query) return true;
+      return (
+        app.title.toLowerCase().includes(query) ||
+        app.subtitle.toLowerCase().includes(query) ||
+        app.tagline.toLowerCase().includes(query) ||
+        app.description.toLowerCase().includes(query) ||
+        app.badge.toLowerCase().includes(query) ||
+        app.hash.toLowerCase().includes(query)
+      );
+    });
+  }, [selectedCategory, searchQuery]);
+
+  const visibleApps = searchQuery.trim() ? filteredApps : filteredApps.slice(0, displayCount);
 
   const featuredQuickApps: { id: CurrentAppType; label: string; icon: string; color: string }[] = [
     { id: 'technagar', label: 'TechNagar Story', icon: '👦🤖', color: 'from-blue-600 to-emerald-600' },
@@ -1155,7 +1198,7 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-[80] flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-fade-in"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-fade-in"
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -1239,7 +1282,7 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
 
         {/* Apps Grid */}
         <div className="p-4 sm:p-6 overflow-y-auto max-h-[60vh] grid grid-cols-1 md:grid-cols-2 gap-3.5">
-          {filteredApps.map((app) => {
+          {visibleApps.map((app) => {
             const isCurrent = currentApp === app.id;
             return (
               <div
@@ -1281,6 +1324,17 @@ export const AppSwitcherModal: React.FC<AppSwitcherModalProps> = ({
             );
           })}
         </div>
+
+        {filteredApps.length > visibleApps.length && (
+          <div className="p-2 text-center bg-slate-900 border-t border-slate-800">
+            <button
+              onClick={() => setDisplayCount((prev) => prev + 24)}
+              className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-cyan-400 transition-colors cursor-pointer"
+            >
+              Load More Apps ({filteredApps.length - visibleApps.length} remaining)
+            </button>
+          </div>
+        )}
 
         {/* Footer */}
         <div className="p-3.5 px-6 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between text-xs text-slate-500">

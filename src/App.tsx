@@ -260,6 +260,21 @@ import { OsTopBar } from './components/OsTopBar';
 import { OsSidebar } from './components/OsSidebar';
 import { SkeletonLoader } from './components/SkeletonLoader';
 
+// 🚀 Gamification, Voice AI & Final Boss Exam Suite
+import { JarvisVoiceAssistant } from './components/JarvisVoiceAssistant';
+import { ProfileDashboardModal } from './components/gamification/ProfileDashboardModal';
+import { CertificateGenerator } from './components/gamification/CertificateGenerator';
+import { FinalBossExamEngine } from './components/gamification/FinalBossExamEngine';
+import { BOSS_EXAM_TRACKS, ExamTrackInfo } from './data/bossExamQuestions';
+import { CertificateRecord, EarnedCertificate } from './store/useGamificationStore';
+
+const MyQuizModule = React.lazy(() =>
+  import('./components/gamification/MyQuizModule').then((m) => ({ default: m.MyQuizModule }))
+);
+const SkillTreeEngine = React.lazy(() =>
+  import('./components/gamification/SkillTreeEngine').then((m) => ({ default: m.SkillTreeEngine }))
+);
+
 
 
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
@@ -272,12 +287,16 @@ const DEFAULT_VAULT_SETTINGS: UserSettings = {
 
 function getOrCreatePeerId(): string {
   const key = 'calcvault_peer_id';
-  let id = localStorage.getItem(key);
-  if (!id) {
-    id = `usr_${Math.random().toString(36).substring(2, 8)}`;
-    localStorage.setItem(key, id);
+  try {
+    let id = localStorage.getItem(key);
+    if (!id) {
+      id = `usr_${Math.random().toString(36).substring(2, 8)}`;
+      localStorage.setItem(key, id);
+    }
+    return id;
+  } catch {
+    return `usr_${Math.random().toString(36).substring(2, 8)}`;
   }
-  return id;
 }
 
 // Lightweight Loading Spinner
@@ -326,25 +345,42 @@ class AppErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState>
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6 text-white text-center">
-          <div className="p-6 rounded-3xl bg-slate-800 border border-rose-800/80 max-w-md space-y-4 shadow-2xl">
-            <div className="w-12 h-12 rounded-2xl bg-rose-950 border border-rose-700 flex items-center justify-center text-rose-400 mx-auto">
-              <ShieldAlert className="w-6 h-6" />
+        <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-white text-center">
+          <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/90 border border-rose-500/30 max-w-md w-full space-y-4 shadow-2xl backdrop-blur-xl">
+            <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mx-auto">
+              <ShieldAlert className="w-7 h-7" />
             </div>
-            <h2 className="text-base font-bold text-white">Something went wrong in {this.props.appName}</h2>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              {this.state.error?.message || 'An unexpected error occurred while loading this application.'}
+            <h2 className="text-base sm:text-lg font-bold text-white tracking-wide">
+              {this.props.appName} crashed safely
+            </h2>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              {this.state.error?.message || 'A safe isolation barrier prevented this module error from affecting your session.'}
             </p>
-            <button
-              onClick={() => {
-                this.setState({ hasError: false });
-                this.props.onReset();
-              }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all cursor-pointer"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Return to BCA Verse</span>
-            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  this.setState({ hasError: false });
+                  try {
+                    window.location.hash = '';
+                  } catch {}
+                  this.props.onReset();
+                }}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all cursor-pointer shadow-lg shadow-blue-600/20 active:scale-95"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Return to OS Hub</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  this.setState({ hasError: false });
+                }}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-semibold text-slate-200 transition-all cursor-pointer active:scale-95"
+              >
+                <span>Retry Module</span>
+              </button>
+            </div>
           </div>
         </div>
       );
@@ -455,16 +491,21 @@ export default function App() {
       if (h === '#gamedev') return 'gamedev';
       if (h === '#crimematrix' || h === '#crime' || h === '#ss7') return 'crimematrix';
       if (h === '#mobilesec' || h === '#smishing' || h === '#eviltwin') return 'mobilesec';
+      if (h === '#myquiz' || h === '#quiz') return 'myquiz';
+      if (h === '#skilltree' || h === '#rpg') return 'skilltree';
       return 'bca';
     } catch {
       return 'bca';
     }
   });
 
-  // Meta-Features State
+  // Meta-Features & Gamification State
   const [isNavigatorOpen, setIsNavigatorOpen] = useState<boolean>(false);
   const [isStealthActive, setIsStealthActive] = useState<boolean>(false);
   const [isProjectXModalOpen, setIsProjectXModalOpen] = useState<boolean>(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
+  const [activeCertificate, setActiveCertificate] = useState<CertificateRecord | null>(null);
+  const [activeExamTrack, setActiveExamTrack] = useState<ExamTrackInfo | null>(null);
 
   // Global Keyboard Shortcuts (Ctrl+K for TechNavigator, Shift+Esc for Stealth Panic Mode)
   useEffect(() => {
@@ -679,6 +720,10 @@ export default function App() {
         setCurrentApp('crimematrix');
       } else if (h === '#mobilesec' || h === '#smishing' || h === '#eviltwin') {
         setCurrentApp('mobilesec');
+      } else if (h === '#myquiz' || h === '#quiz') {
+        setCurrentApp('myquiz');
+      } else if (h === '#skilltree' || h === '#rpg') {
+        setCurrentApp('skilltree');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -694,13 +739,15 @@ export default function App() {
   // Theme Sync
   useEffect(() => {
     const root = document.documentElement;
-    if (isDark) {
-      root.classList.add('dark');
-      localStorage.setItem('bca_buddy_theme', 'dark');
-    } else {
-      root.classList.remove('dark');
-      localStorage.setItem('bca_buddy_theme', 'light');
-    }
+    try {
+      if (isDark) {
+        root.classList.add('dark');
+        localStorage.setItem('bca_buddy_theme', 'dark');
+      } else {
+        root.classList.remove('dark');
+        localStorage.setItem('bca_buddy_theme', 'light');
+      }
+    } catch {}
   }, [isDark]);
 
   const toggleTheme = () => setIsDark((prev) => !prev);
@@ -780,13 +827,17 @@ export default function App() {
 
   const handleUpdateVaultSettings = (newSettings: UserSettings) => {
     setVaultSettings(newSettings);
-    localStorage.setItem('calcvault_settings', JSON.stringify(newSettings));
+    try {
+      localStorage.setItem('calcvault_settings', JSON.stringify(newSettings));
+    } catch {}
   };
 
   const handleChangeWallpaper = (wallpaper: NatureWallpaper) => {
     const updated = { ...vaultSettings, wallpaper };
     setVaultSettings(updated);
-    localStorage.setItem('calcvault_settings', JSON.stringify(updated));
+    try {
+      localStorage.setItem('calcvault_settings', JSON.stringify(updated));
+    } catch {}
   };
 
   // BCA Verse State (Bookmarks & Search)
@@ -818,7 +869,9 @@ export default function App() {
     };
     setBookmarks((prev) => {
       const updated = [newItem, ...prev.filter((b) => b.title !== item.title)];
-      localStorage.setItem('bca_buddy_bookmarks', JSON.stringify(updated));
+      try {
+        localStorage.setItem('bca_buddy_bookmarks', JSON.stringify(updated));
+      } catch {}
       return updated;
     });
   };
@@ -826,7 +879,9 @@ export default function App() {
   const handleRemoveBookmark = (id: string) => {
     setBookmarks((prev) => {
       const updated = prev.filter((b) => b.id !== id);
-      localStorage.setItem('bca_buddy_bookmarks', JSON.stringify(updated));
+      try {
+        localStorage.setItem('bca_buddy_bookmarks', JSON.stringify(updated));
+      } catch {}
       return updated;
     });
   };
@@ -841,14 +896,18 @@ export default function App() {
     };
     setRecentSearches((prev) => {
       const updated = [newItem, ...prev.filter((s) => s.query !== query)].slice(0, 8);
-      localStorage.setItem('bca_buddy_recent_searches', JSON.stringify(updated));
+      try {
+        localStorage.setItem('bca_buddy_recent_searches', JSON.stringify(updated));
+      } catch {}
       return updated;
     });
   };
 
   const handleClearSearches = () => {
     setRecentSearches([]);
-    localStorage.removeItem('bca_buddy_recent_searches');
+    try {
+      localStorage.removeItem('bca_buddy_recent_searches');
+    } catch {}
   };
 
   // Keyboard shortcut Ctrl+K
@@ -1256,6 +1315,157 @@ export default function App() {
           currentApp={currentApp}
           onSelectApp={handleSelectApp}
         />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: My Quiz & Active Recall (#myquiz) ---
+  if (currentApp === 'myquiz') {
+    return (
+      <AppErrorBoundary appName="My Quiz & Active Recall" onReset={handleReturnToBca}>
+        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+          <OsTopBar
+            onOpenNavigator={() => setIsNavigatorOpen(true)}
+            onOpenSidebar={() => setIsSidebarOpen(true)}
+            onToggleStealth={() => setIsStealthActive((prev) => !prev)}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onHomeClick={handleReturnToBca}
+            onOpenProfile={() => setIsProfileModalOpen(true)}
+          />
+          <Suspense fallback={<SkeletonLoader appName="My Quiz & Active Recall" />}>
+            <MyQuizModule />
+          </Suspense>
+          <AppSwitcherModal
+            isOpen={isAppSwitcherOpen}
+            onClose={() => setIsAppSwitcherOpen(false)}
+            currentApp={currentApp}
+            onSelectApp={handleSelectApp}
+          />
+          <OsSidebar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+            onSelectApp={handleSelectApp}
+            currentApp={currentApp}
+            onOpenSettings={() => setIsSettingsModalOpen(true)}
+            onOpenPortfolio={() => {
+              handleSelectApp('portfolio' as CurrentAppType);
+              window.location.hash = '#portfolio';
+            }}
+            onToggleStealth={() => setIsStealthActive((prev) => !prev)}
+          />
+          <JarvisVoiceAssistant
+            currentApp={currentApp}
+            onNavigate={(appId: string) => handleSelectApp(appId as CurrentAppType)}
+            onOpenProfile={() => setIsProfileModalOpen(true)}
+            onOpenSkillTree={() => handleSelectApp('skilltree')}
+            onOpenQuiz={() => handleSelectApp('myquiz')}
+            onToggleTheme={toggleTheme}
+            onToggleStealth={() => setIsStealthActive((prev) => !prev)}
+          />
+          {isProfileModalOpen && (
+            <ProfileDashboardModal
+              onClose={() => setIsProfileModalOpen(false)}
+              onViewCertificate={(cert: EarnedCertificate) => setActiveCertificate(cert)}
+              onOpenSkillTree={() => {
+                setIsProfileModalOpen(false);
+                handleSelectApp('skilltree');
+              }}
+            />
+          )}
+          {activeCertificate && (
+            <CertificateGenerator
+              certificate={activeCertificate}
+              onClose={() => setActiveCertificate(null)}
+            />
+          )}
+        </div>
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: RPG Skill Tree Engine (#skilltree) ---
+  if (currentApp === 'skilltree') {
+    return (
+      <AppErrorBoundary appName="RPG Skill Tree Engine" onReset={handleReturnToBca}>
+        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+          <OsTopBar
+            onOpenNavigator={() => setIsNavigatorOpen(true)}
+            onOpenSidebar={() => setIsSidebarOpen(true)}
+            onToggleStealth={() => setIsStealthActive((prev) => !prev)}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onHomeClick={handleReturnToBca}
+            onOpenProfile={() => setIsProfileModalOpen(true)}
+          />
+          <Suspense fallback={<SkeletonLoader appName="RPG Skill Tree Engine" />}>
+            <div className="pt-16 p-4 sm:p-8 max-w-7xl mx-auto w-full flex-1">
+              <SkillTreeEngine
+                onStartBossChallenge={(_node: any) => {
+                  const examTrack = BOSS_EXAM_TRACKS.find((t) => t.id === 'c-mastery-boss') || BOSS_EXAM_TRACKS[0];
+                  setActiveExamTrack(examTrack);
+                }}
+              />
+            </div>
+          </Suspense>
+          <AppSwitcherModal
+            isOpen={isAppSwitcherOpen}
+            onClose={() => setIsAppSwitcherOpen(false)}
+            currentApp={currentApp}
+            onSelectApp={handleSelectApp}
+          />
+          <OsSidebar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+            onSelectApp={handleSelectApp}
+            currentApp={currentApp}
+            onOpenSettings={() => setIsSettingsModalOpen(true)}
+            onOpenPortfolio={() => {
+              handleSelectApp('portfolio' as CurrentAppType);
+              window.location.hash = '#portfolio';
+            }}
+            onToggleStealth={() => setIsStealthActive((prev) => !prev)}
+          />
+          <JarvisVoiceAssistant
+            currentApp={currentApp}
+            onNavigate={(appId: string) => handleSelectApp(appId as CurrentAppType)}
+            onOpenProfile={() => setIsProfileModalOpen(true)}
+            onOpenSkillTree={() => handleSelectApp('skilltree')}
+            onOpenQuiz={() => handleSelectApp('myquiz')}
+            onToggleTheme={toggleTheme}
+            onToggleStealth={() => setIsStealthActive((prev) => !prev)}
+          />
+          {activeExamTrack && (
+            <FinalBossExamEngine
+              examId={activeExamTrack.id}
+              examTitle={activeExamTrack.title}
+              category={activeExamTrack.category}
+              passingScore={activeExamTrack.passingScore}
+              durationMinutes={activeExamTrack.durationMinutes}
+              xpReward={activeExamTrack.xpReward}
+              badgeReward={activeExamTrack.badgeReward}
+              questions={activeExamTrack.questions}
+              onClose={() => setActiveExamTrack(null)}
+              onPassed={(cert: EarnedCertificate) => {
+                setActiveCertificate(cert);
+              }}
+            />
+          )}
+          {isProfileModalOpen && (
+            <ProfileDashboardModal
+              onClose={() => setIsProfileModalOpen(false)}
+              onViewCertificate={(cert: EarnedCertificate) => setActiveCertificate(cert)}
+              onOpenSkillTree={() => {
+                setIsProfileModalOpen(false);
+                handleSelectApp('skilltree');
+              }}
+            />
+          )}
+          {activeCertificate && (
+            <CertificateGenerator
+              certificate={activeCertificate}
+              onClose={() => setActiveCertificate(null)}
+            />
+          )}
+        </div>
       </AppErrorBoundary>
     );
   }
@@ -2478,6 +2688,7 @@ export default function App() {
         onOpenSidebar={() => setIsSidebarOpen(true)}
         onSelectApp={handleSelectApp}
         onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+        onOpenProfile={() => setIsProfileModalOpen(true)}
         bookmarkCount={bookmarks.length}
       />
 
@@ -2637,6 +2848,55 @@ export default function App() {
         }}
         onToggleStealth={() => setIsStealthActive((prev) => !prev)}
       />
+
+      {/* J.A.R.V.I.S. Voice Control Assistant */}
+      <JarvisVoiceAssistant
+        currentApp={currentApp}
+        onNavigate={(appId: string) => handleSelectApp(appId as CurrentAppType)}
+        onOpenProfile={() => setIsProfileModalOpen(true)}
+        onOpenSkillTree={() => handleSelectApp('skilltree')}
+        onOpenQuiz={() => handleSelectApp('myquiz')}
+        onToggleTheme={toggleTheme}
+        onToggleStealth={() => setIsStealthActive((prev) => !prev)}
+      />
+
+      {/* Gamification Profile Dashboard 2.0 Modal */}
+      {isProfileModalOpen && (
+        <ProfileDashboardModal
+          onClose={() => setIsProfileModalOpen(false)}
+          onViewCertificate={(cert: EarnedCertificate) => setActiveCertificate(cert)}
+          onOpenSkillTree={() => {
+            setIsProfileModalOpen(false);
+            handleSelectApp('skilltree');
+          }}
+        />
+      )}
+
+      {/* Verified Digital Certificate Modal */}
+      {activeCertificate && (
+        <CertificateGenerator
+          certificate={activeCertificate}
+          onClose={() => setActiveCertificate(null)}
+        />
+      )}
+
+      {/* Final Boss Exam Engine Modal */}
+      {activeExamTrack && (
+        <FinalBossExamEngine
+          examId={activeExamTrack.id}
+          examTitle={activeExamTrack.title}
+          category={activeExamTrack.category}
+          passingScore={activeExamTrack.passingScore}
+          durationMinutes={activeExamTrack.durationMinutes}
+          xpReward={activeExamTrack.xpReward}
+          badgeReward={activeExamTrack.badgeReward}
+          questions={activeExamTrack.questions}
+          onClose={() => setActiveExamTrack(null)}
+          onPassed={(cert: EarnedCertificate) => {
+            setActiveCertificate(cert);
+          }}
+        />
+      )}
 
       {/* Android Double-Back to Exit Toast */}
       {showExitToast && (

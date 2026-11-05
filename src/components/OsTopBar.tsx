@@ -11,6 +11,7 @@ import {
   Grid
 } from 'lucide-react';
 import { useOsStore } from '../store/useOsStore';
+import { useGamificationStore } from '../store/useGamificationStore';
 import { OmnitrixLogo } from './OmnitrixLogo';
 
 interface OsTopBarProps {
@@ -19,6 +20,7 @@ interface OsTopBarProps {
   onToggleStealth: () => void;
   onOpenAppSwitcher: () => void;
   onHomeClick: () => void;
+  onOpenProfile?: () => void;
 }
 
 export const OsTopBar: React.FC<OsTopBarProps> = ({
@@ -26,9 +28,11 @@ export const OsTopBar: React.FC<OsTopBarProps> = ({
   onOpenSidebar,
   onToggleStealth,
   onOpenAppSwitcher,
-  onHomeClick
+  onHomeClick,
+  onOpenProfile
 }) => {
   const { theme, toggleTheme, dailyStreak, userName } = useOsStore();
+  const { userProfile } = useGamificationStore();
 
   return (
     <header className="sticky top-0 z-40 w-full px-3 sm:px-6 py-2.5 bg-slate-950/75 border-b border-white/10 backdrop-blur-xl">
@@ -93,6 +97,21 @@ export const OsTopBar: React.FC<OsTopBarProps> = ({
 
         {/* RIGHT: Actions */}
         <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* User Level & Profile Modal Trigger */}
+          {onOpenProfile && (
+            <button
+              onClick={onOpenProfile}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-amber-500/30 cursor-pointer spring-press transition-all text-xs font-semibold shadow-xs"
+              title="Open Profile Dashboard 2.0 (XP, Badges & Missions)"
+            >
+              <span className="text-sm">{userProfile.avatar}</span>
+              <div className="flex flex-col text-left leading-tight hidden sm:flex">
+                <span className="text-[10px] text-amber-400 font-bold">Lvl {userProfile.level}</span>
+                <span className="text-[9px] text-slate-400 font-mono">{userProfile.xp} XP</span>
+              </div>
+            </button>
+          )}
+
           {/* All Apps Drawer Button */}
           <button
             onClick={onOpenAppSwitcher}

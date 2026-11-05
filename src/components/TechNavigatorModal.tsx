@@ -95,6 +95,27 @@ export const NAVIGATOR_ITEMS: TechNavigatorItem[] = [
       'ble mesh'
     ]
   },
+  // 🎮 Gamification & Active Recall Suite
+  {
+    id: 'myquiz',
+    title: 'My Quiz & Active Recall Hub',
+    category: 'App',
+    description: 'Custom quiz creation, note-to-quiz importer, timed practice drills, spaced repetition and XP mastery rewards.',
+    icon: Brain,
+    appTarget: 'myquiz',
+    hashTarget: '#myquiz',
+    keywords: ['quiz', 'myquiz', 'test', 'exam', 'practice', 'recall', 'flashcards', 'revision', 'questions', 'mcq']
+  },
+  {
+    id: 'skilltree',
+    title: 'RPG Skill Tree Engine',
+    category: 'App',
+    description: 'Interactive node graph from Foundation to Master tiers, prerequisite unlocks, and Final Boss Exam challenges.',
+    icon: Sparkles,
+    appTarget: 'skilltree',
+    hashTarget: '#skilltree',
+    keywords: ['skill', 'tree', 'skilltree', 'rpg', 'progression', 'levels', 'boss', 'exam', 'certification', 'mastery']
+  },
   // Flagship Apps
   {
     id: 'technagar',
@@ -532,7 +553,7 @@ export const TechNavigatorModal: React.FC<TechNavigatorModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex items-start justify-center pt-16 sm:pt-24 px-4 animate-fade-in"
+      className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-xl flex items-start justify-center pt-16 sm:pt-24 px-4 animate-fade-in"
     >
       <div
         onClick={(e) => e.stopPropagation()}

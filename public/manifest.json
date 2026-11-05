@@ -116,6 +116,18 @@
           "type": "image/png"
         }
       ]
+    },
+    {
+      "name": "My Quiz & Active Recall",
+      "short_name": "My Quiz",
+      "url": "/#myquiz",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }

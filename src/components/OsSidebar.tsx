@@ -54,6 +54,17 @@ interface HubCategory {
 
 const OS_HUBS: HubCategory[] = [
   {
+    id: 'gamification',
+    name: '🎮 RPG Mastery & Active Recall',
+    icon: Sparkles,
+    badge: 'NEW',
+    color: 'from-amber-400 to-yellow-600',
+    apps: [
+      { id: 'myquiz', name: 'My Quiz & Active Recall', desc: 'Custom decks, note importer & timed drills', tag: 'Quiz' },
+      { id: 'skilltree', name: 'RPG Skill Tree Engine', desc: 'Interactive node graph, tier unlocks & boss exams', tag: 'RPG' }
+    ]
+  },
+  {
     id: 'threatsec',
     name: '🕵️‍♂️ Threat Intelligence & Mobile Security',
     icon: ShieldAlert,

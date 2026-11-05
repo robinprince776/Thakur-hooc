@@ -119,7 +119,7 @@ export const StealthModeOverlay: React.FC<StealthModeOverlayProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-slate-900 text-slate-100 flex flex-col font-sans select-none animate-fade-in">
+    <div className="fixed inset-0 z-[9999] bg-slate-900 text-slate-100 flex flex-col font-sans select-none animate-fade-in">
       {/* Hyper-realistic Office Corporate Header */}
       <header className="bg-slate-950 border-b border-slate-800 px-4 py-2.5 flex items-center justify-between text-xs text-slate-400 font-mono">
         <div className="flex items-center gap-4">

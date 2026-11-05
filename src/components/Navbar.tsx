@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { OmnitrixLogo } from './OmnitrixLogo';
 import { CurrentAppType } from './AppSwitcherModal';
+import { useGamificationStore } from '../store/useGamificationStore';
 
 export type ActiveTab =
   | 'home'
@@ -54,6 +55,7 @@ interface NavbarProps {
   onSelectApp: (app: CurrentAppType) => void;
   onOpenAppSwitcher: () => void;
   onForceUpdateApp?: () => void;
+  onOpenProfile?: () => void;
   bookmarkCount: number;
 }
 
@@ -70,10 +72,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSelectApp,
   onOpenAppSwitcher,
   onForceUpdateApp,
+  onOpenProfile,
   bookmarkCount,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const { userProfile } = useGamificationStore();
 
   const navItems = [
     { id: 'notes' as ActiveTab, label: 'Notes', icon: BookOpen },
@@ -277,6 +281,28 @@ export const Navbar: React.FC<NavbarProps> = ({
                 title="Stealth Mode Panic Button (Shift + Esc)"
               >
                 <div className="w-2.5 h-2.5 rounded-full bg-slate-600 hover:bg-emerald-400 transition-colors" />
+              </button>
+            )}
+
+            {/* My Quiz & Active Recall Button */}
+            <button
+              onClick={() => onSelectApp('myquiz')}
+              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-500/30 bg-cyan-950/40 hover:bg-cyan-900/50 text-cyan-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+              title="My Quiz & Active Recall Hub (#myquiz)"
+            >
+              <Brain className="w-3.5 h-3.5 text-cyan-400" />
+              <span>My Quiz</span>
+            </button>
+
+            {/* Profile Level Dashboard Button */}
+            {onOpenProfile && (
+              <button
+                onClick={onOpenProfile}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl border border-amber-500/30 bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+                title="Profile 2.0 (XP, Badges & Missions)"
+              >
+                <span>{userProfile.avatar}</span>
+                <span className="hidden sm:inline font-bold text-amber-400">Lvl {userProfile.level}</span>
               </button>
             )}
 

@@ -17,6 +17,10 @@ export default defineConfig(() => {
           manualChunks(id) {
             if (id.includes('node_modules')) {
               if (id.includes('lucide-react')) return 'vendor-icons';
+              if (id.includes('react') || id.includes('scheduler')) return 'vendor-react';
+              if (id.includes('zustand')) return 'vendor-state';
+              if (id.includes('qrcode')) return 'vendor-qr';
+              if (id.includes('@google/genai')) return 'vendor-genai';
               return 'vendor-core';
             }
             if (id.includes('/src/techmaster/')) return 'app-techmaster';
@@ -31,6 +35,15 @@ export default defineConfig(() => {
             if (id.includes('/src/devforge/')) return 'app-devforge';
             if (id.includes('/src/sukhan/')) return 'app-sukhan';
             if (id.includes('/src/bcasuite/')) return 'app-bcasuite';
+            if (id.includes('/src/cybercrime/')) return 'app-cybercrime';
+            if (id.includes('/src/nextgen/')) return 'app-nextgen';
+            if (id.includes('/src/medicore/')) return 'app-medicore';
+            if (id.includes('/src/upsc/')) return 'app-upsc';
+            if (id.includes('/src/svara/')) return 'app-svara';
+            if (id.includes('/src/technagar/')) return 'app-technagar';
+            if (id.includes('/src/feynman/')) return 'app-feynman';
+            if (id.includes('/src/neuronet/')) return 'app-neuronet';
+            if (id.includes('/src/portfolio/')) return 'app-portfolio';
           },
         },
       },
