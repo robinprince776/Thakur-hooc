@@ -148,7 +148,9 @@ export type CurrentAppType =
   | 'mobilesec'
   // 🎮 Gamification, Quiz & Skill Mastery
   | 'myquiz'
-  | 'skilltree';
+  | 'skilltree'
+  // 🗺️ University Roadmap
+  | 'roadmap';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;

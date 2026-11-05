@@ -23,7 +23,8 @@ import {
   Globe,
   GitBranch,
   Lock,
-  Brain
+  Brain,
+  Compass
 } from 'lucide-react';
 import { OmnitrixLogo } from './OmnitrixLogo';
 import { CurrentAppType } from './AppSwitcherModal';
@@ -283,6 +284,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <div className="w-2.5 h-2.5 rounded-full bg-slate-600 hover:bg-emerald-400 transition-colors" />
               </button>
             )}
+
+            {/* My Learning Roadmap Button */}
+            <button
+              onClick={() => onSelectApp('roadmap')}
+              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-500/40 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 hover:text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+              title="Open My Learning Roadmap (#roadmap)"
+            >
+              <Compass className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Roadmap</span>
+            </button>
 
             {/* My Quiz & Active Recall Button */}
             <button

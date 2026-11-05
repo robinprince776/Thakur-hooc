@@ -107,6 +107,16 @@ export const NAVIGATOR_ITEMS: TechNavigatorItem[] = [
     keywords: ['quiz', 'myquiz', 'test', 'exam', 'practice', 'recall', 'flashcards', 'revision', 'questions', 'mcq']
   },
   {
+    id: 'roadmap',
+    title: 'My Learning Roadmap',
+    category: 'App',
+    description: 'Zero-to-Hero University step-by-step master path with interactive level tracking.',
+    icon: Compass,
+    appTarget: 'roadmap',
+    hashTarget: '#roadmap',
+    keywords: ['roadmap', 'path', 'curriculum', 'zero', 'hero', 'guide', 'steps', 'levels', 'progress', 'university']
+  },
+  {
     id: 'skilltree',
     title: 'RPG Skill Tree Engine',
     category: 'App',

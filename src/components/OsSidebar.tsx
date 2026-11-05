@@ -60,6 +60,7 @@ const OS_HUBS: HubCategory[] = [
     badge: 'NEW',
     color: 'from-amber-400 to-yellow-600',
     apps: [
+      { id: 'roadmap', name: 'My Learning Roadmap', desc: 'Zero-to-Hero University step-by-step master path', tag: 'Curriculum' },
       { id: 'myquiz', name: 'My Quiz & Active Recall', desc: 'Custom decks, note importer & timed drills', tag: 'Quiz' },
       { id: 'skilltree', name: 'RPG Skill Tree Engine', desc: 'Interactive node graph, tier unlocks & boss exams', tag: 'RPG' }
     ]

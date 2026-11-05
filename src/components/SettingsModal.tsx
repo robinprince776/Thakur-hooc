@@ -23,6 +23,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [roomId, setRoomId] = useState(settings.roomId || '');
   const [soundEnabled, setSoundEnabled] = useState(settings.soundEnabled);
   const [hapticsEnabled, setHapticsEnabled] = useState(settings.hapticsEnabled);
+  const [geminiApiKey, setGeminiApiKey] = useState(() => {
+    try {
+      return localStorage.getItem('gemini_api_key') || '';
+    } catch {
+      return '';
+    }
+  });
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {
@@ -30,6 +37,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     const cleanPin = pin.trim() || '1307';
     const cleanName = displayName.trim() || 'Dost';
     const cleanRoom = roomId.trim().toLowerCase() || 'direct';
+
+    try {
+      if (geminiApiKey.trim()) {
+        localStorage.setItem('gemini_api_key', geminiApiKey.trim());
+      } else {
+        localStorage.removeItem('gemini_api_key');
+      }
+    } catch {}
 
     const updated = {
       ...settings,
@@ -145,6 +160,24 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 className="accent-amber-500 w-4 h-4 cursor-pointer"
               />
             </label>
+          </div>
+
+          {/* Google Gemini API Key for JARVIS */}
+          <div className="pt-2 border-t border-zinc-800/80 space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
+              <KeyRound size={13} className="text-cyan-400" />
+              <span>Google Gemini API Key (JARVIS AI)</span>
+            </label>
+            <input
+              type="password"
+              value={geminiApiKey}
+              onChange={(e) => setGeminiApiKey(e.target.value)}
+              placeholder="AIzaSy... (Optional, default server AI active)"
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-cyan-500"
+            />
+            <p className="text-[10px] text-zinc-500">
+              JARVIS AI will use this custom key if provided, or default to the server AI engine.
+            </p>
           </div>
 
           {/* Submit Button */}

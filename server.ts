@@ -433,8 +433,243 @@ wss.on('connection', (ws: WebSocket) => {
 // Initialize GoogleGenAI
 const getAIClient = () => {
   const apiKey = process.env.GEMINI_API_KEY || '';
-  return new GoogleGenAI({ apiKey });
+  return new GoogleGenAI({
+    apiKey,
+    httpOptions: {
+      headers: {
+        'User-Agent': 'aistudio-build',
+      },
+    },
+  });
 };
+
+// Fallback action matcher if Gemini API key not present or on offline
+function parseJarvisFallback(text: string, currentApp?: string) {
+  const lower = text.toLowerCase();
+
+  if (lower.includes('calc') || lower.includes('calculator') || lower.includes('hisaab') || lower.includes('secret chat')) {
+    return {
+      reply: 'Opening CalcVault & Messenger right away, Boss! Secret PIN 1307 se aap chat unlock kar sakte hain.',
+      action: { type: 'NAVIGATE', targetApp: 'calc' }
+    };
+  }
+  if (lower.includes('c program') || lower.includes('c quiz') || lower.includes('quiz') || lower.includes('exam')) {
+    if (lower.includes('c') || lower.includes('coding')) {
+      return {
+        reply: 'Starting C Programming Exam & Quiz Simulator! Best of luck for your viva prep.',
+        action: { type: 'START_QUIZ', quizTrack: 'c-prog', targetApp: 'exam' }
+      };
+    }
+    return {
+      reply: 'Launching BCA Exam Simulator & Practice Arena!',
+      action: { type: 'NAVIGATE', targetApp: 'exam' }
+    };
+  }
+  if (lower.includes('roadmap') || lower.includes('learning path') || lower.includes('kya padhu') || lower.includes('path') || lower.includes('step by step')) {
+    return {
+      reply: 'Opening your Zero-to-Hero University Roadmap! Check out your step-by-step progress from Beginner to Pro.',
+      action: { type: 'OPEN_ROADMAP', targetApp: 'roadmap' }
+    };
+  }
+  if (lower.includes('linux') || lower.includes('terminal') || lower.includes('kali') || lower.includes('bash')) {
+    return {
+      reply: 'Taking you to Linux Mastery Terminal & Bash Command Lab!',
+      action: { type: 'NAVIGATE', targetApp: 'linux' }
+    };
+  }
+  if (lower.includes('cyber') || lower.includes('hack') || lower.includes('shield') || lower.includes('defense') || lower.includes('matrix')) {
+    if (lower.includes('matrix') || lower.includes('ss7') || lower.includes('crime')) {
+      return {
+        reply: 'Opening CyberCrime Matrix! Visualizing SS7, voice cloning & cyber threat mechanics.',
+        action: { type: 'NAVIGATE', targetApp: 'crimematrix' }
+      };
+    }
+    return {
+      reply: 'Routing to CyberShield Defensive Hub!',
+      action: { type: 'NAVIGATE', targetApp: 'cyber' }
+    };
+  }
+  if (lower.includes('c compiler') || lower.includes('compile') || lower.includes('gcc') || lower.includes('c generator')) {
+    return {
+      reply: 'Launching C Program Generator & Interactive Compiler!',
+      action: { type: 'NAVIGATE', targetApp: 'c-generator' }
+    };
+  }
+  if (lower.includes('note') || lower.includes('bca note') || lower.includes('study material')) {
+    return {
+      reply: 'Opening BCA Notes & Study Material View!',
+      action: { type: 'NAVIGATE', targetApp: 'notes' }
+    };
+  }
+  if (lower.includes('dsa') || lower.includes('data structure') || lower.includes('tree') || lower.includes('sorting')) {
+    return {
+      reply: 'Opening Data Structures & Algorithm Visualizer Lab!',
+      action: { type: 'NAVIGATE', targetApp: 'dsa' }
+    };
+  }
+  if (lower.includes('medicore') || lower.includes('doctor') || lower.includes('clinic')) {
+    return {
+      reply: 'Opening MediCore Pro Clinical Workstation!',
+      action: { type: 'NAVIGATE', targetApp: 'medicore' }
+    };
+  }
+  if (lower.includes('sukhan') || lower.includes('poetry') || lower.includes('shayari')) {
+    return {
+      reply: 'Opening Sukhan AI Urdu & Hindi Poetry Studio!',
+      action: { type: 'NAVIGATE', targetApp: 'sukhan' }
+    };
+  }
+  if (lower.includes('quantum') || lower.includes('bloch')) {
+    return {
+      reply: 'Launching 3D Quantum Computing & Bloch Sphere Visualizer!',
+      action: { type: 'NAVIGATE', targetApp: 'quantum' }
+    };
+  }
+  if (lower.includes('robot') || lower.includes('drone')) {
+    return {
+      reply: 'Launching Drone Robotics & PID Physics Simulator!',
+      action: { type: 'NAVIGATE', targetApp: 'robotics' }
+    };
+  }
+  if (lower.includes('dark mode') || lower.includes('dark theme')) {
+    return {
+      reply: 'Switching to Cyber Dark Glassmorphism mode!',
+      action: { type: 'SET_THEME', theme: 'dark' }
+    };
+  }
+  if (lower.includes('light mode') || lower.includes('light theme')) {
+    return {
+      reply: 'Switching to Crisp Light theme!',
+      action: { type: 'SET_THEME', theme: 'light' }
+    };
+  }
+
+  return {
+    reply: `Hello! I am JARVIS, your OS University Assistant. Currently on ${currentApp || 'BCA Verse'}. Aap mujhse kisi bhi subject ke concept puch sakte hain (OSI layers, C pointers, SQL joins, RSA encryption) ya bol sakte hain "Open Calculator", "Start C Quiz", "Show Roadmap", ya "Launch Linux"!`,
+    action: null
+  };
+}
+
+// Dedicated JARVIS AI Chat & Action Assistant Endpoint
+app.post('/api/jarvis/chat', async (req, res) => {
+  try {
+    const { prompt, history, userApiKey, currentApp } = req.body;
+    if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+      return res.status(400).json({ error: 'Prompt is required' });
+    }
+
+    const cleanPrompt = prompt.trim();
+    const apiKey = (userApiKey && typeof userApiKey === 'string' && userApiKey.trim())
+      ? userApiKey.trim()
+      : (process.env.GEMINI_API_KEY || '');
+
+    // Fallback if no API key is available
+    if (!apiKey) {
+      const fallback = parseJarvisFallback(cleanPrompt, currentApp);
+      return res.json(fallback);
+    }
+
+    const ai = new GoogleGenAI({
+      apiKey,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        },
+      },
+    });
+
+    const systemInstruction = `You are JARVIS, the supreme AI OS Assistant for the BCA Verse & Zero-to-Hero University digital ecosystem.
+The user is currently inside the module: "${currentApp || 'home'}".
+Your duties:
+1. Actively guide and teach Computer Science, Programming, Cybersecurity, BCA syllabus, and system architecture.
+2. Communicate in friendly, fluent Hinglish/English (warm, respectful, sharp, high-tech persona like Tony Stark's JARVIS).
+3. If the user asks to navigate, open, switch apps, start a quiz, or change theme, you MUST provide an appropriate "action" in JSON.
+Valid target apps for navigation:
+- "calc" (Calculator / CalcVault)
+- "roadmap" (My Roadmap / Zero-to-Hero progress)
+- "exam" (BCA Exam Simulator & Mock Test)
+- "c-generator" (C Program Generator)
+- "logic-solver" (Logic & Number System Solver)
+- "fundamentals" (Computer Fundamentals Notes)
+- "notes" (BCA Notes View)
+- "linux" (Linux & Kali Mastery Terminal)
+- "cyber" (CyberShield Defensive Lab)
+- "crimematrix" (CyberCrime Matrix)
+- "mobilesec" (MobileSec Lab)
+- "dsa" (Data Structures Lab)
+- "sql" (SQL Playground)
+- "quantum" (Quantum Visualizer)
+- "sysdesign" (System Design Canvas)
+- "robotics" (Drone Robotics Simulator)
+- "medicore" (MediCore Pro Clinic)
+- "sukhan" (Sukhan Poetry Studio)
+- "python" (BCA 6-Semester Academic Suite)
+- "home" (Home OS Hub)
+
+Valid action types: "NAVIGATE", "START_QUIZ", "OPEN_ROADMAP", "SET_THEME", null.
+
+You MUST always reply with strict JSON matching this structure:
+{
+  "reply": "Your explanation or confirmation message in conversational Hinglish/English.",
+  "action": {
+    "type": "NAVIGATE" | "START_QUIZ" | "OPEN_ROADMAP" | "SET_THEME" | null,
+    "targetApp": "calc" | "exam" | "roadmap" | ... | null,
+    "quizTrack": "c-prog" | "networking" | "cyber" | "dbms" | null,
+    "theme": "dark" | "light" | null
+  }
+}`;
+
+    const contents: any[] = [];
+    if (Array.isArray(history)) {
+      for (const h of history.slice(-6)) {
+        if (h.role && h.content) {
+          contents.push({
+            role: h.role === 'model' ? 'model' : 'user',
+            parts: [{ text: String(h.content) }],
+          });
+        }
+      }
+    }
+    contents.push({
+      role: 'user',
+      parts: [{ text: cleanPrompt }],
+    });
+
+    const callPromise = ai.models.generateContent({
+      model: 'gemini-3.8-flash',
+      contents,
+      config: {
+        systemInstruction,
+        responseMimeType: 'application/json',
+      },
+    });
+
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Gemini API timeout')), 4500)
+    );
+
+    const response = (await Promise.race([callPromise, timeoutPromise])) as any;
+
+    const raw = response.text || '';
+    try {
+      const parsed = JSON.parse(raw);
+      return res.json({
+        reply: parsed.reply || raw,
+        action: parsed.action || null,
+      });
+    } catch {
+      const fallback = parseJarvisFallback(cleanPrompt, currentApp);
+      return res.json({
+        reply: raw || fallback.reply,
+        action: fallback.action,
+      });
+    }
+  } catch (err: any) {
+    console.warn('JARVIS API Error, executing fallback:', err?.message);
+    const fallback = parseJarvisFallback(req.body?.prompt || '', req.body?.currentApp);
+    return res.json(fallback);
+  }
+});
 
 // API Endpoint: Generate C Code from custom statement
 app.post('/api/generate-c-code', async (req, res) => {

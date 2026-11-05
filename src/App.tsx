@@ -260,8 +260,9 @@ import { OsTopBar } from './components/OsTopBar';
 import { OsSidebar } from './components/OsSidebar';
 import { SkeletonLoader } from './components/SkeletonLoader';
 
-// 🚀 Gamification, Voice AI & Final Boss Exam Suite
-import { JarvisVoiceAssistant } from './components/JarvisVoiceAssistant';
+// 🚀 Gamification, JARVIS AI Assistant & Roadmap Suite
+import { JarvisAiAssistant } from './components/jarvis/JarvisAiAssistant';
+import { RoadmapView } from './components/roadmap/RoadmapView';
 import { ProfileDashboardModal } from './components/gamification/ProfileDashboardModal';
 import { CertificateGenerator } from './components/gamification/CertificateGenerator';
 import { FinalBossExamEngine } from './components/gamification/FinalBossExamEngine';
@@ -724,6 +725,8 @@ export default function App() {
         setCurrentApp('myquiz');
       } else if (h === '#skilltree' || h === '#rpg') {
         setCurrentApp('skilltree');
+      } else if (h === '#roadmap' || h === '#path' || h === '#curriculum') {
+        setCurrentApp('roadmap');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -921,6 +924,69 @@ export default function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  // --- RENDER APP: Zero-to-Hero University Roadmap ---
+  if (currentApp === 'roadmap') {
+    return (
+      <AppErrorBoundary appName="My Roadmap" onReset={handleReturnToBca}>
+        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+          <OsTopBar
+            onHomeClick={handleReturnToBca}
+            onOpenNavigator={() => setIsNavigatorOpen(true)}
+            onOpenSidebar={() => setIsSidebarOpen(true)}
+            onOpenProfile={() => setIsProfileModalOpen(true)}
+            onToggleStealth={() => setIsStealthActive((prev) => !prev)}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+          />
+          <main className="flex-1 py-6">
+            <RoadmapView
+              onSelectApp={handleSelectApp}
+              onBackToHome={handleReturnToBca}
+            />
+          </main>
+          <AppSwitcherModal
+            isOpen={isAppSwitcherOpen}
+            onClose={() => setIsAppSwitcherOpen(false)}
+            currentApp={currentApp}
+            onSelectApp={handleSelectApp}
+          />
+          <TechNavigatorModal
+            isOpen={isNavigatorOpen}
+            onClose={() => setIsNavigatorOpen(false)}
+            onSelectItem={(item) => {
+              setIsNavigatorOpen(false);
+              if (item.appTarget) handleSelectApp(item.appTarget);
+              else if (item.hashTarget && typeof window !== 'undefined') window.location.hash = item.hashTarget;
+            }}
+          />
+          <OsSidebar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+            onSelectApp={handleSelectApp}
+            currentApp={currentApp}
+            onOpenSettings={() => setIsSettingsModalOpen(true)}
+            onOpenPortfolio={() => {
+              handleSelectApp('portfolio' as CurrentAppType);
+              window.location.hash = '#portfolio';
+            }}
+            onToggleStealth={() => setIsStealthActive((prev) => !prev)}
+          />
+          <JarvisAiAssistant
+            currentApp="roadmap"
+            onNavigateApp={(appId: string) => handleSelectApp(appId as CurrentAppType)}
+            onStartQuiz={(track) => {
+              handleSelectApp('exam');
+            }}
+            onToggleTheme={toggleTheme}
+            onOpenRoadmap={() => {
+              if (typeof window !== 'undefined') window.location.hash = '#roadmap';
+              handleSelectApp('roadmap');
+            }}
+          />
+        </div>
+      </AppErrorBoundary>
+    );
+  }
 
   // --- RENDER APP: BCA Exam Simulator ---
   if (currentApp === 'exam') {
@@ -1353,15 +1419,6 @@ export default function App() {
             }}
             onToggleStealth={() => setIsStealthActive((prev) => !prev)}
           />
-          <JarvisVoiceAssistant
-            currentApp={currentApp}
-            onNavigate={(appId: string) => handleSelectApp(appId as CurrentAppType)}
-            onOpenProfile={() => setIsProfileModalOpen(true)}
-            onOpenSkillTree={() => handleSelectApp('skilltree')}
-            onOpenQuiz={() => handleSelectApp('myquiz')}
-            onToggleTheme={toggleTheme}
-            onToggleStealth={() => setIsStealthActive((prev) => !prev)}
-          />
           {isProfileModalOpen && (
             <ProfileDashboardModal
               onClose={() => setIsProfileModalOpen(false)}
@@ -1422,15 +1479,6 @@ export default function App() {
               handleSelectApp('portfolio' as CurrentAppType);
               window.location.hash = '#portfolio';
             }}
-            onToggleStealth={() => setIsStealthActive((prev) => !prev)}
-          />
-          <JarvisVoiceAssistant
-            currentApp={currentApp}
-            onNavigate={(appId: string) => handleSelectApp(appId as CurrentAppType)}
-            onOpenProfile={() => setIsProfileModalOpen(true)}
-            onOpenSkillTree={() => handleSelectApp('skilltree')}
-            onOpenQuiz={() => handleSelectApp('myquiz')}
-            onToggleTheme={toggleTheme}
             onToggleStealth={() => setIsStealthActive((prev) => !prev)}
           />
           {activeExamTrack && (
@@ -2752,6 +2800,10 @@ export default function App() {
             onOpenTechMaster={() => handleSelectApp('techmaster')}
             onSelectApp={handleSelectApp}
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onOpenRoadmap={() => {
+              if (typeof window !== 'undefined') window.location.hash = '#roadmap';
+              handleSelectApp('roadmap');
+            }}
           />
         )}
 
@@ -2849,15 +2901,18 @@ export default function App() {
         onToggleStealth={() => setIsStealthActive((prev) => !prev)}
       />
 
-      {/* J.A.R.V.I.S. Voice Control Assistant */}
-      <JarvisVoiceAssistant
+      {/* J.A.R.V.I.S. AGI AI Assistant & Action Engine */}
+      <JarvisAiAssistant
         currentApp={currentApp}
-        onNavigate={(appId: string) => handleSelectApp(appId as CurrentAppType)}
-        onOpenProfile={() => setIsProfileModalOpen(true)}
-        onOpenSkillTree={() => handleSelectApp('skilltree')}
-        onOpenQuiz={() => handleSelectApp('myquiz')}
+        onNavigateApp={(appId: string) => handleSelectApp(appId as CurrentAppType)}
+        onStartQuiz={(trackId?: string) => {
+          handleSelectApp('exam');
+        }}
         onToggleTheme={toggleTheme}
-        onToggleStealth={() => setIsStealthActive((prev) => !prev)}
+        onOpenRoadmap={() => {
+          if (typeof window !== 'undefined') window.location.hash = '#roadmap';
+          handleSelectApp('roadmap');
+        }}
       />
 
       {/* Gamification Profile Dashboard 2.0 Modal */}
