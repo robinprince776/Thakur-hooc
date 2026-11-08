@@ -305,6 +305,14 @@ export const HomePage: React.FC<HomePageProps> = ({
                 >
                   Placement Hub
                 </button>
+                <button
+                  onClick={() => launchApp('career', '#googleplaybook')}
+                  className="px-3 py-2 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-600 hover:to-indigo-600 text-white text-xs font-bold transition cursor-pointer flex items-center gap-1.5"
+                  title="Google & Sundar Pichai FAANG Playbook"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-blue-300" />
+                  <span>Google Playbook</span>
+                </button>
               </div>
             </div>
           </div>

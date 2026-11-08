@@ -1,23 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Message, UserSettings, NatureWallpaper } from '../types';
 import { AudioPlayer } from './AudioPlayer';
 import {
   Lock,
-  Flame,
   Clock,
   Image,
   Send,
   Mic,
   Square,
-  Smile,
   Settings as SettingsIcon,
   Trash2,
   Check,
+  CheckCheck,
   AlertCircle,
   GraduationCap,
+  ShieldCheck,
+  Timer,
+  EyeOff,
+  Flame,
+  FileText,
+  Users,
 } from 'lucide-react';
 import { playLockSound, triggerHaptic } from '../utils/sound';
 import { WALLPAPERS, getWallpaperUrl } from '../utils/wallpapers';
+import { useCalcVaultStore } from '../store/useCalcVaultStore';
 
 interface SecretChatProps {
   peerId: string;
@@ -92,15 +98,36 @@ export const SecretChat: React.FC<SecretChatProps> = ({
   onBackToCalculator,
   onBackToBca,
   onOpenSettings,
-  onOpenInstall,
   onChangeWallpaper,
 }) => {
+  // Global stealth state from Zustand store
+  const isDuressMode = useCalcVaultStore((s) => s.isDuressMode);
+  const decoyMessages = useCalcVaultStore((s) => s.decoyMessages);
+  const addDecoyMessage = useCalcVaultStore((s) => s.addDecoyMessage);
+  const isScreenBlurred = useCalcVaultStore((s) => s.isScreenBlurred);
+  const setScreenBlurred = useCalcVaultStore((s) => s.setScreenBlurred);
+  const e2eeEnabled = useCalcVaultStore((s) => s.e2eeEnabled);
+  const disappearingDuration = useCalcVaultStore((s) => s.disappearingDuration);
+  const setDisappearingDuration = useCalcVaultStore((s) => s.setDisappearingDuration);
+  const panicWiping = useCalcVaultStore((s) => s.panicWiping);
+  const panicCountdown = useCalcVaultStore((s) => s.panicCountdown);
+  const triggerPanicWipe = useCalcVaultStore((s) => s.triggerPanicWipe);
+  const cancelPanicWipe = useCalcVaultStore((s) => s.cancelPanicWipe);
+  const socketStatus = useCalcVaultStore((s) => s.socketStatus);
+  const retryMessage = useCalcVaultStore((s) => s.retryMessage);
+
   const [inputText, setInputText] = useState('');
+  const [decoyInputText, setDecoyInputText] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [confirmBurnOpen, setConfirmBurnOpen] = useState(false);
   const [wallpaperMenuOpen, setWallpaperMenuOpen] = useState(false);
+  const [disappearMenuOpen, setDisappearMenuOpen] = useState(false);
   const [toastText, setToastText] = useState<string | null>(null);
+  const [showAllHistory, setShowAllHistory] = useState(false);
+
+  // Triple tap header tracking for secret panic wipe
+  const headerTapRef = useRef<{ count: number; lastTime: number }>({ count: 0, lastTime: 0 });
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -117,7 +144,7 @@ export const SecretChat: React.FC<SecretChatProps> = ({
   // Scroll to bottom on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isPeerTyping]);
+  }, [messages.length, isPeerTyping, decoyMessages.length]);
 
   // Handle typing indicator
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,19 +156,46 @@ export const SecretChat: React.FC<SecretChatProps> = ({
     }, 1500);
   };
 
-  // Send text (Permanent)
+  // Send text (Permanent or Disappearing based on timer)
   const handleSendText = async () => {
     if (!inputText.trim()) return;
     const textToSend = inputText;
     setInputText('');
     onSendTyping(false);
-    await onSendMessage(textToSend);
+    const ttl = disappearingDuration > 0 ? disappearingDuration : undefined;
+    await onSendMessage(textToSend, ttl);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleSendText();
+    }
+  };
+
+  // Decoy message send (fake study chat)
+  const handleSendDecoy = () => {
+    if (!decoyInputText.trim()) return;
+    addDecoyMessage(decoyInputText);
+    setDecoyInputText('');
+  };
+
+  // Triple-tap header detector for Panic Wipe
+  const handleHeaderTap = () => {
+    const now = Date.now();
+    if (now - headerTapRef.current.lastTime < 500) {
+      headerTapRef.current.count += 1;
+    } else {
+      headerTapRef.current.count = 1;
+    }
+    headerTapRef.current.lastTime = now;
+
+    if (headerTapRef.current.count >= 3) {
+      headerTapRef.current.count = 0;
+      triggerHaptic([100, 50, 100]);
+      triggerPanicWipe(() => {
+        onBackToCalculator();
+      });
     }
   };
 
@@ -165,7 +219,8 @@ export const SecretChat: React.FC<SecretChatProps> = ({
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64Data = reader.result as string;
-          onSendAudio(base64Data, recordingSeconds);
+          const ttl = disappearingDuration > 0 ? disappearingDuration : undefined;
+          onSendAudio(base64Data, recordingSeconds, ttl);
         };
         reader.readAsDataURL(audioBlob);
 
@@ -195,20 +250,21 @@ export const SecretChat: React.FC<SecretChatProps> = ({
     }
   };
 
-  // Image Upload
+  // Image Upload with compression
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 8 * 1024 * 1024) {
-      showToast('Image 8MB se chhoti honi chahiye');
+    if (file.size > 15 * 1024 * 1024) {
+      showToast('Image 15MB se chhoti honi chahiye');
       return;
     }
 
     const reader = new FileReader();
     reader.onload = (event) => {
       const base64 = event.target?.result as string;
-      onSendImage(base64);
+      const ttl = disappearingDuration > 0 ? disappearingDuration : undefined;
+      onSendImage(base64, ttl);
     };
     reader.readAsDataURL(file);
     e.target.value = '';
@@ -220,10 +276,121 @@ export const SecretChat: React.FC<SecretChatProps> = ({
     onBackToCalculator();
   };
 
+  const handleRetryFailed = async (msg: Message) => {
+    const item = retryMessage(msg.id);
+    if (item && item.text) {
+      await onSendMessage(item.text, item.vanishesAfter);
+    }
+  };
+
   const currentWallpaperUrl = getWallpaperUrl(settings.wallpaper);
 
+  // High performance virtualization slice: limit active DOM nodes to last 60 unless requested
+  const visibleMessages = useMemo(() => {
+    if (showAllHistory || messages.length <= 60) {
+      return messages;
+    }
+    return messages.slice(messages.length - 60);
+  }, [messages, showAllHistory]);
+
+  // -------------------------------------------------------------
+  // DECOY MODE (Duress PIN Opened) — Looks like regular BCA Study Group
+  // -------------------------------------------------------------
+  if (isDuressMode) {
+    return (
+      <div className="relative flex flex-col h-full w-full max-w-md mx-auto bg-slate-950 text-slate-100 overflow-hidden shadow-2xl font-sans">
+        {/* Subtle Decoy Banner for stealth */}
+        <header className="relative flex items-center justify-between border-b border-slate-800 bg-slate-900/95 px-3 pt-3 pb-2.5 z-20 shadow-md">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handlePanicBack}
+              className="flex items-center gap-1 py-1.5 px-2.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold cursor-pointer border border-slate-700"
+              title="Lock and return to Calculator"
+            >
+              <Lock size={12} className="text-slate-400" />
+              <span>Back</span>
+            </button>
+            <div className="flex items-center gap-1.5">
+              <div className="w-7 h-7 rounded-full bg-blue-600/30 border border-blue-500/40 flex items-center justify-center text-blue-400">
+                <Users size={14} />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-slate-100">BCA Sem-3 Lab Study Group</h4>
+                <p className="text-[10px] text-emerald-400 font-medium">4 members online</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[10px] text-slate-400 font-mono">
+              Academic
+            </span>
+          </div>
+        </header>
+
+        {/* Fake Decoy Messages */}
+        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+          <div className="text-center my-2">
+            <span className="text-[10px] text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-full border border-slate-700/60 font-mono">
+              Today • BCA Semester 3 Project Submissions
+            </span>
+          </div>
+
+          {decoyMessages.map((d) => (
+            <div
+              key={d.id}
+              className={`flex flex-col ${d.isSelf ? 'items-end' : 'items-start'}`}
+            >
+              {!d.isSelf && (
+                <span className="text-[11px] text-slate-400 font-medium ml-1 mb-0.5">
+                  {d.senderName}
+                </span>
+              )}
+              <div
+                className={`rounded-2xl px-3.5 py-2 max-w-[85%] text-xs leading-relaxed shadow-sm ${
+                  d.isSelf
+                    ? 'bg-blue-600 text-white rounded-br-xs'
+                    : 'bg-slate-800/90 text-slate-200 border border-slate-700/70 rounded-bl-xs'
+                }`}
+              >
+                <p>{d.text}</p>
+                <span className="block text-[9px] text-slate-300/70 text-right mt-1 font-mono">
+                  {d.time}
+                </span>
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Decoy Input */}
+        <div className="p-2.5 bg-slate-900 border-t border-slate-800">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={decoyInputText}
+              onChange={(e) => setDecoyInputText(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSendDecoy()}
+              placeholder="Send message to study group..."
+              className="flex-1 px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+            />
+            <button
+              onClick={handleSendDecoy}
+              disabled={!decoyInputText.trim()}
+              className="p-2 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white cursor-pointer transition-colors"
+            >
+              <Send size={15} />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------------
+  // REAL STEALTH CHAT MODE (Full Spy-Grade Features)
+  // -------------------------------------------------------------
   return (
-    <div className="relative flex flex-col h-full w-full max-w-md mx-auto bg-black text-white overflow-hidden shadow-2xl font-sans">
+    <div className="relative flex flex-col h-full w-full max-w-md mx-auto bg-black text-white overflow-hidden shadow-2xl font-sans select-none">
       {/* Background Wallpaper */}
       <div
         className="absolute inset-0 bg-cover bg-center transition-all duration-700 opacity-60 pointer-events-none"
@@ -231,14 +398,63 @@ export const SecretChat: React.FC<SecretChatProps> = ({
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/60 to-black/90 pointer-events-none" />
 
-      {/* Header */}
-      <header className="relative flex items-center justify-between border-b border-white/10 bg-black/75 backdrop-blur-md px-3 pt-3 pb-2.5 z-20">
-        <div className="flex items-center gap-1.5">
-          {/* Back to Calculator Panic Button */}
+      {/* Screen Blur Privacy Shield (Anti-Shoulder Surfing) */}
+      {isScreenBlurred && (
+        <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center animate-fade-in">
+          <div className="w-16 h-16 rounded-3xl bg-zinc-900/90 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4 shadow-2xl shadow-emerald-950">
+            <EyeOff size={30} />
+          </div>
+          <h3 className="text-base font-bold text-white mb-1">Privacy Shield Active</h3>
+          <p className="text-xs text-zinc-400 max-w-xs mb-5 leading-relaxed">
+            Window lost focus. Confidential messages are hidden from bystanders.
+          </p>
           <button
-            onClick={handlePanicBack}
+            onClick={() => setScreenBlurred(false)}
+            className="px-5 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs tracking-wide shadow-lg shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer"
+          >
+            Tap to Resume View
+          </button>
+        </div>
+      )}
+
+      {/* Emergency Panic Wipe Countdown Overlay */}
+      {panicWiping && (
+        <div className="absolute inset-0 z-50 bg-red-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center animate-fade-in">
+          <div className="w-16 h-16 rounded-full bg-red-600/20 border-2 border-red-500 flex items-center justify-center text-red-400 mb-3 animate-pulse">
+            <Flame size={32} />
+          </div>
+          <h3 className="text-lg font-black text-white tracking-wider uppercase mb-1">
+            Emergency Wipe
+          </h3>
+          <p className="text-xs text-red-200 mb-4 max-w-xs leading-relaxed">
+            Destroying all encrypted chat history & local keys in:
+          </p>
+          <div className="text-5xl font-mono font-black text-red-400 mb-6 drop-shadow-lg">
+            0{panicCountdown}s
+          </div>
+          <button
+            onClick={cancelPanicWipe}
+            className="px-6 py-2 rounded-full bg-white text-black font-bold text-xs uppercase tracking-wider hover:bg-zinc-200 cursor-pointer shadow-xl transition-all active:scale-95"
+          >
+            Cancel Wipe
+          </button>
+        </div>
+      )}
+
+      {/* Header */}
+      <header
+        onClick={handleHeaderTap}
+        className="relative flex items-center justify-between border-b border-white/10 bg-black/80 backdrop-blur-md px-3 pt-3 pb-2.5 z-20 cursor-default"
+      >
+        <div className="flex items-center gap-1.5">
+          {/* Instant Lock to Calculator */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePanicBack();
+            }}
             className="flex items-center gap-1 py-1.5 px-2.5 rounded-full bg-red-950/80 hover:bg-red-900 border border-red-700/60 text-red-200 text-xs font-semibold tracking-wide transition-all active:scale-95 cursor-pointer shadow-md"
-            title="Instant Lock: Calculator par wapas jayein"
+            title="Instant Lock: Return to Calculator"
           >
             <Lock size={12} className="text-red-400" />
             <span>Lock</span>
@@ -247,9 +463,12 @@ export const SecretChat: React.FC<SecretChatProps> = ({
           {/* Quick return to BCA Verse */}
           {onBackToBca && (
             <button
-              onClick={onBackToBca}
+              onClick={(e) => {
+                e.stopPropagation();
+                onBackToBca();
+              }}
               className="flex items-center gap-1 py-1.5 px-2.5 rounded-full bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/60 text-indigo-200 text-xs font-semibold transition-all active:scale-95 cursor-pointer"
-              title="BCA Verse me wapas jayein"
+              title="Return to BCA Verse Hub"
             >
               <GraduationCap size={12} className="text-indigo-400" />
               <span>BCA</span>
@@ -257,47 +476,45 @@ export const SecretChat: React.FC<SecretChatProps> = ({
           )}
         </div>
 
-        {/* Title & Presence */}
+        {/* Title, Presence & Encryption Badge */}
         <div className="flex flex-col items-center">
           <div className="flex items-center gap-1.5">
             <span className="text-xs font-bold text-white tracking-wide">
-              {friendStatus?.name ? friendStatus.name : 'Direct Stealth Chat'}
+              {friendStatus?.name ? friendStatus.name : 'Stealth Direct'}
             </span>
-            {settings.roomId && settings.roomId !== 'direct' && (
-              <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-[9px] font-mono text-amber-400">
-                #{settings.roomId}
+            {e2eeEnabled && (
+              <span
+                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-950/90 border border-emerald-600/70 text-[9px] font-mono text-emerald-300"
+                title="End-to-End Encrypted: AES-GCM 256-bit with PBKDF2"
+              >
+                <ShieldCheck size={10} className="text-emerald-400" />
+                <span>E2EE</span>
               </span>
             )}
           </div>
 
-          {/* Real-time online/offline presence indicator */}
+          {/* Presence Status */}
           <div className="flex items-center gap-1.5 text-[10px] mt-0.5">
             {isPeerTyping ? (
               <div className="flex items-center gap-1.5 text-emerald-400 font-medium animate-pulse">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                <span>typing...</span>
+                <span>{peerTypingName || 'Friend'} typing...</span>
               </div>
             ) : friendStatus?.inChat ? (
-              <div className="flex items-center gap-1.5 text-emerald-300 font-medium" title="Friend is active in this chat room right now">
+              <div className="flex items-center gap-1.5 text-emerald-300 font-medium">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)]"></span>
                 </span>
-                <span className="font-semibold text-emerald-400">Online</span>
-                <span className="text-[9px] text-emerald-300/90 bg-emerald-950/80 border border-emerald-700/80 px-1 rounded font-mono">
-                  In Chat
-                </span>
+                <span className="font-semibold text-emerald-400">In Chat</span>
               </div>
             ) : friendStatus?.isOnline ? (
-              <div className="flex items-center gap-1 text-amber-300 font-medium" title="Connected to app (on calculator screen)">
+              <div className="flex items-center gap-1 text-amber-300 font-medium">
                 <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.6)]" />
-                <span className="text-amber-400 font-medium">Online</span>
-                <span className="text-[9px] text-amber-300/80 bg-amber-950/70 border border-amber-800/80 px-1 rounded font-mono">
-                  Away
-                </span>
+                <span className="text-amber-400">Away (Calc)</span>
               </div>
             ) : (
-              <div className="flex items-center gap-1 text-zinc-400 font-medium" title="Friend is currently offline">
+              <div className="flex items-center gap-1 text-zinc-400 font-medium">
                 <span className="w-2 h-2 rounded-full bg-zinc-600" />
                 <span className="text-zinc-400">Offline</span>
                 {friendStatus?.lastSeen && friendStatus.lastSeen > 0 ? (
@@ -311,15 +528,76 @@ export const SecretChat: React.FC<SecretChatProps> = ({
         </div>
 
         {/* Header Actions */}
-        <div className="flex items-center gap-1.5">
-          {/* Nature Wallpaper Switcher */}
+        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+          {/* Disappearing Messages Selector */}
+          <div className="relative">
+            <button
+              onClick={() => setDisappearMenuOpen(!disappearMenuOpen)}
+              className={`p-1.5 rounded-full transition-colors cursor-pointer flex items-center gap-0.5 ${
+                disappearingDuration > 0
+                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                  : 'text-zinc-300 hover:text-white hover:bg-white/10'
+              }`}
+              title="Disappearing Messages Timer"
+            >
+              <Timer size={16} />
+              {disappearingDuration > 0 && (
+                <span className="text-[9px] font-mono font-bold pr-0.5">
+                  {disappearingDuration === 60
+                    ? '1m'
+                    : disappearingDuration === 3600
+                    ? '1h'
+                    : '24h'}
+                </span>
+              )}
+            </button>
+
+            {disappearMenuOpen && (
+              <div className="absolute right-0 top-10 w-44 bg-zinc-900/95 border border-zinc-700/80 rounded-2xl p-2 shadow-2xl z-50 backdrop-blur-md">
+                <p className="text-[10px] text-zinc-400 px-2 py-1 font-semibold uppercase tracking-wider">
+                  Auto-Disappear Timer
+                </p>
+                <div className="space-y-1">
+                  {[
+                    { label: 'Off (Keep)', val: 0 },
+                    { label: '1 Minute', val: 60 },
+                    { label: '1 Hour', val: 3600 },
+                    { label: '24 Hours', val: 86400 },
+                  ].map((opt) => (
+                    <button
+                      key={opt.val}
+                      onClick={() => {
+                        setDisappearingDuration(opt.val);
+                        setDisappearMenuOpen(false);
+                        showToast(
+                          opt.val === 0
+                            ? 'Disappearing messages turned off'
+                            : `New messages will vanish after ${opt.label}`
+                        );
+                      }}
+                      className={`w-full text-left px-2.5 py-1.5 rounded-xl text-xs transition-colors flex items-center justify-between ${
+                        disappearingDuration === opt.val
+                          ? 'bg-amber-500 text-black font-bold'
+                          : 'text-zinc-200 hover:bg-zinc-800'
+                      }`}
+                    >
+                      <span>{opt.label}</span>
+                      {disappearingDuration === opt.val && <Check size={12} />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Wallpaper Switcher */}
           <div className="relative">
             <button
               onClick={() => setWallpaperMenuOpen(!wallpaperMenuOpen)}
-              className="p-2 text-zinc-300 hover:text-white rounded-full hover:bg-white/10 transition-colors cursor-pointer"
+              className="p-1.5 text-zinc-300 hover:text-white rounded-full hover:bg-white/10 transition-colors cursor-pointer"
               title="Change Nature Wallpaper"
             >
-              <Image size={17} />
+              <Image size={16} />
             </button>
 
             {wallpaperMenuOpen && (
@@ -350,116 +628,84 @@ export const SecretChat: React.FC<SecretChatProps> = ({
             )}
           </div>
 
-          {/* Clear All Messages Button */}
+          {/* Clear Messages */}
           <button
             onClick={() => setConfirmBurnOpen(true)}
-            className="p-2 text-zinc-400 hover:text-red-400 rounded-full hover:bg-red-500/10 transition-colors cursor-pointer"
+            className="p-1.5 text-zinc-400 hover:text-red-400 rounded-full hover:bg-red-500/10 transition-colors cursor-pointer"
             title="Clear all messages"
           >
-            <Trash2 size={17} />
+            <Trash2 size={16} />
           </button>
 
           {/* Settings */}
           <button
             onClick={onOpenSettings}
-            className="p-2 text-zinc-300 hover:text-white rounded-full hover:bg-white/10 transition-colors cursor-pointer"
+            className="p-1.5 text-zinc-300 hover:text-white rounded-full hover:bg-white/10 transition-colors cursor-pointer"
             title="Settings"
           >
-            <SettingsIcon size={17} />
+            <SettingsIcon size={16} />
           </button>
         </div>
       </header>
 
-      {/* Real-time Presence Bar */}
-      <div className="relative z-10 px-3.5 py-1.5 bg-black/50 backdrop-blur-md border-b border-white/5 flex items-center justify-between text-[11px]">
+      {/* Network & Security Sub-Bar */}
+      <div className="relative z-10 px-3.5 py-1 bg-black/60 backdrop-blur-md border-b border-white/5 flex items-center justify-between text-[10px]">
         <div className="flex items-center gap-2">
-          {friendStatus?.inChat ? (
-            <span className="flex items-center gap-1.5 text-emerald-300 font-medium">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span>{friendStatus.name || 'Friend'} is active in chat room</span>
+          {socketStatus === 'connected' ? (
+            <span className="flex items-center gap-1 text-emerald-400 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span>P2P Relay Connected</span>
             </span>
-          ) : friendStatus?.isOnline ? (
-            <span className="flex items-center gap-1.5 text-amber-300 font-medium">
-              <span className="w-2 h-2 rounded-full bg-amber-400" />
-              <span>{friendStatus.name || 'Friend'} is online (away on calculator)</span>
+          ) : socketStatus === 'connecting' ? (
+            <span className="flex items-center gap-1 text-amber-300 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+              <span>Connecting P2P Relay...</span>
             </span>
           ) : (
-            <span className="flex items-center gap-1.5 text-zinc-400">
-              <span className="w-2 h-2 rounded-full bg-zinc-600" />
-              <span>{friendStatus?.name || 'Friend'} is offline</span>
-              {friendStatus?.lastSeen && friendStatus.lastSeen > 0 ? (
-                <span className="text-zinc-500 text-[10px]">
-                  (last active {formatLastSeen(friendStatus.lastSeen)})
-                </span>
-              ) : null}
+            <span className="flex items-center gap-1 text-red-400 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+              <span>Offline (Queueing locally)</span>
             </span>
           )}
         </div>
-        <div className="flex items-center gap-1 text-[10px] text-zinc-500 font-mono">
-          <span>Room: #{settings.roomId || 'direct'}</span>
+        <div className="flex items-center gap-2 font-mono text-zinc-400">
+          <span>AES-GCM 256</span>
+          <span>•</span>
+          <span>Room #{settings.roomId || 'direct'}</span>
         </div>
       </div>
 
-      {/* Messages Stream */}
+      {/* Messages Stream with Virtualization window */}
       <div className="relative flex-1 overflow-y-auto px-4 py-4 space-y-3 z-10 overscroll-contain">
+        {messages.length > 60 && !showAllHistory && (
+          <div className="text-center py-1">
+            <button
+              onClick={() => setShowAllHistory(true)}
+              className="text-[10px] text-zinc-400 hover:text-white bg-zinc-900/80 border border-zinc-700/80 px-3 py-1 rounded-full cursor-pointer hover:bg-zinc-800 transition-colors font-mono"
+            >
+              Show {messages.length - 60} earlier messages
+            </button>
+          </div>
+        )}
+
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center px-6 py-12 text-zinc-300">
-            <div className="w-16 h-16 rounded-3xl bg-black/40 border border-white/10 backdrop-blur-md flex items-center justify-center text-emerald-400 mb-3 shadow-xl">
-              <Lock size={26} />
+            <div className="w-16 h-16 rounded-3xl bg-black/40 border border-emerald-500/30 backdrop-blur-md flex items-center justify-center text-emerald-400 mb-3 shadow-xl">
+              <ShieldCheck size={28} />
             </div>
             <h4 className="text-base font-bold text-white mb-1">
-              Direct Private Chat
+              Zero-Knowledge Vault Chat
             </h4>
             <p className="text-xs text-zinc-300/80 max-w-xs leading-relaxed mb-3">
-              End-to-end encrypted direct connection. Koi chat history leak nahi hogi.
+              Web Crypto AES-GCM 256-bit encrypted before leaving device. No plain text stored on server.
             </p>
-
-            {/* Live Presence Status Box */}
-            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/50 border border-white/10 backdrop-blur-md shadow-lg text-xs mb-3">
-              <span className="relative flex h-2.5 w-2.5">
-                {friendStatus?.inChat && (
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                )}
-                <span
-                  className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
-                    friendStatus?.inChat
-                      ? 'bg-emerald-500'
-                      : friendStatus?.isOnline
-                      ? 'bg-amber-400'
-                      : 'bg-zinc-600'
-                  }`}
-                />
-              </span>
-              <span className="font-medium text-zinc-200">
-                {friendStatus?.name || 'Friend'}:{' '}
-                <strong
-                  className={
-                    friendStatus?.inChat
-                      ? 'text-emerald-400 font-semibold'
-                      : friendStatus?.isOnline
-                      ? 'text-amber-400 font-semibold'
-                      : 'text-zinc-400 font-normal'
-                  }
-                >
-                  {friendStatus?.inChat
-                    ? 'Active in Chat Room'
-                    : friendStatus?.isOnline
-                    ? 'Connected (Away)'
-                    : 'Currently Offline'}
-                </strong>
-              </span>
-            </div>
-
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-800 text-[11px] text-emerald-300 font-mono">
               <Check size={12} />
-              <span>Chat history safe & encrypted</span>
+              <span>Encrypted • Optimistic Send • Auto-Queue</span>
             </div>
           </div>
         ) : (
-          messages.map((msg) => {
+          visibleMessages.map((msg) => {
             const isSelf = msg.senderId === peerId;
 
             return (
@@ -480,23 +726,16 @@ export const SecretChat: React.FC<SecretChatProps> = ({
                           ? 'bg-amber-400'
                           : 'bg-zinc-600'
                       }`}
-                      title={
-                        friendStatus?.inChat
-                          ? 'Active in chat'
-                          : friendStatus?.isOnline
-                          ? 'Online (Away)'
-                          : 'Offline'
-                      }
                     />
                   </div>
                 )}
 
                 <div className="flex items-end gap-1.5 max-w-[88%]">
-                  {/* Single Message Delete icon */}
+                  {/* Single Message Delete icon for self */}
                   {isSelf && (
                     <button
                       onClick={() => onBurnMessage(msg.id)}
-                      className="opacity-40 hover:opacity-100 active:opacity-100 p-1 text-zinc-400 hover:text-red-400 transition-opacity cursor-pointer"
+                      className="opacity-0 group-hover:opacity-100 active:opacity-100 p-1 text-zinc-400 hover:text-red-400 transition-opacity cursor-pointer"
                       title="Delete message"
                     >
                       <Trash2 size={13} />
@@ -510,6 +749,13 @@ export const SecretChat: React.FC<SecretChatProps> = ({
                         : 'bg-zinc-900/90 text-zinc-100 rounded-bl-xs border border-white/10'
                     }`}
                   >
+                    {/* Disappearing indicator on message */}
+                    {msg.vanishesAfter && msg.vanishesAfter > 0 && (
+                      <div className="flex items-center gap-1 text-[9px] text-amber-300 font-mono mb-1">
+                        <Timer size={10} />
+                        <span>Vanishes in {msg.vanishesAfter >= 3600 ? `${Math.round(msg.vanishesAfter / 3600)}h` : `${Math.round(msg.vanishesAfter / 60)}m`}</span>
+                      </div>
+                    )}
 
                     {/* Text Message */}
                     {msg.text && (
@@ -534,20 +780,53 @@ export const SecretChat: React.FC<SecretChatProps> = ({
                           src={msg.imageData}
                           alt="Sent attachment"
                           className="w-full h-auto object-cover max-h-[300px]"
+                          loading="lazy"
                         />
                       </div>
                     )}
 
-                    {/* Message Timestamp */}
-                    <div
-                      className={`text-[9px] font-mono mt-1 text-right ${
-                        isSelf ? 'text-emerald-200/70' : 'text-zinc-400'
-                      }`}
-                    >
-                      {new Date(msg.timestamp).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
+                    {/* Message Timestamp & Optimistic Status */}
+                    <div className="flex items-center justify-end gap-1.5 mt-1">
+                      <span
+                        className={`text-[9px] font-mono ${
+                          isSelf ? 'text-emerald-200/70' : 'text-zinc-400'
+                        }`}
+                      >
+                        {new Date(msg.timestamp).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </span>
+
+                      {/* Optimistic Status Icons */}
+                      {isSelf && (
+                        <div className="flex items-center">
+                          {msg.status === 'pending' ? (
+                            <span title="Sending...">
+                              <Clock
+                                size={11}
+                                className="text-zinc-300 animate-spin"
+                              />
+                            </span>
+                          ) : msg.status === 'failed' ? (
+                            <button
+                              onClick={() => handleRetryFailed(msg)}
+                              className="flex items-center gap-0.5 text-red-300 font-semibold text-[9px] hover:underline cursor-pointer"
+                              title="Message failed to send. Click to retry."
+                            >
+                              <AlertCircle size={11} className="text-red-400" />
+                              <span>Retry</span>
+                            </button>
+                          ) : (
+                            <span title="Delivered & Encrypted">
+                              <CheckCheck
+                                size={13}
+                                className="text-emerald-300"
+                              />
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -563,7 +842,10 @@ export const SecretChat: React.FC<SecretChatProps> = ({
         {QUICK_EMOJIS.map((emoji) => (
           <button
             key={emoji}
-            onClick={() => onSendMessage(emoji)}
+            onClick={() => {
+              const ttl = disappearingDuration > 0 ? disappearingDuration : undefined;
+              onSendMessage(emoji, ttl);
+            }}
             className="p-1 text-base hover:scale-125 transition-transform active:scale-95 cursor-pointer"
           >
             {emoji}
@@ -578,7 +860,7 @@ export const SecretChat: React.FC<SecretChatProps> = ({
           <button
             onClick={() => fileInputRef.current?.click()}
             className="p-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
-            title="Send Photo"
+            title="Send Photo (Auto Compressed)"
           >
             <Image size={18} />
           </button>
@@ -608,7 +890,7 @@ export const SecretChat: React.FC<SecretChatProps> = ({
             <div className="flex-1 flex items-center justify-between px-3 py-2 rounded-2xl bg-red-950/60 border border-red-700/60 text-xs text-red-200">
               <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                <span>Recording audio...</span>
+                <span>Recording encrypted audio...</span>
               </span>
               <span className="font-mono font-bold">{recordingSeconds}s</span>
             </div>
@@ -618,7 +900,11 @@ export const SecretChat: React.FC<SecretChatProps> = ({
               value={inputText}
               onChange={handleInputChange}
               onKeyDown={handleKeyPress}
-              placeholder="Secret message..."
+              placeholder={
+                disappearingDuration > 0
+                  ? `Secret message (expires in ${disappearingDuration >= 3600 ? `${disappearingDuration / 3600}h` : `${disappearingDuration / 60}m`})...`
+                  : 'Encrypted secret message...'
+              }
               className="flex-1 px-3.5 py-2 rounded-2xl bg-zinc-900/90 border border-zinc-800 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500/80 transition-colors"
             />
           )}

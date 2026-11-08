@@ -1,21 +1,43 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useId } from 'react';
 import { Play, Pause } from 'lucide-react';
+import { audioPlaybackManager } from '../utils/audioPlaybackManager';
 
 interface AudioPlayerProps {
   audioSrc: string;
   audioDuration?: number;
   isSelf: boolean;
+  messageId?: string;
 }
 
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   audioSrc,
   audioDuration = 0,
   isSelf,
+  messageId,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(audioDuration);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const generatedId = useId();
+  const playerId = messageId || generatedId;
+
+  // Register with global audio playback manager to ensure only 1 note plays at a time
+  useEffect(() => {
+    audioPlaybackManager.register(playerId, () => {
+      if (audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause();
+      }
+      setIsPlaying(false);
+    });
+
+    return () => {
+      audioPlaybackManager.unregister(playerId);
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, [playerId]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -34,6 +56,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const onEnded = () => {
       setIsPlaying(false);
       setCurrentTime(0);
+      audioPlaybackManager.onStop(playerId);
     };
 
     audio.addEventListener('loadedmetadata', onLoadedMetadata);
@@ -45,7 +68,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
       audio.removeEventListener('timeupdate', onTimeUpdate);
       audio.removeEventListener('ended', onEnded);
     };
-  }, []);
+  }, [playerId]);
 
   const togglePlay = () => {
     const audio = audioRef.current;
@@ -54,11 +77,18 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     if (isPlaying) {
       audio.pause();
       setIsPlaying(false);
+      audioPlaybackManager.onStop(playerId);
     } else {
+      // Notify manager to pause any other audio currently playing
+      audioPlaybackManager.onPlay(playerId);
       audio
         .play()
         .then(() => setIsPlaying(true))
-        .catch((e) => console.error('Audio playback error:', e));
+        .catch((e) => {
+          console.error('Audio playback error:', e);
+          setIsPlaying(false);
+          audioPlaybackManager.onStop(playerId);
+        });
     }
   };
 

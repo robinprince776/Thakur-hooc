@@ -132,18 +132,25 @@ export interface Message {
   timestamp: number;
   vanishesAfter?: number;
   roomId?: string;
+  status?: 'pending' | 'delivered' | 'failed';
+  encrypted?: boolean;
+  isDecoy?: boolean;
 }
 
 export type NatureWallpaper = 'misty-lake' | 'emerald-rain' | 'deep-forest' | 'alpine-dawn';
 
 export interface UserSettings {
   secretPin: string;
+  duressPin?: string;
   displayName: string;
   roomId?: string;
   wallpaper: NatureWallpaper;
   soundEnabled: boolean;
   hapticsEnabled: boolean;
   vanishDuration?: number;
+  e2eeEnabled?: boolean;
+  antiShoulderSurfing?: boolean;
+  panicWipeGesture?: boolean;
 }
 
 export interface PeerPresence {

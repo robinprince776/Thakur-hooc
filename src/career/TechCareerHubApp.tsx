@@ -23,6 +23,7 @@ import {
   ArrowRight,
   Target
 } from 'lucide-react';
+import { GoogleSundarPichaiPlaybook } from './GoogleSundarPichaiPlaybook';
 
 export interface TechCareerHubAppProps {
   onBackToBca?: () => void;
@@ -35,7 +36,29 @@ export const TechCareerHubApp: React.FC<TechCareerHubAppProps> = ({
   onOpenAppSwitcher,
   onSelectApp
 }) => {
-  const [activeTab, setActiveTab] = useState<'roadmaps' | 'salary' | 'interview' | 'stories' | 'certs'>('roadmaps');
+  const [activeTab, setActiveTab] = useState<'roadmaps' | 'salary' | 'interview' | 'stories' | 'certs' | 'googleplaybook'>(() => {
+    try {
+      const h = window.location.hash.toLowerCase();
+      if (h === '#googleplaybook' || h === '#sundarpichai' || h === '#playbook') return 'googleplaybook';
+      if (h === '#salary') return 'salary';
+      if (h === '#interview') return 'interview';
+      if (h === '#certs') return 'certs';
+    } catch {}
+    return 'roadmaps';
+  });
+
+  React.useEffect(() => {
+    const syncHash = () => {
+      try {
+        const h = window.location.hash.toLowerCase();
+        if (h === '#googleplaybook' || h === '#sundarpichai' || h === '#playbook') {
+          setActiveTab('googleplaybook');
+        }
+      } catch {}
+    };
+    window.addEventListener('hashchange', syncHash);
+    return () => window.removeEventListener('hashchange', syncHash);
+  }, []);
   const [selectedRoadmap, setSelectedRoadmap] = useState<'soc-pentest' | 'cloud-devsec' | 'fullstack' | 'ai-sec'>('soc-pentest');
 
   // Interview Simulator State
@@ -475,7 +498,8 @@ export const TechCareerHubApp: React.FC<TechCareerHubAppProps> = ({
               { id: 'salary', label: '2. 💰 Salary & Companies', icon: DollarSign },
               { id: 'interview', label: '3. 🎯 Interview Simulator', icon: Target },
               { id: 'stories', label: '4. 🏆 Success Stories', icon: Star },
-              { id: 'certs', label: '5. 📜 Certifications Guide', icon: Award }
+              { id: 'certs', label: '5. 📜 Certifications Guide', icon: Award },
+              { id: 'googleplaybook', label: '6. 👑 Sundar Pichai Playbook', icon: Sparkles }
             ].map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -824,6 +848,11 @@ export const TechCareerHubApp: React.FC<TechCareerHubAppProps> = ({
               ))}
             </div>
           </div>
+        )}
+
+        {/* TAB 6: GOOGLE SUNDAR PICHAI PLAYBOOK */}
+        {activeTab === 'googleplaybook' && (
+          <GoogleSundarPichaiPlaybook onBack={() => setActiveTab('roadmaps')} />
         )}
       </main>
     </div>

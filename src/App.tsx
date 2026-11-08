@@ -21,6 +21,7 @@ import { ProjectXModal } from './projectx/ProjectXModal';
 import { useDirectChat } from './hooks/useDirectChat';
 import { useMobileBackHandler } from './hooks/useMobileBackHandler';
 import { playUnlockSound, playLockSound, triggerHaptic } from './utils/sound';
+import { useCalcVaultStore } from './store/useCalcVaultStore';
 import {
   BookmarkItem,
   NumberSystemType,
@@ -425,7 +426,7 @@ export default function App() {
       if (h === '#sentinel' || h === '#soc' || h === '#blue') return 'sentinel';
       if (h === '#academy' || h === '#ctf' || h === '#learn') return 'academy';
       if (h === '#cyberpath' || h === '#path') return 'cyberpath';
-      if (h === '#career' || h === '#salary' || h === '#interview') return 'career';
+      if (h === '#career' || h === '#salary' || h === '#interview' || h === '#googleplaybook' || h === '#sundarpichai' || h === '#playbook') return 'career';
       if (h === '#linux' || h === '#terminal') return 'linux';
       if (h === '#pcxray' || h === '#hardware' || h === '#cpu') return 'pcxray';
       if (h === '#netviz' || h === '#osi' || h === '#tcp') return 'netviz';
@@ -587,7 +588,7 @@ export default function App() {
         setCurrentApp('academy');
       } else if (h === '#cyberpath' || h === '#path') {
         setCurrentApp('cyberpath');
-      } else if (h === '#career' || h === '#salary' || h === '#interview') {
+      } else if (h === '#career' || h === '#salary' || h === '#interview' || h === '#googleplaybook' || h === '#sundarpichai' || h === '#playbook') {
         setCurrentApp('career');
       } else if (h === '#linux' || h === '#terminal') {
         setCurrentApp('linux');
@@ -817,14 +818,16 @@ export default function App() {
     hapticsEnabled: vaultSettings.hapticsEnabled,
   });
 
-  const handleUnlockVault = () => {
+  const handleUnlockVault = (isDuress?: boolean) => {
     if (vaultSettings.soundEnabled) playUnlockSound();
     if (vaultSettings.hapticsEnabled) triggerHaptic([30, 60, 30]);
+    useCalcVaultStore.getState().setDuressMode(Boolean(isDuress));
     setVaultView('chat');
   };
 
   const handleBackToCalculator = () => {
     if (vaultSettings.soundEnabled) playLockSound();
+    useCalcVaultStore.getState().setDuressMode(false);
     setVaultView('calculator');
   };
 
@@ -2666,6 +2669,7 @@ export default function App() {
               soundEnabled={vaultSettings.soundEnabled}
               hapticsEnabled={vaultSettings.hapticsEnabled}
               secretPin={vaultSettings.secretPin}
+              duressPin={vaultSettings.duressPin || '0000'}
               hasSecretCode={Boolean(vaultSettings.secretPin)}
               onlineCount={onlineCount}
               friendStatus={friendStatus}

@@ -1,6 +1,9 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { Message, PeerPresence } from '../types';
 import { playReceiveSound, playSendSound, triggerHaptic } from '../utils/sound';
+import { useCalcVaultStore } from '../store/useCalcVaultStore';
+import { encryptText, decryptText } from '../utils/cryptoVault';
+import { compressImage } from '../utils/mediaOptimizer';
 
 interface UseDirectChatProps {
   peerId: string;
@@ -12,29 +15,6 @@ interface UseDirectChatProps {
   onRoomBurned?: () => void;
 }
 
-const STORAGE_PREFIX = 'calcvault_messages_';
-
-function loadStoredMessages(room: string): Message[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_PREFIX + room);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
-    }
-  } catch (e) {
-    console.warn('Failed to load stored messages', e);
-  }
-  return [];
-}
-
-function saveStoredMessages(room: string, msgs: Message[]) {
-  try {
-    localStorage.setItem(STORAGE_PREFIX + room, JSON.stringify(msgs));
-  } catch (e) {
-    console.warn('Failed to save stored messages', e);
-  }
-}
-
 export function useDirectChat({
   peerId,
   peerName,
@@ -44,72 +24,154 @@ export function useDirectChat({
   hapticsEnabled,
   onRoomBurned,
 }: UseDirectChatProps) {
-  // Initialize messages directly from permanent localStorage
-  const [messages, setMessages] = useState<Message[]>(() => loadStoredMessages(roomId));
-  const [onlineCount, setOnlineCount] = useState<number>(1);
-  const [peers, setPeers] = useState<PeerPresence[]>([]);
-  const [isPeerTyping, setIsPeerTyping] = useState<boolean>(false);
-  const [peerTypingName, setPeerTypingName] = useState<string>('');
+  const {
+    messages,
+    activeRoomId,
+    socketStatus,
+    onlineCount,
+    peers,
+    isPeerTyping,
+    peerTypingName,
+    isDuressMode,
+    decoyMessages,
+    isScreenBlurred,
+    e2eeEnabled,
+    disappearingDuration,
+    panicWiping,
+    panicCountdown,
+    initRoom,
+    setSocketStatus,
+    setOnlineCount,
+    setPeers,
+    setPeerTyping,
+    addOptimisticMessage,
+    markMessageSent,
+    markMessageFailed,
+    receiveRemoteMessages,
+    deleteMessage,
+    clearAllMessages,
+    checkDisappearingMessages,
+    setDuressMode,
+    addDecoyMessage,
+    setScreenBlurred,
+    setE2eeEnabled,
+    setDisappearingDuration,
+    triggerPanicWipe,
+  } = useCalcVaultStore();
 
   const wsRef = useRef<WebSocket | null>(null);
-  const lastBurnRef = useRef<number>(0);
   const typingTimerRef = useRef<number | null>(null);
   const hasInitializedRef = useRef<boolean>(false);
+  const reconnectAttemptRef = useRef<number>(0);
 
-  // Sync to localStorage on every messages state update
+  // Initialize Room when roomId changes
   useEffect(() => {
-    saveStoredMessages(roomId, messages);
-  }, [messages, roomId]);
+    initRoom(roomId);
+  }, [roomId, initRoom]);
 
-  // When roomId changes, load messages for the new room
+  // Periodic Disappearing message cleaner (every 5 seconds)
   useEffect(() => {
-    setMessages(loadStoredMessages(roomId));
-  }, [roomId]);
+    const timer = setInterval(() => {
+      checkDisappearingMessages();
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [checkDisappearingMessages]);
 
-  // Merge messages: keep all existing, add new ones without duplicates, never auto-delete
-  const mergeMessages = useCallback((incoming: Message[]) => {
-    setMessages((prev) => {
-      const existingMap = new Map<string, Message>();
-      for (const m of prev) {
-        existingMap.set(m.id, m);
+  // Anti-Shoulder Surfing / Screenshot protection: Blur screen on visibility change or window blur
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.hidden) {
+        setScreenBlurred(true);
       }
-      for (const m of incoming) {
-        if (!existingMap.has(m.id)) {
-          existingMap.set(m.id, m);
+    };
+
+    const handleBlur = () => {
+      setScreenBlurred(true);
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('blur', handleBlur);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('blur', handleBlur);
+    };
+  }, [setScreenBlurred]);
+
+  // Helper: Decrypt array of incoming messages
+  const decryptIncoming = useCallback(
+    async (rawList: Message[]): Promise<Message[]> => {
+      if (!Array.isArray(rawList)) return [];
+      const decrypted = await Promise.all(
+        rawList.map(async (msg) => {
+          if (msg.text && msg.text.startsWith('enc:aes-gcm:')) {
+            const plain = await decryptText(msg.text, roomId);
+            return { ...msg, text: plain, encrypted: true };
+          }
+          return msg;
+        })
+      );
+      return decrypted;
+    },
+    [roomId]
+  );
+
+  // Flush queued messages when connection is re-established
+  const flushOfflineQueue = useCallback(async () => {
+    try {
+      const raw = localStorage.getItem(`calcvault_queue_${roomId}`);
+      if (!raw) return;
+      const queue: Message[] = JSON.parse(raw);
+      if (!Array.isArray(queue) || queue.length === 0) return;
+
+      for (const msg of queue) {
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          wsRef.current.send(JSON.stringify({ type: 'message', ...msg }));
+          markMessageSent(msg.id);
+        } else {
+          const res = await fetch('/api/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(msg),
+          });
+          if (res.ok) {
+            markMessageSent(msg.id);
+          }
         }
       }
-      const sorted = Array.from(existingMap.values()).sort((a, b) => a.timestamp - b.timestamp);
-      return sorted;
-    });
-  }, []);
+      localStorage.removeItem(`calcvault_queue_${roomId}`);
+    } catch (e) {
+      console.warn('Queue flush error:', e);
+    }
+  }, [roomId, markMessageSent]);
 
-  // Fetch latest messages & presence from HTTP endpoint
+  // Fetch latest messages & presence from HTTP endpoint (Fallback & Initial Load)
   const fetchMessages = useCallback(async () => {
     try {
       const res = await fetch(
         `/api/messages?roomId=${encodeURIComponent(roomId)}&peerId=${encodeURIComponent(peerId)}&peerName=${encodeURIComponent(peerName)}&inChat=${isActiveChat ? '1' : '0'}`
       );
-      if (!res.ok) return;
+      if (!res.ok) {
+        setSocketStatus('disconnected');
+        return;
+      }
       const data = await res.json();
 
       if (Array.isArray(data.messages)) {
-        setMessages((prev) => {
-          const prevIds = new Set(prev.map((m) => m.id));
-          const newRemote = data.messages.filter(
-            (m: Message) => !prevIds.has(m.id) && m.senderId !== peerId
-          );
+        const decryptedList = await decryptIncoming(data.messages);
+        const prevCount = messages.length;
+        receiveRemoteMessages(decryptedList, peerId);
 
-          if (newRemote.length > 0 && hasInitializedRef.current && isActiveChat) {
+        // Notify sound if new remote message arrived
+        if (hasInitializedRef.current && isActiveChat && decryptedList.length > prevCount) {
+          const hasNewFromPeer = decryptedList.some(
+            (m) => m.senderId !== peerId && Date.now() - m.timestamp < 4000
+          );
+          if (hasNewFromPeer) {
             if (soundEnabled) playReceiveSound();
             if (hapticsEnabled) triggerHaptic([30, 40]);
           }
-
-          // Merge without losing any local messages
-          const map = new Map<string, Message>();
-          for (const m of prev) map.set(m.id, m);
-          for (const m of data.messages) map.set(m.id, m);
-          return Array.from(map.values()).sort((a, b) => a.timestamp - b.timestamp);
-        });
+        }
       }
 
       if (typeof data.onlineCount === 'number') {
@@ -118,16 +180,37 @@ export function useDirectChat({
       if (Array.isArray(data.peers)) {
         setPeers(data.peers);
       }
+
       hasInitializedRef.current = true;
+      if (socketStatus === 'disconnected') {
+        setSocketStatus('connected');
+        flushOfflineQueue();
+      }
     } catch (e) {
       console.warn('Direct chat fetch error:', e);
+      setSocketStatus('disconnected');
     }
-  }, [roomId, peerId, peerName, isActiveChat, soundEnabled, hapticsEnabled]);
+  }, [
+    roomId,
+    peerId,
+    peerName,
+    isActiveChat,
+    soundEnabled,
+    hapticsEnabled,
+    messages.length,
+    decryptIncoming,
+    receiveRemoteMessages,
+    setOnlineCount,
+    setPeers,
+    setSocketStatus,
+    socketStatus,
+    flushOfflineQueue,
+  ]);
 
-  // Initial fetch and regular polling interval (every 2.5 seconds)
+  // Regular HTTP polling (every 3 seconds for rock-solid consistency)
   useEffect(() => {
     fetchMessages();
-    const interval = setInterval(fetchMessages, 2500);
+    const interval = setInterval(fetchMessages, 3000);
     return () => clearInterval(interval);
   }, [fetchMessages]);
 
@@ -146,7 +229,7 @@ export function useDirectChat({
     }
   }, [isActiveChat, roomId, peerId, peerName]);
 
-  // WebSocket Connection for instant real-time events
+  // WebSocket Connection with exponential backoff auto-reconnect
   useEffect(() => {
     let ws: WebSocket | null = null;
     let reconnectTimeout: number | null = null;
@@ -154,25 +237,29 @@ export function useDirectChat({
 
     function connectWs() {
       try {
+        setSocketStatus('connecting');
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         ws = new WebSocket(`${protocol}//${window.location.host}`);
         wsRef.current = ws;
 
         ws.onopen = () => {
-          if (ws?.readyState === WebSocket.OPEN) {
-            ws.send(
-              JSON.stringify({
-                type: 'join_room',
-                roomId,
-                peerId,
-                peerName,
-                inChat: isActiveChat,
-              })
-            );
-          }
+          if (!isMounted) return;
+          reconnectAttemptRef.current = 0;
+          setSocketStatus('connected');
+          flushOfflineQueue();
+
+          ws?.send(
+            JSON.stringify({
+              type: 'join_room',
+              roomId,
+              peerId,
+              peerName,
+              inChat: isActiveChat,
+            })
+          );
         };
 
-        ws.onmessage = (event) => {
+        ws.onmessage = async (event) => {
           if (!isMounted) return;
           try {
             const data = JSON.parse(event.data);
@@ -180,7 +267,8 @@ export function useDirectChat({
 
             if (data.type === 'init') {
               if (Array.isArray(data.messages)) {
-                mergeMessages(data.messages);
+                const dec = await decryptIncoming(data.messages);
+                receiveRemoteMessages(dec, peerId);
               }
               if (data.onlineCount) setOnlineCount(data.onlineCount);
               if (Array.isArray(data.peers)) setPeers(data.peers);
@@ -188,24 +276,26 @@ export function useDirectChat({
               const msg: Message = data.message;
               if (msg.roomId && msg.roomId !== roomId) return;
 
-              setMessages((prev) => {
-                if (prev.some((m) => m.id === msg.id)) return prev;
-                return [...prev, msg];
-              });
+              let finalMsg = msg;
+              if (msg.text && msg.text.startsWith('enc:aes-gcm:')) {
+                const dec = await decryptText(msg.text, roomId);
+                finalMsg = { ...msg, text: dec, encrypted: true };
+              }
 
-              if (msg.senderId !== peerId && isActiveChat) {
+              receiveRemoteMessages([finalMsg], peerId);
+
+              if (finalMsg.senderId !== peerId && isActiveChat) {
                 if (soundEnabled) playReceiveSound();
                 if (hapticsEnabled) triggerHaptic([30, 40]);
               }
             } else if (data.type === 'peer_typing') {
               if (data.roomId && data.roomId !== roomId) return;
               if (data.senderId !== peerId) {
-                setIsPeerTyping(data.isTyping);
-                setPeerTypingName(data.senderName || 'Dost');
+                setPeerTyping(data.isTyping, data.senderName || 'Dost');
                 if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
                 if (data.isTyping) {
                   typingTimerRef.current = window.setTimeout(() => {
-                    setIsPeerTyping(false);
+                    setPeerTyping(false);
                   }, 2500);
                 }
               }
@@ -215,7 +305,10 @@ export function useDirectChat({
               if (data.roomId && data.roomId !== roomId) return;
               if (Array.isArray(data.peers)) setPeers(data.peers);
             } else if (data.type === 'message_burned') {
-              setMessages((prev) => prev.filter((m) => m.id !== data.messageId));
+              deleteMessage(data.messageId);
+            } else if (data.type === 'room_burned') {
+              clearAllMessages();
+              if (onRoomBurned) onRoomBurned();
             }
           } catch (e) {
             console.error('WS parse error:', e);
@@ -224,7 +317,12 @@ export function useDirectChat({
 
         ws.onclose = () => {
           if (isMounted) {
-            reconnectTimeout = window.setTimeout(connectWs, 3500);
+            setSocketStatus('disconnected');
+            // Backoff reconnection
+            const attempt = reconnectAttemptRef.current;
+            const delay = Math.min(1000 * Math.pow(1.5, attempt), 10000);
+            reconnectAttemptRef.current += 1;
+            reconnectTimeout = window.setTimeout(connectWs, delay);
           }
         };
 
@@ -232,7 +330,8 @@ export function useDirectChat({
           if (ws?.readyState === WebSocket.OPEN) ws.close();
         };
       } catch (err) {
-        console.warn('WS not available, using HTTP polling', err);
+        console.warn('WS initialization error:', err);
+        setSocketStatus('disconnected');
       }
     }
 
@@ -244,7 +343,24 @@ export function useDirectChat({
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
       if (ws) ws.close();
     };
-  }, [roomId, peerId, peerName, isActiveChat, soundEnabled, hapticsEnabled, mergeMessages]);
+  }, [
+    roomId,
+    peerId,
+    peerName,
+    isActiveChat,
+    soundEnabled,
+    hapticsEnabled,
+    decryptIncoming,
+    receiveRemoteMessages,
+    deleteMessage,
+    clearAllMessages,
+    onRoomBurned,
+    setOnlineCount,
+    setPeers,
+    setPeerTyping,
+    setSocketStatus,
+    flushOfflineQueue,
+  ]);
 
   // Derive Friend Status
   const otherPeers = useMemo(() => peers.filter((p) => p.peerId !== peerId), [peers, peerId]);
@@ -254,121 +370,246 @@ export function useDirectChat({
   const friendName = activeFriend?.peerName || peerTypingName || 'Friend';
   const friendLastSeen = activeFriend?.lastSeen || 0;
 
-  // Send Text Message
+  // Send Text Message (with Optimistic UI & Web Crypto E2EE)
   const sendMessage = useCallback(
-    async (text: string) => {
+    async (text: string, vanishesAfterSeconds?: number) => {
       if (!text.trim()) return false;
 
-      const newMsg: Message = {
-        id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      // In Decoy mode, don't send real network payload, just append decoy
+      if (isDuressMode) {
+        addDecoyMessage(text);
+        if (soundEnabled && isActiveChat) playSendSound();
+        if (hapticsEnabled && isActiveChat) triggerHaptic(15);
+        return true;
+      }
+
+      const rawText = text.trim();
+      const messageId = `msg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      const timestamp = Date.now();
+      const vanishTimer = vanishesAfterSeconds ?? (disappearingDuration > 0 ? disappearingDuration : undefined);
+
+      // 1. Instantly display in UI (Optimistic UI with pending clock status)
+      const optimisticMsg: Message = {
+        id: messageId,
         senderId: peerId,
         senderName: peerName,
         roomId,
-        text: text.trim(),
-        timestamp: Date.now(),
+        text: rawText,
+        timestamp,
+        vanishesAfter: vanishTimer,
+        status: 'pending',
+        encrypted: e2eeEnabled,
       };
 
-      setMessages((prev) => {
-        if (prev.some((m) => m.id === newMsg.id)) return prev;
-        return [...prev, newMsg];
-      });
+      addOptimisticMessage(optimisticMsg);
       if (soundEnabled && isActiveChat) playSendSound();
       if (hapticsEnabled && isActiveChat) triggerHaptic(15);
 
-      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-        wsRef.current.send(JSON.stringify({ type: 'message', ...newMsg }));
-      } else {
+      // 2. Encrypt text if E2EE enabled
+      let payloadText = rawText;
+      if (e2eeEnabled) {
         try {
-          await fetch('/api/messages', {
+          payloadText = await encryptText(rawText, roomId);
+        } catch (e) {
+          console.warn('Encryption failed, sending plain:', e);
+        }
+      }
+
+      const networkMsg: Message = {
+        ...optimisticMsg,
+        text: payloadText,
+      };
+
+      // 3. Dispatch through WebSocket or HTTP
+      try {
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          wsRef.current.send(JSON.stringify({ type: 'message', ...networkMsg }));
+          markMessageSent(messageId);
+        } else {
+          const res = await fetch('/api/messages', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newMsg),
+            body: JSON.stringify(networkMsg),
           });
-        } catch (e) {
-          console.error('HTTP send error:', e);
+
+          if (!res.ok) {
+            markMessageFailed(messageId);
+            return false;
+          }
+          markMessageSent(messageId);
         }
+      } catch (err) {
+        console.error('Send message error:', err);
+        markMessageFailed(messageId);
+        return false;
       }
 
       return true;
     },
-    [peerId, peerName, roomId, soundEnabled, hapticsEnabled, isActiveChat]
+    [
+      isDuressMode,
+      addDecoyMessage,
+      soundEnabled,
+      isActiveChat,
+      hapticsEnabled,
+      disappearingDuration,
+      peerId,
+      peerName,
+      roomId,
+      e2eeEnabled,
+      addOptimisticMessage,
+      markMessageSent,
+      markMessageFailed,
+    ]
   );
 
-  // Send Voice Audio Note
+  // Send Voice Audio Note (with single audio tracking & compression)
   const sendAudio = useCallback(
-    async (audioDataUrl: string, duration?: number) => {
-      const newMsg: Message = {
-        id: `aud_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    async (audioDataUrl: string, duration?: number, vanishesAfterSeconds?: number) => {
+      const messageId = `aud_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      const timestamp = Date.now();
+      const vanishTimer = vanishesAfterSeconds ?? (disappearingDuration > 0 ? disappearingDuration : undefined);
+
+      const optimisticMsg: Message = {
+        id: messageId,
         senderId: peerId,
         senderName: peerName,
         roomId,
         audioData: audioDataUrl,
         audioDuration: duration,
-        timestamp: Date.now(),
+        timestamp,
+        vanishesAfter: vanishTimer,
+        status: 'pending',
       };
 
-      setMessages((prev) => {
-        if (prev.some((m) => m.id === newMsg.id)) return prev;
-        return [...prev, newMsg];
-      });
+      addOptimisticMessage(optimisticMsg);
       if (soundEnabled && isActiveChat) playSendSound();
       if (hapticsEnabled && isActiveChat) triggerHaptic(20);
 
-      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-        wsRef.current.send(JSON.stringify({ type: 'message', ...newMsg }));
-      } else {
-        try {
-          await fetch('/api/messages', {
+      try {
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          wsRef.current.send(JSON.stringify({ type: 'message', ...optimisticMsg }));
+          markMessageSent(messageId);
+        } else {
+          const res = await fetch('/api/messages', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newMsg),
+            body: JSON.stringify(optimisticMsg),
           });
-        } catch (e) {
-          console.error('Audio HTTP send error:', e);
+          if (!res.ok) {
+            markMessageFailed(messageId);
+            return false;
+          }
+          markMessageSent(messageId);
         }
+      } catch (e) {
+        console.error('Audio HTTP send error:', e);
+        markMessageFailed(messageId);
+        return false;
       }
 
       return true;
     },
-    [peerId, peerName, roomId, soundEnabled, hapticsEnabled, isActiveChat]
+    [
+      peerId,
+      peerName,
+      roomId,
+      disappearingDuration,
+      addOptimisticMessage,
+      soundEnabled,
+      isActiveChat,
+      hapticsEnabled,
+      markMessageSent,
+      markMessageFailed,
+    ]
   );
 
-  // Send Photo
+  // Send Photo (with Client-Side Canvas Compression to Max 800px, 0.7 quality)
   const sendImage = useCallback(
-    async (imageDataUrl: string) => {
-      const newMsg: Message = {
-        id: `img_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    async (imageDataUrl: string, vanishesAfterSeconds?: number) => {
+      const messageId = `img_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      const timestamp = Date.now();
+      const vanishTimer = vanishesAfterSeconds ?? (disappearingDuration > 0 ? disappearingDuration : undefined);
+
+      // Compress client-side before sending
+      let compressedData = imageDataUrl;
+      try {
+        compressedData = await compressImage(imageDataUrl, 800, 800, 0.7);
+      } catch (e) {
+        console.warn('Image compression fallback:', e);
+      }
+
+      const optimisticMsg: Message = {
+        id: messageId,
         senderId: peerId,
         senderName: peerName,
         roomId,
-        imageData: imageDataUrl,
-        timestamp: Date.now(),
+        imageData: compressedData,
+        timestamp,
+        vanishesAfter: vanishTimer,
+        status: 'pending',
       };
 
-      setMessages((prev) => {
-        if (prev.some((m) => m.id === newMsg.id)) return prev;
-        return [...prev, newMsg];
-      });
+      addOptimisticMessage(optimisticMsg);
       if (soundEnabled && isActiveChat) playSendSound();
       if (hapticsEnabled && isActiveChat) triggerHaptic(20);
 
-      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-        wsRef.current.send(JSON.stringify({ type: 'message', ...newMsg }));
-      } else {
-        try {
-          await fetch('/api/messages', {
+      try {
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          wsRef.current.send(JSON.stringify({ type: 'message', ...optimisticMsg }));
+          markMessageSent(messageId);
+        } else {
+          const res = await fetch('/api/messages', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newMsg),
+            body: JSON.stringify(optimisticMsg),
           });
-        } catch (e) {
-          console.error('Image HTTP send error:', e);
+          if (!res.ok) {
+            markMessageFailed(messageId);
+            return false;
+          }
+          markMessageSent(messageId);
         }
+      } catch (e) {
+        console.error('Image send error:', e);
+        markMessageFailed(messageId);
+        return false;
       }
 
       return true;
     },
-    [peerId, peerName, roomId, soundEnabled, hapticsEnabled, isActiveChat]
+    [
+      peerId,
+      peerName,
+      roomId,
+      disappearingDuration,
+      addOptimisticMessage,
+      soundEnabled,
+      isActiveChat,
+      hapticsEnabled,
+      markMessageSent,
+      markMessageFailed,
+    ]
+  );
+
+  // Retry a failed message
+  const retryFailedMessage = useCallback(
+    async (messageId: string) => {
+      const msg = messages.find((m) => m.id === messageId);
+      if (!msg) return;
+
+      if (msg.text) {
+        await sendMessage(msg.text, msg.vanishesAfter);
+        deleteMessage(messageId);
+      } else if (msg.imageData) {
+        await sendImage(msg.imageData, msg.vanishesAfter);
+        deleteMessage(messageId);
+      } else if (msg.audioData) {
+        await sendAudio(msg.audioData, msg.audioDuration, msg.vanishesAfter);
+        deleteMessage(messageId);
+      }
+    },
+    [messages, sendMessage, sendImage, sendAudio, deleteMessage]
   );
 
   // Send typing status
@@ -391,9 +632,8 @@ export function useDirectChat({
 
   // Clear all messages (Manual action with user confirmation)
   const burnEntireChat = useCallback(async () => {
-    setMessages([]);
+    clearAllMessages();
     try {
-      localStorage.removeItem(STORAGE_PREFIX + roomId);
       await fetch('/api/burn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -412,38 +652,45 @@ export function useDirectChat({
         })
       );
     }
-  }, [peerName, roomId]);
+  }, [peerName, roomId, clearAllMessages]);
 
   // Delete single message (Manual action)
-  const burnSingleMessage = useCallback(async (messageId: string) => {
-    setMessages((prev) => {
-      const filtered = prev.filter((m) => m.id !== messageId);
-      saveStoredMessages(roomId, filtered);
-      return filtered;
-    });
+  const burnSingleMessage = useCallback(
+    async (messageId: string) => {
+      deleteMessage(messageId);
 
-    try {
-      await fetch(`/api/messages/${messageId}`, { method: 'DELETE' });
-    } catch (e) {
-      console.error('Delete message error:', e);
-    }
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(
-        JSON.stringify({
-          type: 'burn_message',
-          messageId,
-          roomId,
-        })
-      );
-    }
-  }, [roomId]);
+      try {
+        await fetch(`/api/messages/${messageId}`, { method: 'DELETE' });
+      } catch (e) {
+        console.error('Delete message error:', e);
+      }
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.send(
+          JSON.stringify({
+            type: 'burn_message',
+            messageId,
+            roomId,
+          })
+        );
+      }
+    },
+    [roomId, deleteMessage]
+  );
 
   return {
     messages,
+    decoyMessages,
+    isDuressMode,
+    isScreenBlurred,
+    socketStatus,
     onlineCount,
     isPeerTyping,
     peerTypingName,
     peers,
+    e2eeEnabled,
+    disappearingDuration,
+    panicWiping,
+    panicCountdown,
     friendStatus: {
       isOnline: isFriendOnline,
       inChat: isFriendInChat,
@@ -454,8 +701,14 @@ export function useDirectChat({
     sendAudio,
     sendImage,
     sendTyping,
+    retryFailedMessage,
     burnEntireChat,
     burnSingleMessage,
     refreshMessages: fetchMessages,
+    setDuressMode,
+    setScreenBlurred,
+    setE2eeEnabled,
+    setDisappearingDuration,
+    triggerPanicWipe,
   };
 }

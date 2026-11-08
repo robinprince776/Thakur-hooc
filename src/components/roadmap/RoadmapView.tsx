@@ -217,6 +217,18 @@ const ROADMAP_STEPS: RoadmapStep[] = [
     keySkills: ['Comprehensive CS Synthesis', 'Speed & Accuracy', 'Honor Certificate'],
     estimatedHours: '4 Hours',
   },
+  {
+    id: 'step-google-playbook',
+    stepNumber: 16,
+    level: 'Pro',
+    title: 'Google & Sundar Pichai FAANG Playbook',
+    targetApp: 'career',
+    hash: '#googleplaybook',
+    category: 'FAANG Leadership',
+    description: 'Learn the architectural principles, 24-hour deep-work routine, and billion-user scaling frameworks of Google CEO Sundar Pichai.',
+    keySkills: ['10x Product Architecture', 'SRE Error Budgets', 'FAANG Executive Diagnostic'],
+    estimatedHours: '5 Hours',
+  },
 ];
 
 interface RoadmapViewProps {

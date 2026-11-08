@@ -5,8 +5,9 @@ import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 
 export interface CalculatorProps {
   secretPin: string;
-  onUnlockVault?: () => void;
-  onUnlock?: () => void;
+  duressPin?: string;
+  onUnlockVault?: (isDuress?: boolean) => void;
+  onUnlock?: (isDuress?: boolean) => void;
   onClose?: () => void;
   onOpenSettings?: () => void;
   hasSecretCode?: boolean;
@@ -23,6 +24,7 @@ export interface CalculatorProps {
 
 export const Calculator: React.FC<CalculatorProps> = ({
   secretPin,
+  duressPin = '0000',
   onUnlockVault,
   onUnlock,
   onClose,
@@ -53,29 +55,37 @@ export const Calculator: React.FC<CalculatorProps> = ({
     if (hapticsEnabled) triggerHaptic(12);
   }, [soundEnabled, hapticsEnabled]);
 
-  // Check secret passcode: matches 1307, configured pin, or ends with it
+  // Check secret passcode: matches 1307, configured pin, or decoy duress pin
   const checkAndUnlock = useCallback(
     (inputStr: string): boolean => {
       if (isUnlockingRef.current) return true;
 
       const digitsOnly = inputStr.replace(/\D/g, '');
-      const cleanPin = (secretPin || '1307').trim().replace(/\D/g, '');
+      const cleanRealPin = (secretPin || '1307').trim().replace(/\D/g, '') || '1307';
+      const cleanDuressPin = (duressPin || '0000').trim().replace(/\D/g, '') || '0000';
 
-      const isMatch =
+      const isRealMatch =
         digitsOnly === '1307' ||
-        digitsOnly === cleanPin ||
+        digitsOnly === cleanRealPin ||
         digitsOnly.endsWith('1307') ||
-        (cleanPin.length >= 2 && digitsOnly.endsWith(cleanPin));
+        (cleanRealPin.length >= 2 && digitsOnly.endsWith(cleanRealPin));
 
-      if (isMatch) {
+      const isDuressMatch =
+        !isRealMatch &&
+        (digitsOnly === cleanDuressPin ||
+          digitsOnly.endsWith(cleanDuressPin) ||
+          digitsOnly.endsWith('0000'));
+
+      if (isRealMatch || isDuressMatch) {
+        const isDuress = isDuressMatch;
         isUnlockingRef.current = true;
         setUnlockingAnim(true);
         if (soundEnabled) playUnlockSound();
         if (hapticsEnabled) triggerHaptic([30, 60, 30]);
 
         setTimeout(() => {
-          if (onUnlockVault) onUnlockVault();
-          else if (onUnlock) onUnlock();
+          if (onUnlockVault) onUnlockVault(isDuress);
+          else if (onUnlock) onUnlock(isDuress);
           setUnlockingAnim(false);
           isUnlockingRef.current = false;
           setDisplay('0');
@@ -83,12 +93,12 @@ export const Calculator: React.FC<CalculatorProps> = ({
           setPrevValue(null);
           setOperation(null);
           setWaitingForOperand(false);
-        }, 220);
+        }, 160);
         return true;
       }
       return false;
     },
-    [secretPin, soundEnabled, hapticsEnabled, onUnlockVault]
+    [secretPin, duressPin, soundEnabled, hapticsEnabled, onUnlockVault, onUnlock]
   );
 
   const handleDigit = useCallback(

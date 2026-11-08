@@ -19,10 +19,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
   if (!isOpen) return null;
   const [pin, setPin] = useState(settings.secretPin);
+  const [duressPin, setDuressPin] = useState(settings.duressPin || '0000');
   const [displayName, setDisplayName] = useState(settings.displayName);
   const [roomId, setRoomId] = useState(settings.roomId || '');
   const [soundEnabled, setSoundEnabled] = useState(settings.soundEnabled);
   const [hapticsEnabled, setHapticsEnabled] = useState(settings.hapticsEnabled);
+  const [e2eeEnabled, setE2eeEnabledState] = useState(settings.e2eeEnabled ?? true);
+  const [antiShoulderSurfing, setAntiShoulderSurfing] = useState(settings.antiShoulderSurfing ?? true);
   const [geminiApiKey, setGeminiApiKey] = useState(() => {
     try {
       return localStorage.getItem('gemini_api_key') || '';
@@ -35,6 +38,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     const cleanPin = pin.trim() || '1307';
+    const cleanDuressPin = duressPin.trim() || '0000';
     const cleanName = displayName.trim() || 'Dost';
     const cleanRoom = roomId.trim().toLowerCase() || 'direct';
 
@@ -46,13 +50,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       }
     } catch {}
 
-    const updated = {
+    const updated: UserSettings = {
       ...settings,
       secretPin: cleanPin,
+      duressPin: cleanDuressPin,
       displayName: cleanName,
       roomId: cleanRoom,
       soundEnabled,
       hapticsEnabled,
+      e2eeEnabled,
+      antiShoulderSurfing,
     };
     if (onUpdateSettings) onUpdateSettings(updated);
     if (onSave) onSave(updated);
@@ -89,7 +96,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           <div>
             <label className="block text-xs font-medium text-zinc-300 mb-1 flex items-center gap-1.5">
               <KeyRound size={13} className="text-amber-400" />
-              <span>Secret Passcode (PIN)</span>
+              <span>Secret Passcode (Real Vault)</span>
             </label>
             <input
               type="text"
@@ -99,7 +106,25 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-sm font-mono text-white focus:outline-none focus:border-amber-500 transition-colors"
             />
             <p className="text-[10px] text-zinc-500 mt-1">
-              Calculator me ye number type karke <strong className="text-zinc-300 font-mono">=</strong> dabayein ya direct type karein.
+              Real PIN entering opens your encrypted private messenger.
+            </p>
+          </div>
+
+          {/* Duress (Decoy) PIN */}
+          <div>
+            <label className="block text-xs font-medium text-zinc-300 mb-1 flex items-center gap-1.5">
+              <KeyRound size={13} className="text-rose-400" />
+              <span>Duress / Decoy PIN (Fake Mode)</span>
+            </label>
+            <input
+              type="text"
+              value={duressPin}
+              onChange={(e) => setDuressPin(e.target.value)}
+              placeholder="e.g. 0000"
+              className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-sm font-mono text-white focus:outline-none focus:border-rose-500 transition-colors"
+            />
+            <p className="text-[10px] text-rose-400/80 mt-1">
+              If forced to open app, enter this PIN to show a fake BCA study group!
             </p>
           </div>
 
@@ -136,8 +161,34 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </p>
           </div>
 
-          {/* Sound & Haptics */}
+          {/* Spy-Grade Security & Toggles */}
           <div className="pt-2 border-t border-zinc-800/80 space-y-2">
+            <label className="flex items-center justify-between text-xs text-zinc-300 cursor-pointer">
+              <span className="flex items-center gap-1.5">
+                <Shield size={13} className="text-emerald-400" />
+                <span>Web Crypto AES-GCM 256 E2EE</span>
+              </span>
+              <input
+                type="checkbox"
+                checked={e2eeEnabled}
+                onChange={(e) => setE2eeEnabledState(e.target.checked)}
+                className="accent-emerald-500 w-4 h-4 cursor-pointer"
+              />
+            </label>
+
+            <label className="flex items-center justify-between text-xs text-zinc-300 cursor-pointer">
+              <span className="flex items-center gap-1.5">
+                <Shield size={13} className="text-cyan-400" />
+                <span>Anti-Shoulder-Surfing Blur</span>
+              </span>
+              <input
+                type="checkbox"
+                checked={antiShoulderSurfing}
+                onChange={(e) => setAntiShoulderSurfing(e.target.checked)}
+                className="accent-cyan-500 w-4 h-4 cursor-pointer"
+              />
+            </label>
+
             <label className="flex items-center justify-between text-xs text-zinc-300 cursor-pointer">
               <span className="flex items-center gap-1.5">
                 <Volume2 size={13} />
