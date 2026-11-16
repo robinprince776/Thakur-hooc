@@ -38,6 +38,16 @@ export interface TechNavigatorItem {
 }
 
 export const NAVIGATOR_ITEMS: TechNavigatorItem[] = [
+  {
+    id: 'ghost',
+    title: 'GHOST PROTOCOL — Intelligence OS (Hub 6)',
+    category: 'App',
+    description: '14 defensive cybersecurity labs: Command Center, Terminal Studio, Cyber Range VM, SOC Triage, DFIR & AI Security.',
+    icon: Shield,
+    appTarget: 'ghost',
+    hashTarget: '#ghost',
+    keywords: ['ghost', 'ghost protocol', 'soc', 'siem', 'cyber range', 'terminal', 'forensics', 'threat intel', 'hub 6', 'dfir', 'ai security']
+  },
   // 🕵️‍♂️ Threat Intelligence & Mobile Security
   {
     id: 'crimematrix',

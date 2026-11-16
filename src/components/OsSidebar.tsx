@@ -54,6 +54,16 @@ interface HubCategory {
 
 const OS_HUBS: HubCategory[] = [
   {
+    id: 'ghostprotocol',
+    name: '🕵️ 6. GHOST PROTOCOL OS',
+    icon: Shield,
+    badge: 'HUB 6',
+    color: 'from-[#00FF41] to-[#00E5FF]',
+    apps: [
+      { id: 'ghost', name: 'GHOST PROTOCOL Intelligence OS', desc: '14 defensive cyber labs, SOC triage & GHOST AI mentor', tag: '14 Labs' }
+    ]
+  },
+  {
     id: 'gamification',
     name: '🎮 RPG Mastery & Active Recall',
     icon: Sparkles,

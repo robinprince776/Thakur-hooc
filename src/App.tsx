@@ -254,6 +254,10 @@ const CyberCrimeMatrixApp = React.lazy(() =>
 const MobileSecLabApp = React.lazy(() =>
   import('./cybercrime/MobileSecLabApp').then((m) => ({ default: m.MobileSecLabApp }))
 );
+// 🕵️ Hub 6: GHOST PROTOCOL - Next-Gen Cybersecurity Intelligence OS
+const GhostProtocolApp = React.lazy(() =>
+  import('./ghost/GhostProtocolApp').then((m) => ({ default: m.GhostProtocolApp }))
+);
 
 // OS Architecture Components
 import { useOsStore } from './store/useOsStore';
@@ -282,7 +286,7 @@ const SkillTreeEngine = React.lazy(() =>
 const DEFAULT_VAULT_SETTINGS: UserSettings = {
   secretPin: '1307',
   displayName: 'Dost',
-  wallpaper: 'misty-lake',
+  wallpaper: 'starry-night',
   soundEnabled: true,
   hapticsEnabled: true,
 };
@@ -495,6 +499,7 @@ export default function App() {
       if (h === '#mobilesec' || h === '#smishing' || h === '#eviltwin') return 'mobilesec';
       if (h === '#myquiz' || h === '#quiz') return 'myquiz';
       if (h === '#skilltree' || h === '#rpg') return 'skilltree';
+      if (h === '#ghost' || h === '#ghostprotocol') return 'ghost';
       return 'bca';
     } catch {
       return 'bca';
@@ -728,6 +733,8 @@ export default function App() {
         setCurrentApp('skilltree');
       } else if (h === '#roadmap' || h === '#path' || h === '#curriculum') {
         setCurrentApp('roadmap');
+      } else if (h === '#ghost' || h === '#ghostprotocol') {
+        setCurrentApp('ghost');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -987,6 +994,26 @@ export default function App() {
             }}
           />
         </div>
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: HUB 6 - GHOST PROTOCOL Intelligence OS ---
+  if (currentApp === 'ghost') {
+    return (
+      <AppErrorBoundary appName="GHOST PROTOCOL OS" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="GHOST PROTOCOL OS" />}>
+          <GhostProtocolApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
       </AppErrorBoundary>
     );
   }
@@ -2659,8 +2686,8 @@ export default function App() {
   // --- RENDER APP 12: CalcVault ---
   if (currentApp === 'calc') {
     return (
-      <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center animate-fade-in font-sans">
-        <div className="w-full h-full max-w-md bg-black shadow-2xl relative flex flex-col">
+      <div className="fixed inset-0 z-50 bg-[#070A18] flex flex-col items-center justify-center animate-fade-in font-sans">
+        <div className="w-full h-full max-w-md bg-[#070A18] shadow-2xl relative flex flex-col">
           {vaultView === 'calculator' ? (
             <Calculator
               onUnlock={handleUnlockVault}

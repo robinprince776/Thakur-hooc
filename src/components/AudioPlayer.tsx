@@ -107,18 +107,18 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         onClick={togglePlay}
         className={`w-8 h-8 rounded-full flex items-center justify-center transition-transform active:scale-90 cursor-pointer shadow-md shrink-0 ${
           isSelf
-            ? 'bg-white text-emerald-800 hover:bg-emerald-100'
-            : 'bg-emerald-500 text-white hover:bg-emerald-400'
+            ? 'bg-purple-200 text-purple-950 hover:bg-white shadow-[0_0_10px_rgba(192,132,252,0.4)]'
+            : 'bg-amber-400 text-slate-950 hover:bg-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.35)]'
         }`}
       >
         {isPlaying ? <Pause size={14} /> : <Play size={14} className="ml-0.5" />}
       </button>
 
       <div className="flex-1 flex flex-col gap-1">
-        <div className="h-1.5 w-full bg-black/25 rounded-full overflow-hidden">
+        <div className="h-1.5 w-full bg-black/30 rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-100 ${
-              isSelf ? 'bg-white' : 'bg-emerald-400'
+              isSelf ? 'bg-purple-300 shadow-[0_0_6px_rgba(192,132,252,0.6)]' : 'bg-amber-300 shadow-[0_0_6px_rgba(251,191,36,0.5)]'
             }`}
             style={{ width: `${progress}%` }}
           />

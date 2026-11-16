@@ -35,11 +35,11 @@ interface JarvisAiAssistantProps {
 }
 
 const QUICK_ACTIONS = [
+  { label: '🕵️ Launch Ghost Protocol', prompt: 'Open Ghost Protocol Intelligence OS' },
   { label: '🗺️ Show My Roadmap', prompt: 'Show my Zero-to-Hero learning roadmap' },
   { label: '🧮 Open Calculator', prompt: 'Open Calculator CalcVault' },
   { label: '📝 Start C Programming Quiz', prompt: 'Start C programming quiz exam' },
   { label: '🐧 Launch Linux Terminal', prompt: 'Take me to Linux & Kali mastery' },
-  { label: '🛡️ Open Cyber Lab', prompt: 'Open CyberShield defensive lab' },
   { label: '🌐 Explain OSI 7 Layers', prompt: 'Explain the 7 layers of OSI model in Hinglish with mnemonic' },
 ];
 
@@ -170,6 +170,7 @@ export const JarvisAiAssistant: React.FC<JarvisAiAssistantProps> = ({
           history: historyPayload,
           userApiKey: customApiKey,
           currentApp,
+          persona: currentApp === 'ghost' ? 'ghost' : 'jarvis',
         }),
       });
 

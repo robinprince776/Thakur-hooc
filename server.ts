@@ -544,28 +544,99 @@ function parseJarvisFallback(text: string, currentApp?: string) {
     };
   }
 
+  if (lower.includes('ghost') || lower.includes('intelligence os')) {
+    return {
+      reply: 'Initiating GHOST PROTOCOL — Next-Gen Defensive Intelligence OS! Opening Hub 6 Command Center.',
+      action: { type: 'NAVIGATE', targetApp: 'ghost' }
+    };
+  }
+
   return {
-    reply: `Hello! I am JARVIS, your OS University Assistant. Currently on ${currentApp || 'BCA Verse'}. Aap mujhse kisi bhi subject ke concept puch sakte hain (OSI layers, C pointers, SQL joins, RSA encryption) ya bol sakte hain "Open Calculator", "Start C Quiz", "Show Roadmap", ya "Launch Linux"!`,
+    reply: `Hello! I am JARVIS, your OS University Assistant. Currently on ${currentApp || 'BCA Verse'}. Aap mujhse kisi bhi subject ke concept puch sakte hain (OSI layers, C pointers, SQL joins, RSA encryption) ya bol sakte hain "Open Calculator", "Start C Quiz", "Open Ghost Protocol", ya "Launch Linux"!`,
     action: null
   };
 }
 
-// Dedicated JARVIS AI Chat & Action Assistant Endpoint
+// Socratic Cybersecurity Mentor fallback for GHOST AI persona
+function parseGhostFallback(text: string, activeModule?: string) {
+  const lower = text.toLowerCase();
+
+  // Safety guardrail: refuse malware/exploit generation requests constructively
+  if (
+    lower.includes('write malware') ||
+    lower.includes('ransomware code') ||
+    lower.includes('keylogger') ||
+    lower.includes('exploit payload') ||
+    lower.includes('hack someone') ||
+    lower.includes('ddos script')
+  ) {
+    return {
+      reply:
+        'I cannot generate malware, exploits, or offensive attack instructions. Let us pivot to defense: what telemetry artifact or vulnerability mechanism do you want to detect and mitigate in your lab?',
+      action: null,
+    };
+  }
+
+  if (lower.includes('sqli') || lower.includes('sql injection') || lower.includes('xss')) {
+    return {
+      reply: `Think about trust boundaries first (${activeModule || 'Web Security Lab'}). Instead of concatenating raw user strings into a query or DOM node, ask yourself: how does a database engine distinguish code from data when you use **Prepared Statements**, and how does **Context-Aware Output Encoding + CSP** neutralize script tags? Try toggling the defense shield in the Web Security Lab to compare both AST trees.`,
+      action: null,
+    };
+  }
+
+  if (lower.includes('nmap') || lower.includes('port') || lower.includes('network') || lower.includes('tcp') || lower.includes('handshake')) {
+    return {
+      reply: `Look closely at the three-way exchange: Client sends SYN, server replies SYN-ACK, client confirms ACK. Before probing any port in an authorized audit, examine *why* unnecessary services are exposed in the first place. Inspect the animated packets in **Network Intel Lab** or run \`netstat -tuln\` in **Terminal Studio** to audit listening sockets.`,
+      action: null,
+    };
+  }
+
+  if (lower.includes('forensic') || lower.includes('exif') || lower.includes('log') || lower.includes('hex')) {
+    return {
+      reply: `Every artifact leaves subtle footprints. In log triage, correlate **timestamp bursts** with repeated 401/403 status codes before looking at IP geolocation. For binary files, check the **magic bytes header** (e.g., \`FF D8 FF\` for JPEG) and EXIF metadata tags before trusting the file extension.`,
+      action: null,
+    };
+  }
+
+  if (lower.includes('soc') || lower.includes('alert') || lower.includes('true positive') || lower.includes('false positive')) {
+    return {
+      reply: `Good SOC analysts never trust an alert title alone. Verify three things before classifying: (1) **Source identity & expected baseline** (is it a known maintenance cron or service account?), (2) **Sequence of events** (did an anomaly precede it?), and (3) **Blast radius**. Check the raw JSON payload carefully.`,
+      action: null,
+    };
+  }
+
+  if (lower.includes('prompt injection') || lower.includes('ai') || lower.includes('deepfake')) {
+    return {
+      reply: `Prompt injection exploits the fact that LLMs process system instructions and untrusted user tokens in the same context stream. What happens if you enforce **strict delimiter isolation**, **intent classification**, and **least-privilege tool scoping**? Test an injection string inside the AI Security Lab with guardrails toggled ON vs OFF.`,
+      action: null,
+    };
+  }
+
+  return {
+    reply: `I'm **GHOST**, your defensive security mentor (currently observing **${activeModule || 'Command Center'}**). Ask me for a conceptual breakdown or hint on TCP handshakes, SIEM alert triage, EXIF forensics, OWASP mitigations, or Prompt Injection defense — I will guide your reasoning step-by-step without spoiling the solution.`,
+    action: null,
+  };
+}
+
+// Dedicated JARVIS & GHOST AI Chat & Action Assistant Endpoint
 app.post('/api/jarvis/chat', async (req, res) => {
   try {
-    const { prompt, history, userApiKey, currentApp } = req.body;
+    const { prompt, history, userApiKey, currentApp, persona } = req.body;
     if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
       return res.status(400).json({ error: 'Prompt is required' });
     }
 
     const cleanPrompt = prompt.trim();
+    const isGhostMode = persona === 'ghost' || String(currentApp || '').startsWith('ghost');
     const apiKey = (userApiKey && typeof userApiKey === 'string' && userApiKey.trim())
       ? userApiKey.trim()
       : (process.env.GEMINI_API_KEY || '');
 
     // Fallback if no API key is available
     if (!apiKey) {
-      const fallback = parseJarvisFallback(cleanPrompt, currentApp);
+      const fallback = isGhostMode
+        ? parseGhostFallback(cleanPrompt, currentApp)
+        : parseJarvisFallback(cleanPrompt, currentApp);
       return res.json(fallback);
     }
 
@@ -578,13 +649,26 @@ app.post('/api/jarvis/chat', async (req, res) => {
       },
     });
 
-    const systemInstruction = `You are JARVIS, the supreme AI OS Assistant for the BCA Verse & Zero-to-Hero University digital ecosystem.
+    const systemInstruction = isGhostMode
+      ? `You are GHOST, a senior defensive cybersecurity mentor inside "GHOST PROTOCOL - Next-Gen Cybersecurity Intelligence OS" (a 100% legal, educational, sandboxed SOC learning hub).
+The user is currently working in module: "${currentApp || 'command'}".
+MANDATORY SAFETY & MENTORSHIP RULES:
+1. Never generate real malware, exploits, or illegal instructions. Focus on defense, mitigation, and conceptual understanding.
+2. Act as a calm, sharp, Mr. Robot-inspired senior SOC architect & mentor: give Socratic hints, explain underlying defensive mechanisms, and guide the user's reasoning WITHOUT handing over direct quiz/lab answers on a silver platter.
+3. Keep responses concise, structured, and educational (English or Hinglish matching user's tone).
+4. Return strict JSON matching:
+{
+  "reply": "Your Socratic mentor guidance or defensive concept explanation.",
+  "action": null
+}`
+      : `You are JARVIS, the supreme AI OS Assistant for the BCA Verse & Zero-to-Hero University digital ecosystem.
 The user is currently inside the module: "${currentApp || 'home'}".
 Your duties:
 1. Actively guide and teach Computer Science, Programming, Cybersecurity, BCA syllabus, and system architecture.
 2. Communicate in friendly, fluent Hinglish/English (warm, respectful, sharp, high-tech persona like Tony Stark's JARVIS).
 3. If the user asks to navigate, open, switch apps, start a quiz, or change theme, you MUST provide an appropriate "action" in JSON.
 Valid target apps for navigation:
+- "ghost" (GHOST PROTOCOL - Hub 6 Cybersecurity Intelligence OS)
 - "calc" (Calculator / CalcVault)
 - "roadmap" (My Roadmap / Zero-to-Hero progress)
 - "exam" (BCA Exam Simulator & Mock Test)
@@ -613,7 +697,7 @@ You MUST always reply with strict JSON matching this structure:
   "reply": "Your explanation or confirmation message in conversational Hinglish/English.",
   "action": {
     "type": "NAVIGATE" | "START_QUIZ" | "OPEN_ROADMAP" | "SET_THEME" | null,
-    "targetApp": "calc" | "exam" | "roadmap" | ... | null,
+    "targetApp": "ghost" | "calc" | "exam" | "roadmap" | ... | null,
     "quizTrack": "c-prog" | "networking" | "cyber" | "dbms" | null,
     "theme": "dark" | "light" | null
   }
@@ -636,7 +720,7 @@ You MUST always reply with strict JSON matching this structure:
     });
 
     const callPromise = ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+      model: 'gemini-4-hydrogen',
       contents,
       config: {
         systemInstruction,
@@ -645,7 +729,7 @@ You MUST always reply with strict JSON matching this structure:
     });
 
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error('Gemini API timeout')), 4500)
+      setTimeout(() => reject(new Error('Gemini API timeout')), 6000)
     );
 
     const response = (await Promise.race([callPromise, timeoutPromise])) as any;
@@ -658,15 +742,20 @@ You MUST always reply with strict JSON matching this structure:
         action: parsed.action || null,
       });
     } catch {
-      const fallback = parseJarvisFallback(cleanPrompt, currentApp);
+      const fallback = isGhostMode
+        ? parseGhostFallback(cleanPrompt, currentApp)
+        : parseJarvisFallback(cleanPrompt, currentApp);
       return res.json({
         reply: raw || fallback.reply,
         action: fallback.action,
       });
     }
   } catch (err: any) {
-    console.warn('JARVIS API Error, executing fallback:', err?.message);
-    const fallback = parseJarvisFallback(req.body?.prompt || '', req.body?.currentApp);
+    console.warn('JARVIS/GHOST API Error, executing fallback:', err?.message);
+    const isGhostMode = req.body?.persona === 'ghost' || String(req.body?.currentApp || '').startsWith('ghost');
+    const fallback = isGhostMode
+      ? parseGhostFallback(req.body?.prompt || '', req.body?.currentApp)
+      : parseJarvisFallback(req.body?.prompt || '', req.body?.currentApp);
     return res.json(fallback);
   }
 });

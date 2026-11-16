@@ -72,30 +72,33 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-sm rounded-3xl bg-zinc-950 border border-zinc-800 p-5 shadow-2xl text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in font-sans">
+      <div className="relative w-full max-w-sm rounded-3xl bg-[#0C112B] border border-purple-500/30 p-5 shadow-2xl text-purple-100">
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 p-1.5 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+          className="absolute right-4 top-4 p-1.5 rounded-full text-purple-400/70 hover:text-white hover:bg-purple-900/40 transition-colors cursor-pointer"
         >
           <X size={18} />
         </button>
 
         <div className="flex items-center gap-2 mb-4">
-          <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400">
+          <div className="p-2 rounded-2xl bg-purple-950/80 border border-purple-400/40 text-purple-300 shadow-[0_0_10px_rgba(168,85,247,0.3)]">
             <Shield size={20} />
           </div>
           <div>
-            <h3 className="text-base font-bold text-white">Vault Settings</h3>
-            <p className="text-xs text-zinc-400">Secret PIN & Privacy preferences</p>
+            <h3 className="text-base font-bold text-white font-cursive text-xl flex items-center gap-1">
+              <span>Vault Settings</span>
+              <span className="text-amber-300 text-sm">✨</span>
+            </h3>
+            <p className="text-xs text-purple-300/70 font-handwriting">Secret Passcode & Aesthetic Preferences</p>
           </div>
         </div>
 
         <form onSubmit={handleSave} className="space-y-3.5">
           {/* Secret PIN */}
           <div>
-            <label className="block text-xs font-medium text-zinc-300 mb-1 flex items-center gap-1.5">
-              <KeyRound size={13} className="text-amber-400" />
+            <label className="block text-xs font-medium text-purple-200 mb-1 flex items-center gap-1.5 font-handwriting">
+              <KeyRound size={13} className="text-amber-300" />
               <span>Secret Passcode (Real Vault)</span>
             </label>
             <input
@@ -103,17 +106,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               value={pin}
               onChange={(e) => setPin(e.target.value)}
               placeholder="e.g. 1307"
-              className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-sm font-mono text-white focus:outline-none focus:border-amber-500 transition-colors"
+              className="w-full px-3.5 py-2 rounded-xl bg-slate-900/90 border border-indigo-900/60 text-sm font-mono text-white focus:outline-none focus:border-purple-400 transition-colors"
             />
-            <p className="text-[10px] text-zinc-500 mt-1">
-              Real PIN entering opens your encrypted private messenger.
+            <p className="text-[10px] text-purple-400/70 mt-1 font-handwriting">
+              Type this in the calculator to reveal your private starry chat.
             </p>
           </div>
 
           {/* Duress (Decoy) PIN */}
           <div>
-            <label className="block text-xs font-medium text-zinc-300 mb-1 flex items-center gap-1.5">
-              <KeyRound size={13} className="text-rose-400" />
+            <label className="block text-xs font-medium text-purple-200 mb-1 flex items-center gap-1.5 font-handwriting">
+              <KeyRound size={13} className="text-purple-400" />
               <span>Duress / Decoy PIN (Fake Mode)</span>
             </label>
             <input
@@ -121,10 +124,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               value={duressPin}
               onChange={(e) => setDuressPin(e.target.value)}
               placeholder="e.g. 0000"
-              className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-sm font-mono text-white focus:outline-none focus:border-rose-500 transition-colors"
+              className="w-full px-3.5 py-2 rounded-xl bg-slate-900/90 border border-indigo-900/60 text-sm font-mono text-white focus:outline-none focus:border-purple-400 transition-colors"
             />
-            <p className="text-[10px] text-rose-400/80 mt-1">
-              If forced to open app, enter this PIN to show a fake BCA study group!
+            <p className="text-[10px] text-purple-300/80 mt-1 font-handwriting">
+              If someone forces you to open the app, enter this PIN to show a fake BCA study group!
             </p>
           </div>
 
@@ -234,14 +237,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* Submit Button */}
           <button
             type="submit"
-            className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-lg ${
+            className={`w-full py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-lg active:scale-95 ${
               savedSuccess
-                ? 'bg-emerald-500 text-white'
-                : 'bg-amber-500 hover:bg-amber-600 text-black shadow-amber-500/20'
+                ? 'bg-purple-600 text-white shadow-purple-600/40'
+                : 'bg-gradient-to-r from-purple-600 via-indigo-600 to-amber-400 hover:brightness-110 text-white shadow-purple-600/30 font-cursive text-base'
             }`}
           >
             <Save size={14} />
-            <span>{savedSuccess ? 'Settings Saved!' : 'Save Settings'}</span>
+            <span>{savedSuccess ? 'Settings Saved! ✨' : 'Save Settings ✨'}</span>
           </button>
         </form>
       </div>

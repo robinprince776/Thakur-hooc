@@ -137,7 +137,15 @@ export interface Message {
   isDecoy?: boolean;
 }
 
-export type NatureWallpaper = 'misty-lake' | 'emerald-rain' | 'deep-forest' | 'alpine-dawn';
+export type NatureWallpaper =
+  | 'starry-night'
+  | 'lavender-twilight'
+  | 'cosmic-aurora'
+  | 'moonlight-clouds'
+  | 'misty-lake'
+  | 'emerald-rain'
+  | 'deep-forest'
+  | 'alpine-dawn';
 
 export interface UserSettings {
   secretPin: string;

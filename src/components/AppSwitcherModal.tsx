@@ -150,7 +150,9 @@ export type CurrentAppType =
   | 'myquiz'
   | 'skilltree'
   // 🗺️ University Roadmap
-  | 'roadmap';
+  | 'roadmap'
+  // 🕵️ Hub 6: GHOST PROTOCOL Intelligence OS
+  | 'ghost';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;
@@ -173,6 +175,23 @@ interface AppItem {
 }
 
 const ALL_APPS: AppItem[] = [
+  // 🕵️ Hub 6: GHOST PROTOCOL - Next-Gen Cybersecurity Intelligence OS
+  {
+    id: 'ghost',
+    category: 'Security',
+    title: 'GHOST PROTOCOL OS',
+    subtitle: 'Hub 6 · 14 Defensive Intelligence Modules',
+    tagline: 'SOC Triage · Terminal Studio · Cyber Range · DFIR · AI Sec',
+    description: 'Cinematic, 100% legal defensive cybersecurity ecosystem with 14 interactive labs, animated threat maps, and GHOST AI mentor.',
+    badge: 'Hub 6 · SOC OS',
+    badgeColor: 'bg-[#00FF41]/15 text-[#00FF41] border-[#00FF41]/30',
+    hash: '#ghost',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-[#0A0E17] border border-[#00FF41]/40 flex items-center justify-center text-[#00FF41] shadow-md">
+        <Shield className="w-5 h-5" />
+      </div>
+    )
+  },
   // 🎓 Complete BCA Semester Suite & Advanced Labs
   {
     id: 'exam',

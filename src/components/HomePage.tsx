@@ -46,6 +46,8 @@ interface HomePageProps {
   onOpenRoadmap?: () => void;
 }
 
+import { useGhostStore, GhostModuleId } from '../store/useGhostStore';
+
 export const HomePage: React.FC<HomePageProps> = ({
   onNavigate,
   onOpenCompiler,
@@ -56,7 +58,15 @@ export const HomePage: React.FC<HomePageProps> = ({
   onOpenAppSwitcher,
   onOpenRoadmap
 }) => {
-  const [activeHubFilter, setActiveHubFilter] = useState<'all' | 'academic' | 'cyber' | 'labs' | 'dev' | 'tools'>('all');
+  const [activeHubFilter, setActiveHubFilter] = useState<'all' | 'academic' | 'cyber' | 'labs' | 'dev' | 'tools' | 'ghost'>('all');
+  const ghostXp = useGhostStore((s) => s.xp);
+  const ghostRank = useGhostStore((s) => s.rankTitle);
+  const ghostCompletedCount = useGhostStore((s) => s.completedModules.length);
+
+  const launchGhostModule = (modId: GhostModuleId) => {
+    useGhostStore.getState().setActiveModule(modId);
+    launchApp('ghost', '#ghost');
+  };
 
   const launchApp = (appId: CurrentAppType, hashFallback?: string) => {
     if (onSelectApp) {
@@ -110,7 +120,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </h1>
 
             <p className="text-sm sm:text-base text-slate-300 max-w-2xl font-normal leading-relaxed">
-              Step-by-step curriculum organized into 5 clean hubs. Follow your personalized roadmap from beginner basics to advanced quantum and threat intelligence simulators.
+              Step-by-step curriculum organized into 6 specialized hubs. Follow your personalized roadmap from beginner basics to advanced quantum, cybersecurity intelligence, and defensive SOC simulators.
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -121,6 +131,14 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <Compass className="w-4 h-4" />
                 <span>Open My Roadmap</span>
                 <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => launchGhostModule('command')}
+                className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-[#00FF41]/15 hover:bg-[#00FF41]/25 text-[#00FF41] border border-[#00FF41]/40 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+              >
+                <Shield className="w-4 h-4" />
+                <span>Ghost Protocol (Hub 6)</span>
               </button>
 
               <button
@@ -157,12 +175,13 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* 🧭 SECTION NAVIGATION TABS (Desktop & Mobile) */}
       <div className="sticky top-14 z-30 py-2 bg-slate-950/90 backdrop-blur-md border-y border-white/10 flex items-center gap-2 overflow-x-auto no-scrollbar">
         {[
-          { id: 'all', label: '🌟 All 5 Hubs' },
+          { id: 'all', label: '🌟 All 6 Hubs' },
           { id: 'academic', label: '🎓 1. Academic & Basics' },
           { id: 'cyber', label: '🛡️ 2. Cybersecurity Hub' },
           { id: 'labs', label: '🧪 3. Advanced Tech Labs' },
           { id: 'dev', label: '🛠️ 4. Dev & Cloud Hub' },
           { id: 'tools', label: '🧘 5. Standalone Tools' },
+          { id: 'ghost', label: '🕵️ 6. Ghost Protocol OS' },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -647,6 +666,64 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
               <h3 className="text-sm font-bold text-white mb-1">ZenFocus &amp; Breath</h3>
               <p className="text-[11px] text-slate-400 leading-relaxed">Binaural beats, box breathing, and Pomodoro timer.</p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 🕵️ HUB 6: GHOST PROTOCOL - NEXT-GEN CYBERSECURITY INTELLIGENCE OS */}
+      {(activeHubFilter === 'all' || activeHubFilter === 'ghost') && (
+        <section className="space-y-4 animate-fade-in">
+          <div className="rounded-3xl border border-[#00E5FF]/35 ghost-matrix-grid p-6 sm:p-8 shadow-2xl space-y-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800/90 pb-5">
+              <div className="space-y-1.5">
+                <div className="inline-flex items-center gap-2 text-xs font-ghost-mono font-bold text-[#00FF41]">
+                  <Shield className="w-4 h-4" />
+                  <span>Hub 6 · Next-Gen Cybersecurity Intelligence OS</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  GHOST PROTOCOL
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                  14 interactive defensive modules — Command Center world threat map, Virtual Cyber Range, Terminal Studio, Network Packet Flow, DFIR Forensics, SOC Alert Triage, AI Security &amp; GHOST AI Mentor.
+                </p>
+                <div className="flex flex-wrap items-center gap-3 pt-1 text-xs font-ghost-mono">
+                  <span className="text-[#00FF41] tabular-nums">{ghostXp} XP</span>
+                  <span className="text-slate-500">·</span>
+                  <span className="text-slate-200">{ghostRank}</span>
+                  <span className="text-slate-500">·</span>
+                  <span className="text-[#00E5FF] tabular-nums">{ghostCompletedCount}/14 Modules Completed</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => launchGhostModule('command')}
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#00FF41] hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm cursor-pointer transition-colors shrink-0"
+              >
+                <Terminal className="w-4 h-4" />
+                <span>Launch Ghost Protocol</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {[
+                { id: 'command' as GhostModuleId, title: '01. Command Center', desc: 'Threat posture & animated global map' },
+                { id: 'terminal' as GhostModuleId, title: '05. Terminal Studio', desc: 'Mock bash shell & virtual filesystem' },
+                { id: 'soc' as GhostModuleId, title: '10. SOC Operations', desc: 'SIEM alert triage: TP vs FP analysis' },
+                { id: 'aisec' as GhostModuleId, title: '11. AI Security Lab', desc: 'Prompt injection & deepfake inspection' },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => launchGhostModule(item.id)}
+                  className="text-left p-4 rounded-xl bg-[#0D1322]/90 border border-slate-800 hover:border-[#00E5FF]/60 transition-colors cursor-pointer"
+                >
+                  <div className="text-xs font-ghost-mono font-bold text-[#00E5FF]">{item.title}</div>
+                  <div className="text-xs text-slate-300 mt-1">{item.desc}</div>
+                </button>
+              ))}
             </div>
           </div>
         </section>
