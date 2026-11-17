@@ -132,6 +132,9 @@ const DataFormatterApp = React.lazy(() =>
 const RegexMasterApp = React.lazy(() =>
   import('./tools/RegexMasterApp').then((m) => ({ default: m.RegexMasterApp }))
 );
+const OpenSourceArsenalApp = React.lazy(() =>
+  import('./arsenal/OpenSourceArsenalApp').then((m) => ({ default: m.OpenSourceArsenalApp }))
+);
 const SystemDesignLabApp = React.lazy(() =>
   import('./systemdesign/SystemDesignLabApp').then((m) => ({ default: m.SystemDesignLabApp }))
 );
@@ -396,8 +399,14 @@ class AppErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState>
 }
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState<boolean>(true);
-  const [activeTab, setActiveTab] = useState<ActiveTab>('home');
+  const {
+    splashEnabled,
+    defaultStartTab,
+    compactMode,
+    setTheme: setOsTheme,
+  } = useOsStore();
+  const [showSplash, setShowSplash] = useState<boolean>(() => splashEnabled);
+  const [activeTab, setActiveTab] = useState<ActiveTab>(() => defaultStartTab || 'home');
   const [updateAvailable, setUpdateAvailable] = useState<boolean>(false);
   const [isDark, setIsDark] = useState<boolean>(() => {
     try {
@@ -447,6 +456,7 @@ export default function App() {
       if (h === '#focus' || h === '#pomodoro' || h === '#timer') return 'focus';
       if (h === '#dataformat' || h === '#json' || h === '#yaml') return 'dataformat';
       if (h === '#regexmaster' || h === '#regex') return 'regexmaster';
+      if (h === '#arsenal' || h === '#opensource') return 'arsenal';
       if (h === '#systemdesign' || h === '#architecture' || h === '#cap') return 'systemdesign';
       if (h === '#compliance' || h === '#audit' || h === '#gdpr' || h === '#itact') return 'compliance';
       if (h === '#webperf' || h === '#vitals' || h === '#lighthouse') return 'webperf';
@@ -514,13 +524,20 @@ export default function App() {
   const [activeCertificate, setActiveCertificate] = useState<CertificateRecord | null>(null);
   const [activeExamTrack, setActiveExamTrack] = useState<ExamTrackInfo | null>(null);
 
-  // Global Keyboard Shortcuts (Ctrl+K for TechNavigator, Shift+Esc for Stealth Panic Mode)
+  // Global Keyboard Shortcuts (Ctrl+K for Top Search / TechNavigator, Shift+Esc for Stealth Panic Mode)
   useEffect(() => {
     const handleGlobalKeys = (e: KeyboardEvent) => {
-      // Ctrl + K or Cmd + K -> TechNavigator Command Palette
+      // Ctrl + K or Cmd + K -> Focus Top Search Bar if mounted, otherwise toggle TechNavigator
       if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
-        setIsNavigatorOpen((prev) => !prev);
+        const topSearchInput = document.querySelector<HTMLInputElement>(
+          'input[aria-label="Search apps, tools, programs, and notes"]'
+        );
+        if (topSearchInput) {
+          window.dispatchEvent(new CustomEvent('bca-focus-top-search'));
+        } else {
+          setIsNavigatorOpen((prev) => !prev);
+        }
       }
       // Shift + Esc -> Stealth Mode Panic Button
       if (e.shiftKey && e.key === 'Escape') {
@@ -627,6 +644,8 @@ export default function App() {
         setCurrentApp('dataformat');
       } else if (h === '#regexmaster' || h === '#regex') {
         setCurrentApp('regexmaster');
+      } else if (h === '#arsenal' || h === '#opensource') {
+        setCurrentApp('arsenal');
       } else if (h === '#systemdesign' || h === '#architecture' || h === '#cap') {
         setCurrentApp('systemdesign');
       } else if (h === '#compliance' || h === '#audit' || h === '#gdpr' || h === '#itact') {
@@ -753,13 +772,17 @@ export default function App() {
     try {
       if (isDark) {
         root.classList.add('dark');
+        root.classList.remove('theme-light');
         localStorage.setItem('bca_buddy_theme', 'dark');
+        setOsTheme('dark');
       } else {
         root.classList.remove('dark');
+        root.classList.add('theme-light');
         localStorage.setItem('bca_buddy_theme', 'light');
+        setOsTheme('light');
       }
     } catch {}
-  }, [isDark]);
+  }, [isDark, setOsTheme]);
 
   const toggleTheme = () => setIsDark((prev) => !prev);
 
@@ -923,18 +946,6 @@ export default function App() {
     } catch {}
   };
 
-  // Keyboard shortcut Ctrl+K
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsSearchOpen((prev) => !prev);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   // --- RENDER APP: Zero-to-Hero University Roadmap ---
   if (currentApp === 'roadmap') {
     return (
@@ -947,6 +958,12 @@ export default function App() {
             onOpenProfile={() => setIsProfileModalOpen(true)}
             onToggleStealth={() => setIsStealthActive((prev) => !prev)}
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={handleSelectApp}
+            onOpenSettings={() => setIsSettingsModalOpen(true)}
+            onClearSearches={handleClearSearches}
+            recentSearchesCount={recentSearches.length}
+            onToggleTheme={toggleTheme}
+            isDark={isDark}
           />
           <main className="flex-1 py-6">
             <RoadmapView
@@ -992,6 +1009,12 @@ export default function App() {
               if (typeof window !== 'undefined') window.location.hash = '#roadmap';
               handleSelectApp('roadmap');
             }}
+          />
+          <SettingsModal
+            isOpen={isSettingsModalOpen}
+            onClose={() => setIsSettingsModalOpen(false)}
+            settings={vaultSettings}
+            onSave={handleUpdateVaultSettings}
           />
         </div>
       </AppErrorBoundary>
@@ -1427,6 +1450,12 @@ export default function App() {
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
             onHomeClick={handleReturnToBca}
             onOpenProfile={() => setIsProfileModalOpen(true)}
+            onSelectApp={handleSelectApp}
+            onOpenSettings={() => setIsSettingsModalOpen(true)}
+            onClearSearches={handleClearSearches}
+            recentSearchesCount={recentSearches.length}
+            onToggleTheme={toggleTheme}
+            isDark={isDark}
           />
           <Suspense fallback={<SkeletonLoader appName="My Quiz & Active Recall" />}>
             <MyQuizModule />
@@ -1465,6 +1494,12 @@ export default function App() {
               onClose={() => setActiveCertificate(null)}
             />
           )}
+          <SettingsModal
+            isOpen={isSettingsModalOpen}
+            onClose={() => setIsSettingsModalOpen(false)}
+            settings={vaultSettings}
+            onSave={handleUpdateVaultSettings}
+          />
         </div>
       </AppErrorBoundary>
     );
@@ -1482,6 +1517,12 @@ export default function App() {
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
             onHomeClick={handleReturnToBca}
             onOpenProfile={() => setIsProfileModalOpen(true)}
+            onSelectApp={handleSelectApp}
+            onOpenSettings={() => setIsSettingsModalOpen(true)}
+            onClearSearches={handleClearSearches}
+            recentSearchesCount={recentSearches.length}
+            onToggleTheme={toggleTheme}
+            isDark={isDark}
           />
           <Suspense fallback={<SkeletonLoader appName="RPG Skill Tree Engine" />}>
             <div className="pt-16 p-4 sm:p-8 max-w-7xl mx-auto w-full flex-1">
@@ -1543,6 +1584,12 @@ export default function App() {
               onClose={() => setActiveCertificate(null)}
             />
           )}
+          <SettingsModal
+            isOpen={isSettingsModalOpen}
+            onClose={() => setIsSettingsModalOpen(false)}
+            settings={vaultSettings}
+            onSave={handleUpdateVaultSettings}
+          />
         </div>
       </AppErrorBoundary>
     );
@@ -2139,6 +2186,27 @@ export default function App() {
       <AppErrorBoundary appName="Regex Master Lab" onReset={handleReturnToBca}>
         <Suspense fallback={<AppLoadingSpinner appName="Regex Master Lab" />}>
           <RegexMasterApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: OpenSource Arsenal (#arsenal) ---
+  if (currentApp === 'arsenal') {
+    return (
+      <AppErrorBoundary appName="OpenSource Arsenal" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="OpenSource Arsenal" />}>
+          <OpenSourceArsenalApp
             onBackToBca={handleReturnToBca}
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
             onSelectApp={(appId) => handleSelectApp(appId as CurrentAppType)}
@@ -2768,11 +2836,20 @@ export default function App() {
         onSelectApp={handleSelectApp}
         onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
         onOpenProfile={() => setIsProfileModalOpen(true)}
+        onOpenSettings={() => setIsSettingsModalOpen(true)}
+        onClearSearches={handleClearSearches}
+        recentSearchesCount={recentSearches.length}
+        onSyncSoundSetting={(enabled) => handleUpdateVaultSettings({ ...vaultSettings, soundEnabled: enabled })}
+        onNavigateTabWithPrefill={(tab, prefill) => {
+          if (prefill?.topicId) setPrefilledTopicId(prefill.topicId);
+          if (prefill?.cProgramId) setPrefilledProgramId(prefill.cProgramId);
+          setActiveTab(tab);
+        }}
         bookmarkCount={bookmarks.length}
       />
 
       {/* Main Tab Panels */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className={`flex-1 w-full mx-auto px-4 sm:px-6 lg:px-8 transition-all ${compactMode ? 'max-w-5xl py-4' : 'max-w-7xl py-6'}`}>
         {/* 1. 📖 Notes Tab (C Programming Hub & Digital Electronics Lab) */}
         {activeTab === 'notes' && (
           <BcaNotesView
@@ -2983,6 +3060,14 @@ export default function App() {
           }}
         />
       )}
+
+      {/* Vault & Security Settings Modal */}
+      <SettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => setIsSettingsModalOpen(false)}
+        settings={vaultSettings}
+        onSave={handleUpdateVaultSettings}
+      />
 
       {/* Android Double-Back to Exit Toast */}
       {showExitToast && (

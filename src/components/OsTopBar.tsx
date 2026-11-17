@@ -1,18 +1,16 @@
 import React from 'react';
 import {
-  Search,
-  Command,
-  Sun,
-  Moon,
   Menu,
   ShieldAlert,
   Flame,
-  Sparkles,
-  Grid
+  Grid,
 } from 'lucide-react';
 import { useOsStore } from '../store/useOsStore';
 import { useGamificationStore } from '../store/useGamificationStore';
 import { OmnitrixLogo } from './OmnitrixLogo';
+import { TopSearchBar } from './TopSearchBar';
+import { AppSettingsMenu } from './AppSettingsMenu';
+import { CurrentAppType } from './AppSwitcherModal';
 
 interface OsTopBarProps {
   onOpenNavigator: () => void;
@@ -21,6 +19,12 @@ interface OsTopBarProps {
   onOpenAppSwitcher: () => void;
   onHomeClick: () => void;
   onOpenProfile?: () => void;
+  onSelectApp?: (app: CurrentAppType) => void;
+  onOpenSettings?: () => void;
+  onClearSearches?: () => void;
+  recentSearchesCount?: number;
+  onToggleTheme?: () => void;
+  isDark?: boolean;
 }
 
 export const OsTopBar: React.FC<OsTopBarProps> = ({
@@ -29,121 +33,123 @@ export const OsTopBar: React.FC<OsTopBarProps> = ({
   onToggleStealth,
   onOpenAppSwitcher,
   onHomeClick,
-  onOpenProfile
+  onOpenProfile,
+  onSelectApp,
+  onOpenSettings,
+  onClearSearches,
+  recentSearchesCount = 0,
+  onToggleTheme,
+  isDark: isDarkProp,
 }) => {
-  const { theme, toggleTheme, dailyStreak, userName } = useOsStore();
+  const { theme, toggleTheme: toggleOsTheme, dailyStreak, userName } = useOsStore();
   const { userProfile } = useGamificationStore();
+  const isDark = typeof isDarkProp === 'boolean' ? isDarkProp : theme === 'dark';
+
+  const handleToggleTheme = () => {
+    if (onToggleTheme) {
+      onToggleTheme();
+    } else {
+      toggleOsTheme();
+    }
+  };
+
+  const handleSelectApp = (app: CurrentAppType) => {
+    if (onSelectApp) {
+      onSelectApp(app);
+    } else if (typeof window !== 'undefined') {
+      window.location.hash = app === 'bca' ? 'bcaverse' : app;
+    }
+  };
 
   return (
-    <header className="sticky top-0 z-40 w-full px-3 sm:px-6 py-2.5 bg-slate-950/75 border-b border-white/10 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 w-full px-3 sm:px-6 py-2.5 bg-white/85 dark:bg-slate-950/80 border-b border-slate-200 dark:border-white/10 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
         {/* LEFT: Omnitrix Logo & User Identity */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 shrink-0">
           <button
+            type="button"
             onClick={onOpenSidebar}
-            className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 cursor-pointer spring-press transition-all"
+            className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-900/80 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-300/70 dark:border-white/10 cursor-pointer flex items-center justify-center transition-colors shrink-0"
             title="Open OS Sidebar Menu"
+            aria-label="Open OS Sidebar Menu"
           >
-            <Menu className="w-4 h-4 text-cyan-400" />
+            <Menu className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
           </button>
 
-          <div
+          <button
+            type="button"
             onClick={onHomeClick}
-            className="flex items-center gap-2.5 cursor-pointer group"
+            className="flex items-center gap-2.5 cursor-pointer group text-left whitespace-nowrap shrink-0"
           >
-            <div className="relative">
-              <OmnitrixLogo size={28} glow={true} animated={true} />
-              <div className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border border-slate-950 animate-pulse" />
-            </div>
-
+            <OmnitrixLogo size={28} glow={true} animated={true} />
             <div className="hidden sm:block text-left">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-black text-white tracking-wider group-hover:text-cyan-400 transition-colors">
-                  BCA VERSE OS
-                </span>
-                <span className="px-1.5 py-0.2 rounded-md bg-cyan-500/20 text-cyan-300 font-mono text-[9px] border border-cyan-500/30">
-                  v3.0 PRO
-                </span>
+              <div className="text-xs font-black text-slate-900 dark:text-white tracking-wider group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+                BCA VERSE OS
               </div>
-              <div className="flex items-center gap-2 text-[10px] text-slate-400">
+              <div className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400">
                 <span className="truncate max-w-[100px]">{userName}</span>
-                <span className="inline-flex items-center gap-0.5 text-amber-400 font-bold">
+                <span className="inline-flex items-center gap-0.5 text-amber-600 dark:text-amber-400 font-bold tabular-nums">
                   <Flame className="w-2.5 h-2.5" /> {dailyStreak}d
                 </span>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* CENTER: Prominent TechNavigator Trigger Bar */}
-        <div className="flex-1 max-w-md mx-2">
-          <button
-            onClick={onOpenNavigator}
-            className="w-full flex items-center justify-between px-3.5 py-1.5 rounded-2xl bg-slate-900/90 hover:bg-slate-850 border border-white/10 hover:border-cyan-500/40 text-slate-400 hover:text-slate-200 shadow-inner transition-all cursor-pointer group"
-          >
-            <div className="flex items-center gap-2.5 text-xs truncate">
-              <Search className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform" />
-              <span className="truncate text-slate-400 group-hover:text-slate-300">
-                Search 70+ Apps, Topics, Labs...
-              </span>
-            </div>
-
-            <div className="hidden sm:flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-lg bg-slate-850 text-slate-400 border border-white/5">
-              <Command className="w-3 h-3" />
-              <span>K</span>
-            </div>
           </button>
         </div>
 
-        {/* RIGHT: Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* User Level & Profile Modal Trigger */}
+        {/* CENTER: Live Top Search Bar */}
+        <TopSearchBar
+          onSelectApp={handleSelectApp}
+          onOpenNavigator={onOpenNavigator}
+          placeholder="Search 70+ Apps, Topics, Labs..."
+          className="flex-1 max-w-md min-w-[140px]"
+        />
+
+        {/* RIGHT: Actions & App Settings Menu */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {onOpenProfile && (
             <button
+              type="button"
               onClick={onOpenProfile}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-amber-500/30 cursor-pointer spring-press transition-all text-xs font-semibold shadow-xs"
-              title="Open Profile Dashboard 2.0 (XP, Badges & Missions)"
+              className="hidden sm:flex items-center gap-1.5 h-10 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-amber-500/30 cursor-pointer transition-colors text-xs font-semibold whitespace-nowrap shrink-0"
+              title="Open Profile Dashboard (XP, Badges & Missions)"
             >
               <span className="text-sm">{userProfile.avatar}</span>
-              <div className="flex flex-col text-left leading-tight hidden sm:flex">
-                <span className="text-[10px] text-amber-400 font-bold">Lvl {userProfile.level}</span>
-                <span className="text-[9px] text-slate-400 font-mono">{userProfile.xp} XP</span>
-              </div>
+              <span className="hidden md:inline text-[11px] text-amber-600 dark:text-amber-400 font-bold tabular-nums">
+                Lvl {userProfile.level}
+              </span>
             </button>
           )}
 
-          {/* All Apps Drawer Button */}
           <button
+            type="button"
             onClick={onOpenAppSwitcher}
-            className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-cyan-400 border border-white/10 cursor-pointer spring-press transition-all flex items-center gap-1.5 text-xs font-semibold"
+            className="h-10 px-3 rounded-xl bg-slate-100 dark:bg-slate-900/80 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 border border-slate-300/70 dark:border-white/10 cursor-pointer transition-colors flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap shrink-0"
             title="App Hubs Grid"
           >
-            <Grid className="w-4 h-4 text-cyan-400" />
-            <span className="hidden md:inline text-[11px]">Hubs</span>
+            <Grid className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
+            <span className="hidden md:inline text-xs">Hubs</span>
           </button>
 
-          {/* Stealth Mode Panic Button */}
           <button
+            type="button"
             onClick={onToggleStealth}
-            className="p-2 rounded-xl bg-slate-900/80 hover:bg-rose-950/60 text-slate-400 hover:text-rose-400 border border-white/10 hover:border-rose-500/40 cursor-pointer spring-press transition-all relative group"
+            className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-900/80 hover:bg-rose-50 dark:hover:bg-rose-950/60 text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-300/70 dark:border-white/10 hover:border-rose-500/40 cursor-pointer transition-colors flex items-center justify-center shrink-0"
             title="Stealth Mode Panic Button (Shift+Esc)"
+            aria-label="Stealth Mode Panic Button"
           >
-            <ShieldAlert className="w-4 h-4 text-slate-400 group-hover:text-rose-400" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-slate-950" />
+            <ShieldAlert className="w-4 h-4" />
           </button>
 
-          {/* Theme Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-amber-400 border border-white/10 cursor-pointer spring-press transition-all"
-            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-          >
-            {theme === 'dark' ? (
-              <Sun className="w-4 h-4 text-amber-400" />
-            ) : (
-              <Moon className="w-4 h-4 text-cyan-400" />
-            )}
-          </button>
+          <AppSettingsMenu
+            isDark={isDark}
+            onToggleTheme={handleToggleTheme}
+            onOpenVaultSettings={onOpenSettings}
+            onToggleStealth={onToggleStealth}
+            onOpenProfile={onOpenProfile}
+            onClearSearches={onClearSearches}
+            recentSearchesCount={recentSearchesCount}
+            showLabel={false}
+          />
         </div>
       </div>
     </header>

@@ -55,6 +55,16 @@ interface OsState {
   deleteQuickNote: (id: string) => void;
   recordAppVisit: (app: CurrentAppType, title: string, category: string, progress?: number) => void;
 
+  // App Settings Preferences
+  splashEnabled: boolean;
+  setSplashEnabled: (enabled: boolean) => void;
+  defaultStartTab: 'home' | 'notes' | 'solvers';
+  setDefaultStartTab: (tab: 'home' | 'notes' | 'solvers') => void;
+  compactMode: boolean;
+  setCompactMode: (compact: boolean) => void;
+  soundEffects: boolean;
+  setSoundEffects: (enabled: boolean) => void;
+
   // User Profile
   userName: string;
   userAvatar: string;
@@ -81,6 +91,23 @@ function getInitialTheme(): 'dark' | 'light' {
     if (saved === 'dark' || saved === 'light') return saved;
   } catch {}
   return 'dark';
+}
+
+function getInitialBooleanSetting(key: string, fallback: boolean): boolean {
+  try {
+    const saved = localStorage.getItem(key);
+    if (saved === 'true') return true;
+    if (saved === 'false') return false;
+  } catch {}
+  return fallback;
+}
+
+function getInitialStartTab(): 'home' | 'notes' | 'solvers' {
+  try {
+    const saved = localStorage.getItem('bca_verse_default_tab');
+    if (saved === 'home' || saved === 'notes' || saved === 'solvers') return saved;
+  } catch {}
+  return 'home';
 }
 
 function getInitialNotes(): QuickNote[] {
@@ -112,6 +139,10 @@ function getInitialStreak(): { streak: number; date: string } {
 export const useOsStore = create<OsState>((set, get) => {
   const initTheme = getInitialTheme();
   const initStreak = getInitialStreak();
+  const initSplash = getInitialBooleanSetting('bca_verse_splash_enabled', true);
+  const initCompact = getInitialBooleanSetting('bca_verse_compact_mode', false);
+  const initSound = getInitialBooleanSetting('bca_verse_sound_effects', true);
+  const initStartTab = getInitialStartTab();
 
   return {
     theme: initTheme,
@@ -200,6 +231,38 @@ export const useOsStore = create<OsState>((set, get) => {
         timestamp: Date.now()
       };
       set({ lastOpenedApp: visit });
+    },
+
+    splashEnabled: initSplash,
+    setSplashEnabled: (splashEnabled) => {
+      try {
+        localStorage.setItem('bca_verse_splash_enabled', String(splashEnabled));
+      } catch {}
+      set({ splashEnabled });
+    },
+
+    defaultStartTab: initStartTab,
+    setDefaultStartTab: (defaultStartTab) => {
+      try {
+        localStorage.setItem('bca_verse_default_tab', defaultStartTab);
+      } catch {}
+      set({ defaultStartTab });
+    },
+
+    compactMode: initCompact,
+    setCompactMode: (compactMode) => {
+      try {
+        localStorage.setItem('bca_verse_compact_mode', String(compactMode));
+      } catch {}
+      set({ compactMode });
+    },
+
+    soundEffects: initSound,
+    setSoundEffects: (soundEffects) => {
+      try {
+        localStorage.setItem('bca_verse_sound_effects', String(soundEffects));
+      } catch {}
+      set({ soundEffects });
     },
 
     userName: 'Priyanshu (Pro Scholar)',

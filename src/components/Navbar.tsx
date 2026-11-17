@@ -4,9 +4,6 @@ import {
   Terminal,
   BookOpen,
   Bookmark,
-  Sun,
-  Moon,
-  Search,
   Menu,
   X,
   Home,
@@ -16,19 +13,19 @@ import {
   RotateCw,
   Grid,
   Shield,
-  Wrench,
   Sparkles,
   Cloud,
   Server,
   Globe,
   GitBranch,
-  Lock,
-  Brain,
-  Compass
+  Search,
+  Settings,
 } from 'lucide-react';
 import { OmnitrixLogo } from './OmnitrixLogo';
 import { CurrentAppType } from './AppSwitcherModal';
 import { useGamificationStore } from '../store/useGamificationStore';
+import { TopSearchBar } from './TopSearchBar';
+import { AppSettingsMenu } from './AppSettingsMenu';
 
 export type ActiveTab =
   | 'home'
@@ -57,6 +54,11 @@ interface NavbarProps {
   onOpenAppSwitcher: () => void;
   onForceUpdateApp?: () => void;
   onOpenProfile?: () => void;
+  onOpenSettings?: () => void;
+  onClearSearches?: () => void;
+  recentSearchesCount?: number;
+  onSyncSoundSetting?: (enabled: boolean) => void;
+  onNavigateTabWithPrefill?: (tab: ActiveTab, prefill?: { cProgramId?: string; topicId?: string }) => void;
   bookmarkCount: number;
 }
 
@@ -68,30 +70,31 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenSearch,
   onOpenNavigator,
   onToggleStealth,
-  onOpenProjectX,
   onOpenSidebar,
   onSelectApp,
   onOpenAppSwitcher,
   onForceUpdateApp,
   onOpenProfile,
+  onOpenSettings,
+  onClearSearches,
+  recentSearchesCount = 0,
+  onSyncSoundSetting,
+  onNavigateTabWithPrefill,
   bookmarkCount,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [updating, setUpdating] = useState(false);
   const { userProfile } = useGamificationStore();
 
   const navItems = [
+    { id: 'home' as ActiveTab, label: 'Overview', icon: Home },
     { id: 'notes' as ActiveTab, label: 'Notes', icon: BookOpen },
     { id: 'solvers' as ActiveTab, label: 'Solvers', icon: Cpu },
-    { id: 'code-runner' as ActiveTab, label: 'Code Runner', icon: Terminal },
+    { id: 'code-runner' as ActiveTab, label: 'Code', icon: Terminal },
     { id: 'practice' as ActiveTab, label: 'Practice', icon: Layers },
-    { id: 'cheat-sheet' as ActiveTab, label: 'Cheat Sheet', icon: FileText },
-    { id: 'home' as ActiveTab, label: 'Overview', icon: Home },
     { id: 'bookmarks' as ActiveTab, label: 'Saved', icon: Bookmark, badge: bookmarkCount },
   ];
 
   const handleUpdateClick = async () => {
-    setUpdating(true);
     if (onForceUpdateApp) {
       await onForceUpdateApp();
     } else {
@@ -100,64 +103,58 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Brand Logo & Name */}
-          <div className="flex items-center gap-2.5">
+    <header className="sticky top-0 z-40 w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors duration-200">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-3 sm:gap-5 h-16">
+          {/* Brand Logo & Sidebar Toggle */}
+          <div className="flex items-center gap-2.5 shrink-0">
             {onOpenSidebar && (
               <button
+                type="button"
                 onClick={onOpenSidebar}
-                className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-cyan-400 border border-white/5 cursor-pointer spring-press transition-all"
+                className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 border border-slate-300/70 dark:border-white/5 cursor-pointer flex items-center justify-center transition-colors shrink-0"
                 title="Open OS Hubs Sidebar"
+                aria-label="Open OS Hubs Sidebar"
               >
-                <Menu className="w-4 h-4 text-cyan-400" />
+                <Menu className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
               </button>
             )}
 
             <button
+              type="button"
               onClick={() => {
-                setActiveTab('notes');
+                setActiveTab('home');
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center gap-2.5 group text-left cursor-pointer"
+              className="flex items-center gap-2 text-left cursor-pointer whitespace-nowrap shrink-0"
             >
               <OmnitrixLogo size="md" glow={true} animated={true} />
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold tracking-tight text-white">
-                    BCA Verse
-                  </span>
-                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-950 text-blue-300 border border-blue-800">
-                    By Prince Thakur
-                  </span>
-                </div>
-                <span className="text-[11px] font-medium text-slate-400 hidden xs:block">
-                  TechMaster Suite · 70+ Apps
-                </span>
-              </div>
+              <span className="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap shrink-0">
+                BCA Verse
+              </span>
             </button>
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1 shrink-0" aria-label="Primary Navigation">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
                 <button
+                  type="button"
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 h-10 px-3 rounded-xl text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                     isActive
-                      ? 'bg-blue-950 text-blue-300 border border-blue-800/80 shadow-xs'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                      ? 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/80'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-blue-400' : ''}`} />
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-blue-600 dark:text-blue-400' : ''}`} />
                   <span>{item.label}</span>
                   {typeof item.badge === 'number' && item.badge > 0 && (
-                    <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-blue-600 text-white font-bold">
+                    <span className="ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] leading-none bg-blue-600 text-white font-bold tabular-nums">
                       {item.badge}
                     </span>
                   )}
@@ -166,186 +163,68 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </nav>
 
-          {/* Right Action Icons */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* Quick Search / TechNavigator Button */}
-            <button
-              onClick={onOpenNavigator || onOpenSearch}
-              className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl border border-cyan-500/40 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-all cursor-pointer shadow-xs"
-              title="TechNavigator: Global Ecosystem Command Palette (Ctrl+K)"
-            >
-              <Search className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="hidden sm:inline font-semibold">TechNavigator</span>
-              <kbd className="hidden xl:inline-block px-1.5 py-0.5 text-[10px] bg-slate-900 rounded border border-slate-700 text-cyan-400 font-mono">
-                Ctrl+K
-              </kbd>
-            </button>
+          {/* Prominent Top Search Bar */}
+          <TopSearchBar
+            onSelectApp={onSelectApp}
+            onNavigateTab={
+              onNavigateTabWithPrefill ||
+              ((tab) => {
+                setActiveTab(tab);
+              })
+            }
+            onOpenFullSearch={onOpenSearch}
+            onOpenNavigator={onOpenNavigator}
+            placeholder="Search apps, tools, C code..."
+            className="flex-1 min-w-[120px] max-w-sm"
+          />
 
-            {/* TechMaster 2000+ Flagship Button */}
-            <button
-              onClick={() => onSelectApp('techmaster')}
-              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-500/40 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 text-xs font-bold transition-all shadow-xs cursor-pointer"
-              title="Open TechMaster 2000+ (#techmaster)"
-            >
-              <BookOpen className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="hidden xl:inline">TechMaster 2000+</span>
-              <span className="xl:hidden">TechMaster</span>
-            </button>
-
-            {/* PromptCraft Pro */}
-            <button
-              onClick={() => onSelectApp('promptcraft')}
-              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 text-xs font-semibold transition-all cursor-pointer"
-              title="PromptCraft Pro (#promptcraft)"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-              <span>PromptCraft</span>
-            </button>
-
-            {/* CloudOps Shell */}
-            <button
-              onClick={() => onSelectApp('cloudops')}
-              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 text-xs font-semibold transition-all cursor-pointer"
-              title="CloudOps Shell (#cloudops)"
-            >
-              <Cloud className="w-3.5 h-3.5 text-indigo-400" />
-              <span>CloudOps</span>
-            </button>
-
-            {/* API-X Lab */}
-            <button
-              onClick={() => onSelectApp('apix')}
-              className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-teal-500/30 bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 text-xs font-semibold transition-all cursor-pointer"
-              title="API-X Testing Lab (#apix)"
-            >
-              <Server className="w-3.5 h-3.5 text-teal-400" />
-              <span>API-X</span>
-            </button>
-
-            {/* MediCore Pro Quick Nav */}
-            <button
-              onClick={() => onSelectApp("medicore")}
-              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-teal-500/50 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 hover:from-teal-500/30 hover:to-cyan-500/30 text-teal-300 hover:text-white text-xs font-bold transition-all shadow-md shadow-teal-500/20 cursor-pointer"
-              title="Open MediCore Pro Clinical Desk (#medicore)"
-            >
-              <span>🩺</span>
-              <span className="font-extrabold tracking-wide hidden sm:inline">MediCore</span>
-            </button>
-
-            {/* UPSC CSE Prep */}
-            <button
-              onClick={() => onSelectApp('upsc')}
-              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-xs font-bold transition-all cursor-pointer"
-              title="Open UPSC CSE Civil Services Prep (#upsc)"
-            >
-              <span>🏛️</span>
-              <span className="hidden xl:inline">UPSC Prep</span>
-            </button>
-
-            {/* SvaraPulse Music */}
-            <button
-              onClick={() => onSelectApp('music')}
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-pink-500/40 bg-pink-500/10 hover:bg-pink-500/20 text-pink-300 text-xs font-bold transition-all cursor-pointer"
-              title="Open SvaraPulse Musicology Studio (#music)"
-            >
-              <span>🎵</span>
-              <span className="hidden xl:inline">Music Studio</span>
-            </button>
-
-            {/* TechNagar Chronicles Story Mode */}
-            <button
-              onClick={() => onSelectApp('technagar')}
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-emerald-500/40 bg-gradient-to-r from-blue-500/15 via-cyan-500/15 to-emerald-500/15 hover:from-blue-500/25 hover:to-emerald-500/25 text-emerald-300 hover:text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
-              title="Open TechNagar Chronicles Story Mode (#technagar)"
-            >
-              <span>📖</span>
-              <span className="hidden xl:inline">TechNagar</span>
-            </button>
-
-            {/* Project-X Vault */}
-            {onOpenProjectX && (
-              <button
-                onClick={onOpenProjectX}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-emerald-500/40 bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-400 hover:text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
-                title="Project-X: Hidden Vault Challenge"
-              >
-                <Lock className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="hidden sm:inline">Project-X</span>
-              </button>
-            )}
-
-            {/* Stealth Panic Button */}
-            {onToggleStealth && (
-              <button
-                onClick={onToggleStealth}
-                className="p-2 rounded-xl text-slate-500 hover:text-emerald-400 hover:bg-slate-800 transition-colors cursor-pointer"
-                title="Stealth Mode Panic Button (Shift + Esc)"
-              >
-                <div className="w-2.5 h-2.5 rounded-full bg-slate-600 hover:bg-emerald-400 transition-colors" />
-              </button>
-            )}
-
-            {/* My Learning Roadmap Button */}
-            <button
-              onClick={() => onSelectApp('roadmap')}
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-500/40 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 hover:text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
-              title="Open My Learning Roadmap (#roadmap)"
-            >
-              <Compass className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Roadmap</span>
-            </button>
-
-            {/* My Quiz & Active Recall Button */}
-            <button
-              onClick={() => onSelectApp('myquiz')}
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cyan-500/30 bg-cyan-950/40 hover:bg-cyan-900/50 text-cyan-300 text-xs font-semibold transition-all shadow-xs cursor-pointer"
-              title="My Quiz & Active Recall Hub (#myquiz)"
-            >
-              <Brain className="w-3.5 h-3.5 text-cyan-400" />
-              <span>My Quiz</span>
-            </button>
-
-            {/* Profile Level Dashboard Button */}
+          {/* Right Actions: Profile, All Apps, App Settings Menu */}
+          <div className="flex items-center gap-2 shrink-0">
             {onOpenProfile && (
               <button
+                type="button"
                 onClick={onOpenProfile}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl border border-amber-500/30 bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-xs font-semibold transition-all shadow-xs cursor-pointer"
-                title="Profile 2.0 (XP, Badges & Missions)"
+                className="hidden sm:inline-flex items-center gap-1.5 h-10 px-2.5 rounded-xl border border-amber-500/30 bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                title="Profile Dashboard (XP, Badges & Missions)"
               >
                 <span>{userProfile.avatar}</span>
-                <span className="hidden sm:inline font-bold text-amber-400">Lvl {userProfile.level}</span>
+                <span className="hidden xl:inline font-bold text-amber-600 dark:text-amber-400 tabular-nums">
+                  Lvl {userProfile.level}
+                </span>
               </button>
             )}
 
-            {/* 60-Apps Suite Switcher */}
             <button
+              type="button"
               onClick={onOpenAppSwitcher}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold transition-all shadow-lg shadow-cyan-600/30 spring-press cursor-pointer"
-              title="Open 60-Apps Master Suite Switcher"
+              className="hidden sm:inline-flex items-center gap-1.5 h-10 px-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-cyan-600/20 cursor-pointer whitespace-nowrap shrink-0"
+              title="Open 70+ Apps Suite Switcher"
             >
-              <Grid className="w-3.5 h-3.5" />
-              <span>60+ Apps</span>
+              <Grid className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden md:inline">Apps</span>
             </button>
 
-            {/* Dark / Light Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl text-slate-300 hover:bg-slate-800 transition-colors cursor-pointer"
-              aria-label="Toggle Dark/Light Mode"
-              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            >
-              {isDark ? (
-                <Sun className="w-4 h-4 text-amber-400" />
-              ) : (
-                <Moon className="w-4 h-4 text-slate-400" />
-              )}
-            </button>
+            {/* App Settings Menu */}
+            <AppSettingsMenu
+              isDark={isDark}
+              onToggleTheme={toggleTheme}
+              onOpenVaultSettings={onOpenSettings}
+              onToggleStealth={onToggleStealth}
+              onOpenProfile={onOpenProfile}
+              onClearSearches={onClearSearches}
+              recentSearchesCount={recentSearchesCount}
+              onForceUpdateApp={onForceUpdateApp}
+              onSyncSoundSetting={onSyncSoundSetting}
+              showLabel={true}
+            />
 
-            {/* Mobile Hamburger Toggle */}
+            {/* Mobile Drawer Toggle */}
             <button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl text-slate-300 hover:bg-slate-800 transition-colors cursor-pointer"
+              className="lg:hidden h-10 w-10 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300/70 dark:border-slate-700/70 transition-colors cursor-pointer flex items-center justify-center shrink-0"
               aria-label="Toggle Navigation Menu"
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -355,13 +234,17 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-slate-800 bg-slate-900/98 px-4 pt-3 pb-6 max-h-[85vh] overflow-y-auto animate-fade-in shadow-2xl">
+        <div className="lg:hidden border-t border-slate-200 dark:border-slate-800 bg-white/98 dark:bg-slate-900/98 px-4 pt-3 pb-6 max-h-[80vh] overflow-y-auto animate-fade-in shadow-2xl">
           <div className="space-y-1">
-            {navItems.map((item) => {
+            {[
+              ...navItems,
+              { id: 'cheat-sheet' as ActiveTab, label: 'Cheat Sheet', icon: FileText },
+            ].map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
                 <button
+                  type="button"
                   key={item.id}
                   onClick={() => {
                     setActiveTab(item.id);
@@ -369,16 +252,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }}
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer ${
                     isActive
-                      ? 'bg-blue-950 text-blue-300 border border-blue-800'
-                      : 'text-slate-300 hover:bg-slate-800'
+                      ? 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon className="w-4 h-4" />
                     <span>{item.label}</span>
                   </div>
-                  {typeof item.badge === 'number' && item.badge > 0 && (
-                    <span className="px-2 py-0.5 rounded-full text-xs bg-blue-600 text-white font-bold">
+                  {'badge' in item && typeof item.badge === 'number' && item.badge > 0 && (
+                    <span className="px-2 py-0.5 rounded-full text-xs bg-blue-600 text-white font-bold tabular-nums">
                       {item.badge}
                     </span>
                   )}
@@ -387,14 +270,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </div>
 
-          {/* Quick Launch Suite Apps in Drawer */}
-          <div className="mt-4 pt-4 border-t border-slate-800 space-y-2">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1 mb-2">
-              TechMaster 40-App Ecosystem
-            </div>
-
-            {/* App Switcher button */}
+          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
             <button
+              type="button"
               onClick={() => {
                 setMobileMenuOpen(false);
                 onOpenAppSwitcher();
@@ -403,77 +281,78 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <div className="flex items-center gap-2.5">
                 <Grid className="w-4 h-4" />
-                <span>Open 42-Apps Master Switcher</span>
+                <span>Open All 70+ Apps</span>
               </div>
-              <span className="text-[10px] bg-cyan-700/60 px-2 py-0.5 rounded font-mono">43+ Apps</span>
+              <span className="text-[10px] bg-cyan-700/60 px-2 py-0.5 rounded font-mono">Suite</span>
             </button>
 
-            {/* Quick Links */}
             <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
               {[
-                { id: 'technagar' as CurrentAppType, label: '📖 TechNagar Story', icon: BookOpen },
-                { id: 'medicore' as CurrentAppType, label: '🩺 MediCore Pro', icon: Sparkles },
-                { id: 'upsc' as CurrentAppType, label: '🏛️ UPSC CSE Prep', icon: BookOpen },
-                { id: 'music' as CurrentAppType, label: '🎵 SvaraPulse Music', icon: Sparkles },
-                { id: 'sukhan' as CurrentAppType, label: '✍️ Sukhan Poetry', icon: BookOpen },
-                { id: 'career' as CurrentAppType, label: 'TechCareer Hub', icon: BookOpen },
-                { id: 'mindshield' as CurrentAppType, label: 'MindShield Lab', icon: Shield },
-                { id: 'zenfocus' as CurrentAppType, label: 'ZenFocus', icon: Sparkles },
-                { id: 'atlas' as CurrentAppType, label: 'VisualAtlas', icon: Layers },
-                { id: 'cyberpath' as CurrentAppType, label: 'CyberPath', icon: Shield },
-                { id: 'sentinel' as CurrentAppType, label: 'SentinelLab', icon: Shield },
-                { id: 'academy' as CurrentAppType, label: 'CyberAcademy', icon: BookOpen },
+                { id: 'ghost' as CurrentAppType, label: 'GHOST PROTOCOL', icon: Shield },
+                { id: 'arsenal' as CurrentAppType, label: 'OpenSource Arsenal', icon: Terminal },
+                { id: 'technagar' as CurrentAppType, label: 'TechNagar Story', icon: BookOpen },
+                { id: 'medicore' as CurrentAppType, label: 'MediCore Pro', icon: Sparkles },
+                { id: 'upsc' as CurrentAppType, label: 'UPSC CSE Prep', icon: BookOpen },
+                { id: 'music' as CurrentAppType, label: 'SvaraPulse Music', icon: Sparkles },
                 { id: 'linux' as CurrentAppType, label: 'Linux Mastery', icon: Terminal },
                 { id: 'pcxray' as CurrentAppType, label: 'PC Hardware', icon: Cpu },
                 { id: 'netviz' as CurrentAppType, label: 'Net Visualizer', icon: Globe },
                 { id: 'dsa' as CurrentAppType, label: 'DSA Lab', icon: Layers },
                 { id: 'database' as CurrentAppType, label: 'SQL Sandbox', icon: Server },
-                { id: 'systemdesign' as CurrentAppType, label: 'SystemDesign', icon: Layers },
-                { id: 'cicd' as CurrentAppType, label: 'CI/CD DevSecOps', icon: GitBranch },
-                { id: 'containers' as CurrentAppType, label: 'Docker & K8s', icon: Cloud },
-                { id: 'cloudiam' as CurrentAppType, label: 'Cloud IAM', icon: Shield },
-                { id: 'siem' as CurrentAppType, label: 'SIEM Inspector', icon: Terminal },
-                { id: 'threatintel' as CurrentAppType, label: 'Threat Intel', icon: Shield },
-                { id: 'forensics' as CurrentAppType, label: 'DFIR Forensics', icon: Search },
-                { id: 'cryptomaster' as CurrentAppType, label: 'Crypto & PQC', icon: Sparkles },
-                { id: 'compliance' as CurrentAppType, label: 'ComplianceLab', icon: Shield },
-                { id: 'webperf' as CurrentAppType, label: 'WebPerf Lab', icon: Sparkles },
                 { id: 'gitflow' as CurrentAppType, label: 'GitFlow Lab', icon: GitBranch },
+                { id: 'containers' as CurrentAppType, label: 'Docker & K8s', icon: Cloud },
+                { id: 'forensics' as CurrentAppType, label: 'DFIR Forensics', icon: Search },
                 { id: 'techmaster' as CurrentAppType, label: 'TechMaster 2000+', icon: BookOpen },
-                { id: 'compiler' as CurrentAppType, label: 'C Compiler', icon: Terminal },
                 { id: 'calc' as CurrentAppType, label: 'CalcVault', icon: Calculator },
-                { id: 'sukhan' as CurrentAppType, label: 'SUKHAN', icon: Sparkles },
               ].map((app) => {
                 const Icon = app.icon;
                 return (
                   <button
+                    type="button"
                     key={app.id}
                     onClick={() => {
                       setMobileMenuOpen(false);
                       onSelectApp(app.id);
                     }}
-                    className="flex items-center gap-2 p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer text-left"
+                    className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer text-left"
                   >
-                    <Icon className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                    <Icon className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400 shrink-0" />
                     <span className="truncate text-[11px] font-semibold">{app.label}</span>
                   </button>
                 );
               })}
             </div>
 
-            {/* Quick Update Button */}
+            {onOpenSettings && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenSettings();
+                }}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer mt-2"
+              >
+                <div className="flex items-center gap-2">
+                  <Settings className="w-3.5 h-3.5 text-purple-500" />
+                  <span>Vault &amp; Security Settings</span>
+                </div>
+                <span className="text-[10px] text-slate-400">PIN &amp; E2EE</span>
+              </button>
+            )}
+
             <button
+              type="button"
               onClick={() => {
                 setMobileMenuOpen(false);
                 handleUpdateClick();
               }}
-              className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-800 transition-colors cursor-pointer mt-3"
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             >
               <div className="flex items-center gap-2">
-                <RotateCw className="w-3.5 h-3.5 text-blue-400" />
+                <RotateCw className="w-3.5 h-3.5 text-blue-500" />
                 <span>Reload / Check Update</span>
               </div>
-              <span className="text-[10px] text-blue-400 font-semibold">1-Tap Refresh</span>
+              <span className="text-[10px] text-blue-500 font-semibold">Refresh</span>
             </button>
           </div>
         </div>

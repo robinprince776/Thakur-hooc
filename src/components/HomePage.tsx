@@ -607,7 +607,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* MediCore Pro */}
             <div
               onClick={() => launchApp('medicore', '#medicore')}
@@ -666,6 +666,18 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
               <h3 className="text-sm font-bold text-white mb-1">ZenFocus &amp; Breath</h3>
               <p className="text-[11px] text-slate-400 leading-relaxed">Binaural beats, box breathing, and Pomodoro timer.</p>
+            </div>
+
+            {/* OpenSource Arsenal */}
+            <div
+              onClick={() => launchApp('arsenal', '#arsenal')}
+              className="p-4 rounded-3xl bg-slate-900/70 border border-slate-800 hover:border-cyan-400/60 shadow-lg cursor-pointer transition-all"
+            >
+              <div className="w-9 h-9 rounded-xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-cyan-300 mb-2.5">
+                <Terminal className="w-4 h-4" />
+              </div>
+              <h3 className="text-sm font-bold text-white mb-1">OpenSource Arsenal</h3>
+              <p className="text-[11px] text-slate-400 leading-relaxed">24+ micro FOSS tools (PDF, Video, Sync, VPN) with OS filter.</p>
             </div>
           </div>
         </section>

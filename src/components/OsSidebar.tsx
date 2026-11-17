@@ -151,7 +151,8 @@ const OS_HUBS: HubCategory[] = [
       { id: 'dev', name: 'DevForge Utilities', desc: 'JSON, JWT, RegEx & Hash generators', tag: 'Tools' },
       { id: 'gitstudio', name: 'GitStudio & CI/CD', desc: 'Git visualizer & pipeline builder', tag: 'DevOps' },
       { id: 'database', name: 'SQL Playground', desc: 'Interactive relational DB queries', tag: 'SQL' },
-      { id: 'cloudops', name: 'CloudOps Docker & K8s', desc: 'Containers & cloud infrastructure', tag: 'Cloud' }
+      { id: 'cloudops', name: 'CloudOps Docker & K8s', desc: 'Containers & cloud infrastructure', tag: 'Cloud' },
+      { id: 'arsenal', name: 'OpenSource Arsenal', desc: '24+ micro FOSS tools with OS filter', tag: 'FOSS' }
     ]
   },
   {

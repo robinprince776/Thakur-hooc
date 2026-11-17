@@ -98,6 +98,7 @@ export type CurrentAppType =
   | 'compliance'
   | 'dataformat'
   | 'regexmaster'
+  | 'arsenal'
   | 'sukhan'
   // 🩺 Clinical & Pharma
   | 'medicore'
@@ -1006,6 +1007,22 @@ const ALL_APPS: AppItem[] = [
     icon: (
       <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-700 flex items-center justify-center text-white shadow-md">
         <Code2 className="w-5 h-5 text-indigo-200" />
+      </div>
+    )
+  },
+  {
+    id: 'arsenal',
+    category: 'Utilities',
+    title: 'OpenSource Arsenal',
+    subtitle: '24+ Everyday Micro-Utilities & FOSS Vault',
+    tagline: 'OS Filter · File/PDF · System Fast · P2P Sync · Privacy',
+    description: 'Curated directory of lightweight open-source tools (HandBrake, Stirling PDF, FFmpeg, LocalSend, Syncthing, Tailscale, Everything, Ventoy, Cryptomator) with setup guides.',
+    badge: 'FOSS Vault',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#arsenal',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-700 flex items-center justify-center text-white shadow-md">
+        <Terminal className="w-5 h-5 text-cyan-200" />
       </div>
     )
   },
