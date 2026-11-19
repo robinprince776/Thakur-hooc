@@ -80,10 +80,10 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
         group: 'App',
         icon: item.icon || Layers,
         onSelect: () => {
-          onSelectApp(item.appTarget);
           if (item.hashTarget && typeof window !== 'undefined') {
             window.location.hash = item.hashTarget;
           }
+          onSelectApp(item.appTarget);
         },
       }));
     }
@@ -103,10 +103,10 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
         group: 'App',
         icon: item.icon || Layers,
         onSelect: () => {
-          onSelectApp(item.appTarget);
           if (item.hashTarget && typeof window !== 'undefined') {
             window.location.hash = item.hashTarget;
           }
+          onSelectApp(item.appTarget);
         },
       }));
 

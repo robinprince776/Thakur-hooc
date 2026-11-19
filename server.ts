@@ -3,7 +3,7 @@ import { createServer } from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer, WebSocket } from 'ws';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -551,6 +551,27 @@ function parseJarvisFallback(text: string, currentApp?: string) {
     };
   }
 
+  if (lower.includes('arena') || lower.includes('challenge') || lower.includes('ctf')) {
+    return {
+      reply: 'Launching The Arena — 75+ engineering, CTF, SQL & system design challenges ready!',
+      action: { type: 'NAVIGATE', targetApp: 'arena' }
+    };
+  }
+
+  if (lower.includes('aiflow') || lower.includes('automation') || lower.includes('zapier') || lower.includes('n8n')) {
+    return {
+      reply: 'Opening AI Automation & Agent Lab — build visual workflows, copy agent prompts & simulate webhooks.',
+      action: { type: 'NAVIGATE', targetApp: 'aiflow' }
+    };
+  }
+
+  if (lower.includes('bounty') || lower.includes('freelance') || lower.includes('invoice') || lower.includes('upwork')) {
+    return {
+      reply: 'Opening The Freelance & Bounty Empire — legal disclosure reports, pricing calculators & PDF invoices.',
+      action: { type: 'NAVIGATE', targetApp: 'bounty' }
+    };
+  }
+
   return {
     reply: `Hello! I am JARVIS, your OS University Assistant. Currently on ${currentApp || 'BCA Verse'}. Aap mujhse kisi bhi subject ke concept puch sakte hain (OSI layers, C pointers, SQL joins, RSA encryption) ya bol sakte hain "Open Calculator", "Start C Quiz", "Open Ghost Protocol", ya "Launch Linux"!`,
     action: null
@@ -669,6 +690,9 @@ Your duties:
 3. If the user asks to navigate, open, switch apps, start a quiz, or change theme, you MUST provide an appropriate "action" in JSON.
 Valid target apps for navigation:
 - "ghost" (GHOST PROTOCOL - Hub 6 Cybersecurity Intelligence OS)
+- "arena" (The Arena - 75+ Engineering, CTF, SQL & System Design Challenges)
+- "aiflow" (AI Automation & Agent Lab - Visual Workflows, Agents & Webhooks)
+- "bounty" (The Freelance & Bounty Empire - Legal Bounty Guides, Proposals & PDF Invoicing)
 - "calc" (Calculator / CalcVault)
 - "roadmap" (My Roadmap / Zero-to-Hero progress)
 - "exam" (BCA Exam Simulator & Mock Test)
@@ -757,6 +781,199 @@ You MUST always reply with strict JSON matching this structure:
       ? parseGhostFallback(req.body?.prompt || '', req.body?.currentApp)
       : parseJarvisFallback(req.body?.prompt || '', req.body?.currentApp);
     return res.json(fallback);
+  }
+});
+
+// Dedicated Arena Infinite Challenge Generator (Server-Side @google/genai)
+app.post('/api/arena/generate', async (req, res) => {
+  try {
+    const { category, difficulty, topic, existingTitles } = req.body || {};
+    const cleanCategory = String(category || 'Web Dev').trim();
+    const cleanDifficulty = String(difficulty || 'Medium').trim();
+    const cleanTopic = String(topic || '').trim();
+    const recentTitles = Array.isArray(existingTitles)
+      ? existingTitles.slice(0, 20).map((t) => String(t)).join('; ')
+      : '';
+
+    const apiKey = process.env.GEMINI_API_KEY || '';
+    if (!apiKey) {
+      return res.status(503).json({
+        error: 'Gemini API key is not configured on the server. Please add GEMINI_API_KEY in Settings > Secrets.',
+      });
+    }
+
+    const ai = getAIClient();
+    const prompt = `You are an elite tech interviewer, platform architect, and defensive cybersecurity CTF designer.
+Generate ONE unique, realistic, highly technical engineering challenge.
+Category: ${cleanCategory}
+Difficulty: ${cleanDifficulty}
+${cleanTopic ? `Focus Topic / Keyword: ${cleanTopic}` : 'Focus Topic: Choose a high-impact real-world engineering scenario.'}
+${recentTitles ? `Do NOT repeat or closely duplicate any of these existing problem titles: ${recentTitles}` : ''}
+
+Requirements:
+- 100% defensive / legal / educational content only.
+- Provide a concrete real-world scenario, a crisp code or log snippet (if applicable), starter code or answer template, 3 progressive hints (Hint 1: concept nudge, Hint 2: technical direction, Hint 3: near-solution), and a complete detailed solution with explanation.
+- Keep issueType one of: "Bug", "Enhancement", "Security", "Optimization".
+- Keep language one of: "javascript", "sql", "bash", "python", "yaml", "text".`;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-4-hydrogen',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            title: { type: Type.STRING, description: 'Concise GitHub-issue style problem title' },
+            issueType: { type: Type.STRING, description: 'One of Bug, Enhancement, Security, Optimization' },
+            context: { type: Type.STRING, description: 'Why this problem matters in production engineering' },
+            problemStatement: { type: Type.STRING, description: 'Detailed technical scenario and clear goal' },
+            codeSnippet: { type: Type.STRING, description: 'Relevant code, SQL, config, or log snippet' },
+            language: { type: Type.STRING, description: 'javascript, sql, bash, python, yaml, or text' },
+            starterCode: { type: Type.STRING, description: 'Starter snippet or answer skeleton for the editor' },
+            hints: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+              description: 'Exactly 3 progressive hints from concept nudge to near-solution',
+            },
+            solution: { type: Type.STRING, description: 'Complete solution with clear explanation and fixed code' },
+            rareBadge: { type: Type.STRING, description: 'Optional short badge title for Hard/Expert problems' },
+            keywords: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+              description: '3 to 6 searchable technical keywords',
+            },
+          },
+          required: ['title', 'issueType', 'context', 'problemStatement', 'codeSnippet', 'language', 'starterCode', 'hints', 'solution', 'keywords'],
+        },
+      },
+    });
+
+    const raw = (response.text ?? '').trim();
+    if (!raw) {
+      return res.status(502).json({ error: 'Gemini returned an empty response. Please try again.' });
+    }
+
+    const parsed = JSON.parse(raw);
+    const validDifficulties = ['Easy', 'Medium', 'Hard', 'Expert'];
+    const finalDifficulty = validDifficulties.includes(cleanDifficulty) ? cleanDifficulty : 'Medium';
+    const xpMap: Record<string, number> = { Easy: 10, Medium: 30, Hard: 50, Expert: 80 };
+    const validIssues = ['Bug', 'Enhancement', 'Security', 'Optimization'];
+    const finalIssueType = validIssues.includes(parsed.issueType) ? parsed.issueType : 'Bug';
+
+    const generatedProblem = {
+      id: `ai-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      title: String(parsed.title || `${cleanCategory} Challenge`).trim(),
+      category: cleanCategory,
+      difficulty: finalDifficulty,
+      issueType: finalIssueType,
+      bountyXp: xpMap[finalDifficulty] || 30,
+      rareBadge: finalDifficulty === 'Hard' || finalDifficulty === 'Expert'
+        ? String(parsed.rareBadge || `${cleanCategory} Specialist`)
+        : undefined,
+      context: String(parsed.context || 'Real-world production engineering scenario.').trim(),
+      problemStatement: String(parsed.problemStatement || '').trim(),
+      codeSnippet: String(parsed.codeSnippet || '').trim(),
+      language: String(parsed.language || 'text').trim(),
+      starterCode: String(parsed.starterCode || '// Write your solution here\n').trim(),
+      hints: Array.isArray(parsed.hints) && parsed.hints.length >= 3
+        ? parsed.hints.slice(0, 3).map((h: any) => String(h))
+        : [
+            'Break the system down into inputs, state transitions, and failure boundaries.',
+            'Inspect the snippet closely for unsafe assumptions, bottlenecks, or edge cases.',
+            'Compare your proposed fix against production invariants and error handling.',
+          ],
+      solution: String(parsed.solution || '').trim(),
+      keywords: Array.isArray(parsed.keywords) ? parsed.keywords.map((k: any) => String(k)) : [cleanCategory.toLowerCase()],
+      isAiGenerated: true,
+    };
+
+    return res.json({ problem: generatedProblem });
+  } catch (err: any) {
+    console.error('Arena generate error:', err);
+    const status = err?.status === 429 ? 429 : err?.status === 403 ? 403 : 500;
+    return res.status(status).json({
+      error: err?.message || 'Failed to generate challenge with Gemini API.',
+    });
+  }
+});
+
+// Dedicated Arena AI Code / Solution Review (Server-Side @google/genai)
+app.post('/api/arena/review', async (req, res) => {
+  try {
+    const { title, category, problemStatement, userCode, expectedSolution } = req.body || {};
+    if (!userCode || !String(userCode).trim()) {
+      return res.status(400).json({ error: 'Please write a solution in the editor before requesting AI review.' });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY || '';
+    if (!apiKey) {
+      return res.status(503).json({
+        error: 'Gemini API key is not configured on the server. Please add GEMINI_API_KEY in Settings > Secrets.',
+      });
+    }
+
+    const ai = getAIClient();
+    const prompt = `You are a Principal Software Engineer & Security Reviewer grading a candidate's submission in "The Arena".
+Challenge: ${String(title || '')} (${String(category || '')})
+Problem Statement:
+${String(problemStatement || '')}
+
+Reference Solution:
+${String(expectedSolution || '')}
+
+Candidate Submission:
+${String(userCode)}
+
+Evaluate technical correctness, edge-case handling, security/performance quality, and clarity. Give constructive, concise feedback.`;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-4-hydrogen',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            verdict: { type: Type.STRING, description: 'One of: pass, partial, needs_work' },
+            score: { type: Type.INTEGER, description: 'Score from 0 to 100' },
+            summary: { type: Type.STRING, description: '2-3 sentence concise review summary' },
+            strengths: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+              description: '1-3 strengths of the submission',
+            },
+            improvements: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+              description: '1-3 specific technical improvements',
+            },
+          },
+          required: ['verdict', 'score', 'summary', 'strengths', 'improvements'],
+        },
+      },
+    });
+
+    const raw = (response.text ?? '').trim();
+    if (!raw) {
+      return res.status(502).json({ error: 'Empty AI review response.' });
+    }
+    const parsed = JSON.parse(raw);
+    return res.json({
+      review: {
+        verdict: ['pass', 'partial', 'needs_work'].includes(parsed.verdict) ? parsed.verdict : 'partial',
+        score: Math.max(0, Math.min(100, Number(parsed.score) || 0)),
+        summary: String(parsed.summary || ''),
+        strengths: Array.isArray(parsed.strengths) ? parsed.strengths.map(String) : [],
+        improvements: Array.isArray(parsed.improvements) ? parsed.improvements.map(String) : [],
+      },
+    });
+  } catch (err: any) {
+    console.error('Arena review error:', err);
+    const status = err?.status === 429 ? 429 : err?.status === 403 ? 403 : 500;
+    return res.status(status).json({
+      error: err?.message || 'AI code review failed.',
+    });
   }
 });
 

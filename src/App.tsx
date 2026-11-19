@@ -261,6 +261,16 @@ const MobileSecLabApp = React.lazy(() =>
 const GhostProtocolApp = React.lazy(() =>
   import('./ghost/GhostProtocolApp').then((m) => ({ default: m.GhostProtocolApp }))
 );
+// ⚔️ The Arena, AI Automation Lab & Freelance/Bounty Empire
+const TheArenaApp = React.lazy(() =>
+  import('./arena/TheArenaApp').then((m) => ({ default: m.TheArenaApp }))
+);
+const AiAutomationLabApp = React.lazy(() =>
+  import('./aiflow/AiAutomationLabApp').then((m) => ({ default: m.AiAutomationLabApp }))
+);
+const FreelanceBountyApp = React.lazy(() =>
+  import('./bounty/FreelanceBountyApp').then((m) => ({ default: m.FreelanceBountyApp }))
+);
 
 // OS Architecture Components
 import { useOsStore } from './store/useOsStore';
@@ -510,9 +520,24 @@ export default function App() {
       if (h === '#myquiz' || h === '#quiz') return 'myquiz';
       if (h === '#skilltree' || h === '#rpg') return 'skilltree';
       if (h === '#ghost' || h === '#ghostprotocol') return 'ghost';
+      if (h === '#arena' || h.startsWith('#arena/')) return 'arena';
+      if (h === '#aiflow' || h === '#automation' || h === '#agents') return 'aiflow';
+      if (h === '#bounty' || h === '#freelance' || h === '#empire') return 'bounty';
       return 'bca';
     } catch {
       return 'bca';
+    }
+  });
+
+  const [arenaProblemId, setArenaProblemId] = useState<string | null>(() => {
+    try {
+      const h = window.location.hash.toLowerCase();
+      if (h.startsWith('#arena/')) {
+        return decodeURIComponent(window.location.hash.slice('#arena/'.length)) || null;
+      }
+      return null;
+    } catch {
+      return null;
     }
   });
 
@@ -754,6 +779,16 @@ export default function App() {
         setCurrentApp('roadmap');
       } else if (h === '#ghost' || h === '#ghostprotocol') {
         setCurrentApp('ghost');
+      } else if (h === '#arena' || h.startsWith('#arena/')) {
+        setCurrentApp('arena');
+        if (h.startsWith('#arena/')) {
+          const rawId = window.location.hash.slice('#arena/'.length);
+          setArenaProblemId(decodeURIComponent(rawId) || null);
+        }
+      } else if (h === '#aiflow' || h === '#automation' || h === '#agents') {
+        setCurrentApp('aiflow');
+      } else if (h === '#bounty' || h === '#freelance' || h === '#empire') {
+        setCurrentApp('bounty');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -816,6 +851,9 @@ export default function App() {
     setCurrentApp(app);
     if (app === 'bca') {
       window.location.hash = 'bcaverse';
+    } else if (app === 'arena' && window.location.hash.toLowerCase().startsWith('#arena/')) {
+      const rawId = window.location.hash.slice('#arena/'.length);
+      setArenaProblemId(decodeURIComponent(rawId) || null);
     } else {
       window.location.hash = app;
     }
@@ -982,8 +1020,13 @@ export default function App() {
             onClose={() => setIsNavigatorOpen(false)}
             onSelectItem={(item) => {
               setIsNavigatorOpen(false);
+              if (item.problemId) {
+                setArenaProblemId(item.problemId);
+              }
+              if (item.hashTarget && typeof window !== 'undefined') {
+                window.location.hash = item.hashTarget;
+              }
               if (item.appTarget) handleSelectApp(item.appTarget);
-              else if (item.hashTarget && typeof window !== 'undefined') window.location.hash = item.hashTarget;
             }}
           />
           <OsSidebar
@@ -1027,6 +1070,68 @@ export default function App() {
       <AppErrorBoundary appName="GHOST PROTOCOL OS" onReset={handleReturnToBca}>
         <Suspense fallback={<AppLoadingSpinner appName="GHOST PROTOCOL OS" />}>
           <GhostProtocolApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: The Arena (75+ Challenges & AI Generator) ---
+  if (currentApp === 'arena') {
+    return (
+      <AppErrorBoundary appName="The Arena" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="The Arena" />}>
+          <TheArenaApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+            initialProblemId={arenaProblemId}
+            onClearInitialProblem={() => setArenaProblemId(null)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: AI Automation & Agent Lab (#aiflow) ---
+  if (currentApp === 'aiflow') {
+    return (
+      <AppErrorBoundary appName="AI Automation & Agent Lab" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="AI Automation & Agent Lab" />}>
+          <AiAutomationLabApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: The Freelance & Bounty Empire (#bounty) ---
+  if (currentApp === 'bounty') {
+    return (
+      <AppErrorBoundary appName="Freelance & Bounty Empire" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="Freelance & Bounty Empire" />}>
+          <FreelanceBountyApp
             onBackToBca={handleReturnToBca}
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
           />
@@ -2968,12 +3073,15 @@ export default function App() {
         onClose={() => setIsNavigatorOpen(false)}
         onSelectItem={(item) => {
           setIsNavigatorOpen(false);
+          if (item.problemId) {
+            setArenaProblemId(item.problemId);
+          }
           if (item.appTarget === 'bca') {
             handleReturnToBca();
             if (item.tabTarget) setActiveTab(item.tabTarget as any);
           } else {
-            handleSelectApp(item.appTarget);
             if (item.hashTarget) window.location.hash = item.hashTarget;
+            handleSelectApp(item.appTarget);
           }
         }}
       />

@@ -27,7 +27,10 @@ import {
   Eye,
   Radio,
   Gamepad2,
-  Smartphone
+  Smartphone,
+  Swords,
+  Workflow,
+  Briefcase
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 import { OmnitrixLogo } from './OmnitrixLogo';
@@ -147,6 +150,14 @@ export const HomePage: React.FC<HomePageProps> = ({
               >
                 <Trophy className="w-4 h-4 text-amber-400" />
                 <span>BCA Exam Suite</span>
+              </button>
+
+              <button
+                onClick={() => launchApp('arena', '#arena')}
+                className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+              >
+                <Swords className="w-4 h-4 text-cyan-300" />
+                <span>The Arena (75+ Challenges)</span>
               </button>
 
               <button
@@ -585,6 +596,28 @@ export const HomePage: React.FC<HomePageProps> = ({
               <h3 className="text-sm font-bold text-white mb-1">Cloud IAM Policy Studio</h3>
               <p className="text-xs text-slate-400">JSON policy evaluation, privilege escalation &amp; RBAC audit.</p>
             </div>
+
+            <div
+              onClick={() => launchApp('arena', '#arena')}
+              className="p-5 rounded-3xl bg-slate-900/70 border border-cyan-500/35 hover:border-cyan-400/70 shadow-lg cursor-pointer transition-all"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-cyan-300 mb-3">
+                <Swords className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-bold text-white mb-1">The Arena — 75+ Challenges</h3>
+              <p className="text-xs text-slate-400">Debug real bugs, CTF, DSA, SQL &amp; System Design with AI review.</p>
+            </div>
+
+            <div
+              onClick={() => launchApp('aiflow', '#aiflow')}
+              className="p-5 rounded-3xl bg-slate-900/70 border border-violet-500/35 hover:border-violet-400/70 shadow-lg cursor-pointer transition-all"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-violet-950 border border-violet-500/40 flex items-center justify-center text-violet-300 mb-3">
+                <Workflow className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-bold text-white mb-1">AI Automation &amp; Agent Lab</h3>
+              <p className="text-xs text-slate-400">Visual workflow canvas, AI agent prompts &amp; webhook playground.</p>
+            </div>
           </div>
         </section>
       )}
@@ -678,6 +711,18 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
               <h3 className="text-sm font-bold text-white mb-1">OpenSource Arsenal</h3>
               <p className="text-[11px] text-slate-400 leading-relaxed">24+ micro FOSS tools (PDF, Video, Sync, VPN) with OS filter.</p>
+            </div>
+
+            {/* Freelance & Bounty Empire */}
+            <div
+              onClick={() => launchApp('bounty', '#bounty')}
+              className="p-4 rounded-3xl bg-slate-900/70 border border-emerald-500/35 hover:border-emerald-400/70 shadow-lg cursor-pointer transition-all"
+            >
+              <div className="w-9 h-9 rounded-xl bg-emerald-950 border border-emerald-500/40 flex items-center justify-center text-emerald-300 mb-2.5">
+                <Briefcase className="w-4 h-4" />
+              </div>
+              <h3 className="text-sm font-bold text-white mb-1">Freelance &amp; Bounty Empire</h3>
+              <p className="text-[11px] text-slate-400 leading-relaxed">Legal bounty reports, Upwork proposals, pricing &amp; PDF invoices.</p>
             </div>
           </div>
         </section>

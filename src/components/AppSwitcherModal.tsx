@@ -40,7 +40,9 @@ import {
   Award,
   Stethoscope,
   HeartPulse,
-  Smartphone
+  Smartphone,
+  Swords,
+  Workflow
 } from 'lucide-react';
 import { SukhanPenIcon } from '../sukhan/components/SukhanPenIcon';
 import { OmnitrixLogo } from './OmnitrixLogo';
@@ -153,7 +155,11 @@ export type CurrentAppType =
   // 🗺️ University Roadmap
   | 'roadmap'
   // 🕵️ Hub 6: GHOST PROTOCOL Intelligence OS
-  | 'ghost';
+  | 'ghost'
+  // ⚔️ The Arena, AI Automation Lab & Freelance/Bounty Empire
+  | 'arena'
+  | 'aiflow'
+  | 'bounty';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;
@@ -190,6 +196,54 @@ const ALL_APPS: AppItem[] = [
     icon: (
       <div className="w-11 h-11 rounded-2xl bg-[#0A0E17] border border-[#00FF41]/40 flex items-center justify-center text-[#00FF41] shadow-md">
         <Shield className="w-5 h-5" />
+      </div>
+    )
+  },
+  {
+    id: 'arena',
+    category: 'Dev',
+    title: 'The Arena — Challenge Hub',
+    subtitle: '75+ Engineering, CTF & System Design Challenges',
+    tagline: '15 Categories · Local JS Runner · Progressive Hints · AI Generator',
+    description: 'Solve 75 real-world debugging, security, algorithm, SQL, and system design challenges with a 3-pane workspace, XP progression, and AI challenge generator.',
+    badge: '75+ Challenges',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#arena',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 to-indigo-700 flex items-center justify-center text-white shadow-md">
+        <Swords className="w-5 h-5 text-cyan-100" />
+      </div>
+    )
+  },
+  {
+    id: 'aiflow',
+    category: 'Dev',
+    title: 'AI Automation & Agent Lab',
+    subtitle: 'Visual Workflow Canvas & Webhook Studio',
+    tagline: 'Drag-and-Drop Flows · AI Agent Personas · Zapier/Make/n8n Simulator',
+    description: 'Build visual trigger-to-action pipelines, test animated data flows locally, copy agent system prompts, and explore 12 real-world automation blueprints.',
+    badge: 'Workflow Lab',
+    badgeColor: 'bg-violet-500/20 text-violet-300 border-violet-500/30',
+    hash: '#aiflow',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-violet-600 to-cyan-600 flex items-center justify-center text-white shadow-md">
+        <Workflow className="w-5 h-5 text-violet-100" />
+      </div>
+    )
+  },
+  {
+    id: 'bounty',
+    category: 'Career',
+    title: 'Freelance & Bounty Empire',
+    subtitle: 'Legal Monetization, Proposals & PDF Invoicing',
+    tagline: 'HackerOne/Bugcrowd Guide · Upwork Pricing · ATS Resume · PDF Invoices',
+    description: '100% legal career monetization hub featuring responsible disclosure report templates, freelance pricing calculators, LinkedIn showcase builder, and PDF invoicing.',
+    badge: 'Monetization',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    hash: '#bounty',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md">
+        <Briefcase className="w-5 h-5 text-emerald-100" />
       </div>
     )
   },

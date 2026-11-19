@@ -21,7 +21,12 @@ import {
   Command,
   CornerDownLeft,
   ShieldAlert,
-  Smartphone
+  Smartphone,
+  Swords,
+  Workflow,
+  Briefcase,
+  Database,
+  Globe
 } from 'lucide-react';
 import { CurrentAppType } from './AppSwitcherModal';
 
@@ -34,10 +39,118 @@ export interface TechNavigatorItem {
   appTarget: CurrentAppType;
   tabTarget?: string;
   hashTarget?: string;
+  problemId?: string;
   keywords: string[];
 }
 
 export const NAVIGATOR_ITEMS: TechNavigatorItem[] = [
+  {
+    id: 'arena',
+    title: 'The Arena — Problem Solving & CTF Hub',
+    category: 'App',
+    description: '75+ real-world coding bugs, security challenges, algorithms, SQL, and system design problems with progressive hints & AI generator.',
+    icon: Swords,
+    appTarget: 'arena',
+    hashTarget: '#arena',
+    keywords: ['arena', 'the arena', 'challenges', 'problems', 'ctf', 'debugging', 'bugs', 'interview', 'leetcode', 'system design', 'puzzles']
+  },
+  {
+    id: 'arena-xss',
+    title: 'Arena Challenge: Login Form Output Encoding (XSS)',
+    category: 'Topic',
+    description: 'Deep-link directly into the Web Dev XSS mitigation challenge inside The Arena.',
+    icon: Shield,
+    appTarget: 'arena',
+    hashTarget: '#arena/web-xss-login',
+    problemId: 'web-xss-login',
+    keywords: ['xss', 'cross site scripting', 'html escaping', 'ejs', 'login form', 'arena xss']
+  },
+  {
+    id: 'arena-sqli',
+    title: 'Arena Awareness: Web Input & Query Parameterization (SQLi / SSRF / CSRF)',
+    category: 'Topic',
+    description: 'Spot vulnerable input handling patterns and practice parameterized query & CSRF defenses.',
+    icon: Database,
+    appTarget: 'arena',
+    hashTarget: '#arena/aware-web-input-hygiene',
+    problemId: 'aware-web-input-hygiene',
+    keywords: ['sqli', 'sql injection', 'ssrf', 'csrf', 'prepared statements', 'parameterized', 'owasp']
+  },
+  {
+    id: 'arena-sql',
+    title: 'Arena Challenge: Second Highest Salary (SQL)',
+    category: 'Topic',
+    description: 'Deep-link directly into the SQL & Database Engineering challenge inside The Arena.',
+    icon: Database,
+    appTarget: 'arena',
+    hashTarget: '#arena/db-second-highest-salary',
+    problemId: 'db-second-highest-salary',
+    keywords: ['sql', 'second highest salary', 'dense_rank', 'window function', 'database', 'arena sql']
+  },
+  {
+    id: 'arena-phishing-spf',
+    title: 'Arena Awareness: Phishing, Smishing & SPF/DKIM/DMARC Defense',
+    category: 'Topic',
+    description: 'URL red-flag analyzer checklist and email authentication (SPF/DKIM/DMARC) defense lab.',
+    icon: ShieldAlert,
+    appTarget: 'arena',
+    hashTarget: '#arena/aware-phishing-smishing',
+    problemId: 'aware-phishing-smishing',
+    keywords: ['phishing', 'smishing', 'spf', 'dkim', 'dmarc', 'spoofing', 'email header', 'url red flags']
+  },
+  {
+    id: 'arena-mfa',
+    title: 'Arena Awareness: MFA & Login Rate-Limiting Defense',
+    category: 'Topic',
+    description: 'Understand why phishing-resistant MFA and adaptive rate limits neutralize credential reuse.',
+    icon: Lock,
+    appTarget: 'arena',
+    hashTarget: '#arena/aware-mfa-rate-limit',
+    problemId: 'aware-mfa-rate-limit',
+    keywords: ['mfa', '2fa', 'passkeys', 'rate limit', 'credential stuffing', 'brute force', 'login defense']
+  },
+  {
+    id: 'arena-exif',
+    title: 'Arena Awareness: EXIF Metadata Privacy & Digital Footprint Audit',
+    category: 'Topic',
+    description: 'Learn how photo EXIF tags leak location/device info and how to strip metadata safely.',
+    icon: Compass,
+    appTarget: 'arena',
+    hashTarget: '#arena/aware-exif-digital-footprint',
+    problemId: 'aware-exif-digital-footprint',
+    keywords: ['exif', 'metadata', 'privacy', 'digital footprint', 'doxxing defense', 'osint hygiene']
+  },
+  {
+    id: 'arena-url-shortener',
+    title: 'Arena Challenge: Design a URL Shortener (100M/day)',
+    category: 'Topic',
+    description: 'Deep-link directly into the high-scale URL Shortener System Design challenge inside The Arena.',
+    icon: Globe,
+    appTarget: 'arena',
+    hashTarget: '#arena/sys-url-shortener',
+    problemId: 'sys-url-shortener',
+    keywords: ['url shortener', 'tinyurl', 'bitly', 'base62', 'system design', 'snowflake', 'redis']
+  },
+  {
+    id: 'aiflow',
+    title: 'AI Automation & Agent Lab (#aiflow)',
+    category: 'Tool',
+    description: 'Visual workflow canvas, animated flow tester, AI agent personas, Zapier/Make/n8n/Python webhook playground & 12 blueprints.',
+    icon: Workflow,
+    appTarget: 'aiflow',
+    hashTarget: '#aiflow',
+    keywords: ['aiflow', 'ai automation', 'automation', 'zapier', 'make', 'n8n', 'webhook', 'workflow', 'agent', 'email bot', 'scraper', 'no-code']
+  },
+  {
+    id: 'bounty',
+    title: 'The Freelance & Bounty Empire (#bounty)',
+    category: 'App',
+    description: 'HackerOne/Bugcrowd legal roadmap, bug report generator, Upwork/Fiverr proposals, India vs US pricing, ATS resume & PDF invoices.',
+    icon: Briefcase,
+    appTarget: 'bounty',
+    hashTarget: '#bounty',
+    keywords: ['bounty', 'bugcrowd', 'hackerone', 'upwork', 'fiverr', 'freelance', 'invoice', 'pdf invoice', 'proposal', 'payoneer', 'wise', 'skydo', 'firc', 'ats resume']
+  },
   {
     id: 'ghost',
     title: 'GHOST PROTOCOL — Intelligence OS (Hub 6)',

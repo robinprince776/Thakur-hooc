@@ -60,7 +60,8 @@ const OS_HUBS: HubCategory[] = [
     badge: 'HUB 6',
     color: 'from-[#00FF41] to-[#00E5FF]',
     apps: [
-      { id: 'ghost', name: 'GHOST PROTOCOL Intelligence OS', desc: '14 defensive cyber labs, SOC triage & GHOST AI mentor', tag: '14 Labs' }
+      { id: 'ghost', name: 'GHOST PROTOCOL Intelligence OS', desc: '14 defensive cyber labs, SOC triage & GHOST AI mentor', tag: '14 Labs' },
+      { id: 'arena', name: 'The Arena — Challenge Hub', desc: '75+ coding, CTF, SQL & system design challenges', tag: '75+ Labs' }
     ]
   },
   {
@@ -147,6 +148,8 @@ const OS_HUBS: HubCategory[] = [
     icon: Terminal,
     color: 'from-purple-500 to-indigo-600',
     apps: [
+      { id: 'arena', name: 'The Arena (75+ Challenges)', desc: 'Debug bugs, CTF, DSA, SQL & system design', tag: 'Arena' },
+      { id: 'aiflow', name: 'AI Automation & Agent Lab', desc: 'Visual workflow builder, Zapier/n8n & AI agents', tag: 'Flows' },
       { id: 'compiler', name: 'C Compiler', desc: 'Fast client-side C code execution', tag: 'Runner' },
       { id: 'dev', name: 'DevForge Utilities', desc: 'JSON, JWT, RegEx & Hash generators', tag: 'Tools' },
       { id: 'gitstudio', name: 'GitStudio & CI/CD', desc: 'Git visualizer & pipeline builder', tag: 'DevOps' },
@@ -181,6 +184,8 @@ const OS_HUBS: HubCategory[] = [
     icon: Briefcase,
     color: 'from-teal-500 to-cyan-600',
     apps: [
+      { id: 'bounty', name: 'Freelance & Bounty Empire', desc: 'HackerOne/Upwork playbooks, pricing & PDF invoices', tag: 'Income' },
+      { id: 'aiflow', name: 'AI Automation & Agent Lab', desc: 'Visual workflows, agent personas & 12 blueprints', tag: 'Agents' },
       { id: 'placement', name: 'Placement Prep Hub', desc: 'TCS, Infosys aptitude & HR rounds', tag: 'Campus' },
       { id: 'portfolio', name: 'My Portfolio Generator', desc: 'Auto-curated resume with PDF export', tag: 'CV' },
       { id: 'feynman', name: 'Feynman AI Simulator', desc: 'Mastery test with clarity score check', tag: 'Mastery' },
