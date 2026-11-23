@@ -572,6 +572,20 @@ function parseJarvisFallback(text: string, currentApp?: string) {
     };
   }
 
+  if (lower.includes('capstone') || lower.includes('portfolio project') || lower.includes('4 week project')) {
+    return {
+      reply: 'Opening AI Capstone Project Generator — select your skills to generate a complete 4-week architecture & portfolio roadmap!',
+      action: { type: 'NAVIGATE', targetApp: 'capstone' }
+    };
+  }
+
+  if (lower.includes('war room') || lower.includes('warroom') || lower.includes('red team') || lower.includes('blue team')) {
+    return {
+      reply: 'Launching The War Room — 60-second Red vs Blue Team live network defense simulator!',
+      action: { type: 'NAVIGATE', targetApp: 'warroom' }
+    };
+  }
+
   return {
     reply: `Hello! I am JARVIS, your OS University Assistant. Currently on ${currentApp || 'BCA Verse'}. Aap mujhse kisi bhi subject ke concept puch sakte hain (OSI layers, C pointers, SQL joins, RSA encryption) ya bol sakte hain "Open Calculator", "Start C Quiz", "Open Ghost Protocol", ya "Launch Linux"!`,
     action: null
@@ -693,6 +707,8 @@ Valid target apps for navigation:
 - "arena" (The Arena - 75+ Engineering, CTF, SQL & System Design Challenges)
 - "aiflow" (AI Automation & Agent Lab - Visual Workflows, Agents & Webhooks)
 - "bounty" (The Freelance & Bounty Empire - Legal Bounty Guides, Proposals & PDF Invoicing)
+- "capstone" (AI Capstone Project Generator - 4-Week Portfolio Roadmaps)
+- "warroom" (The War Room - 60s Red vs Blue Team Network Defense Simulator)
 - "calc" (Calculator / CalcVault)
 - "roadmap" (My Roadmap / Zero-to-Hero progress)
 - "exam" (BCA Exam Simulator & Mock Test)
@@ -973,6 +989,151 @@ Evaluate technical correctness, edge-case handling, security/performance quality
     const status = err?.status === 429 ? 429 : err?.status === 403 ? 403 : 500;
     return res.status(status).json({
       error: err?.message || 'AI code review failed.',
+    });
+  }
+});
+
+// Dedicated AI Capstone Project Generator (Server-Side @google/genai)
+app.post('/api/capstone/generate', async (req, res) => {
+  try {
+    const { skills, domain, difficulty, language } = req.body || {};
+    const cleanSkills = Array.isArray(skills)
+      ? skills.map((s: any) => String(s).trim()).filter(Boolean).slice(0, 12)
+      : [];
+
+    if (cleanSkills.length === 0) {
+      return res.status(400).json({ error: 'Please select at least one skill to generate a capstone project.' });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY || '';
+    if (!apiKey) {
+      return res.status(503).json({
+        error: 'Gemini API key is not configured on the server. Please add GEMINI_API_KEY in Settings > Secrets.',
+      });
+    }
+
+    const cleanDomain = String(domain || 'Full-Stack & Security').trim();
+    const cleanDifficulty = String(difficulty || 'Intermediate').trim();
+    const isHinglish = language === 'hi';
+
+    const ai = getAIClient();
+    const prompt = `Generate a comprehensive, portfolio-ready 4-week Capstone Project for a Computer Science / Engineering student who knows these skills: ${cleanSkills.join(', ')}.
+Target Industry Domain: ${cleanDomain}
+Target Complexity: ${cleanDifficulty}
+Output Language Style: ${isHinglish ? 'Clear, natural Hinglish (Hindi written in Latin/English script mixed with standard English technical terms — avoid Devanagari script, keep code & tech terms in English)' : 'Clear, concise professional English'}.
+
+Requirements:
+1. Propose a realistic, impressive, deployable project idea (e.g., "Secure Hospital Telemetry Dashboard", "Zero-Trust FinTech Ledger", etc.) tailored tightly to the selected skills.
+2. Provide a clean system architecture overview + 4 to 5 concrete architecture layers/components + end-to-end data flow.
+3. Provide a detailed 4-week implementation roadmap (Week 1, Week 2, Week 3, Week 4), each with a clear milestone, 3 concrete tasks, and 2 tangible deliverables.
+4. Provide 4 defensive Security & Hardening considerations (OWASP, auth/RBAC, secrets, rate limiting, audit logging, input validation — strictly defensive, zero offensive exploit payloads).
+5. Provide 3 strong resume bullet points (action verb + measurable impact) and 4 GitHub README/portfolio checklist items.`;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-4-hydrogen',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            title: { type: Type.STRING, description: 'Memorable, professional capstone project title' },
+            tagline: { type: Type.STRING, description: 'Concise 1-sentence value proposition' },
+            problemStatement: { type: Type.STRING, description: '2-3 sentence real-world problem this project solves' },
+            targetUsers: { type: Type.STRING, description: 'Primary user personas' },
+            estimatedHours: { type: Type.INTEGER, description: 'Estimated total build hours across 4 weeks (e.g. 48)' },
+            architectureOverview: { type: Type.STRING, description: 'Clear 2-3 sentence explanation of the system architecture' },
+            dataFlow: { type: Type.STRING, description: 'Step-by-step request/data flow summary (e.g., Client -> API Gateway -> Auth -> DB)' },
+            architectureComponents: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  layer: { type: Type.STRING },
+                  technology: { type: Type.STRING },
+                  responsibility: { type: Type.STRING },
+                },
+                required: ['layer', 'technology', 'responsibility'],
+              },
+            },
+            weeks: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  weekNumber: { type: Type.INTEGER },
+                  title: { type: Type.STRING },
+                  milestone: { type: Type.STRING },
+                  tasks: {
+                    type: Type.ARRAY,
+                    items: { type: Type.STRING },
+                  },
+                  deliverables: {
+                    type: Type.ARRAY,
+                    items: { type: Type.STRING },
+                  },
+                },
+                required: ['weekNumber', 'title', 'milestone', 'tasks', 'deliverables'],
+              },
+            },
+            securityConsiderations: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  area: { type: Type.STRING },
+                  risk: { type: Type.STRING },
+                  mitigation: { type: Type.STRING },
+                },
+                required: ['area', 'risk', 'mitigation'],
+              },
+            },
+            resumeBullets: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+            },
+            githubChecklist: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+            },
+          },
+          required: [
+            'title',
+            'tagline',
+            'problemStatement',
+            'targetUsers',
+            'estimatedHours',
+            'architectureOverview',
+            'dataFlow',
+            'architectureComponents',
+            'weeks',
+            'securityConsiderations',
+            'resumeBullets',
+            'githubChecklist',
+          ],
+        },
+      },
+    });
+
+    const raw = (response.text ?? '').trim();
+    if (!raw) {
+      return res.status(502).json({ error: 'Gemini returned an empty capstone roadmap. Please try again.' });
+    }
+
+    const parsed = JSON.parse(raw);
+    return res.json({
+      project: {
+        ...parsed,
+        skills: cleanSkills,
+        domain: cleanDomain,
+        difficulty: cleanDifficulty,
+      },
+    });
+  } catch (err: any) {
+    console.error('Capstone generate error:', err);
+    const status = err?.status === 429 ? 429 : err?.status === 403 ? 403 : 500;
+    return res.status(status).json({
+      error: err?.message || 'Failed to generate capstone roadmap with Gemini API.',
     });
   }
 });

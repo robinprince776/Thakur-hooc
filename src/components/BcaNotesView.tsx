@@ -16,6 +16,7 @@ import {
   Layers
 } from 'lucide-react';
 import { BCA_SYLLABUS_MODULES, SyllabusTopic } from '../data/bcaNotesData';
+import { useTranslation } from '../store/useLanguageStore';
 
 interface BcaNotesViewProps {
   onSaveBookmark?: (item: any) => void;
@@ -28,6 +29,7 @@ export const BcaNotesView: React.FC<BcaNotesViewProps> = ({
   isBookmarked,
   onOpenCodeRunner
 }) => {
+  const { t } = useTranslation();
   const [selectedModule, setSelectedModule] = useState<'all' | 'c-programming' | 'digital-electronics'>('all');
   const [selectedUnit, setSelectedUnit] = useState<number | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -73,17 +75,17 @@ export const BcaNotesView: React.FC<BcaNotesViewProps> = ({
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-blue-900/30 via-slate-900 to-indigo-900/30 border border-slate-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden">
         <div className="relative z-10 max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+          <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-300">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Complete BCA Syllabus 2023–2026</span>
+            <span>{t('notesBadge')}</span>
           </div>
 
           <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Unit-Wise Syllabus Notes &amp; Viva Vault
+            {t('notesTitle')}
           </h1>
 
           <p className="text-sm text-slate-300 leading-relaxed">
-            Deep-dive into <strong>C Programming Hub</strong> (CAP-101 &amp; SEC-106) and <strong>Digital Electronics Lab</strong>. Har topic ka detailed Hinglish explanation, verified code snippets, ASCII logic diagrams aur previous years ke exam viva questions.
+            {t('notesSubtitle')}
           </p>
         </div>
       </div>
@@ -97,7 +99,7 @@ export const BcaNotesView: React.FC<BcaNotesViewProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search topics by keyword (e.g. pointers, K-Map, De Morgan, recursion, 2's complement)..."
+            placeholder={t('notesSearchPlaceholder')}
             className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500"
           />
         </div>
@@ -106,16 +108,16 @@ export const BcaNotesView: React.FC<BcaNotesViewProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
           {/* Module Selector */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-slate-400">Subject:</span>
+            <span className="text-xs font-bold text-slate-400">{t('notesSubject')}</span>
             {[
-              { id: 'all', label: 'All Subjects' },
-              { id: 'c-programming', label: '💻 C Programming Hub' },
-              { id: 'digital-electronics', label: '⚡ Digital Electronics Lab' }
+              { id: 'all', label: t('notesAllSubjects') },
+              { id: 'c-programming', label: t('notesCProg') },
+              { id: 'digital-electronics', label: t('notesDigital') }
             ].map((m) => (
               <button
                 key={m.id}
                 onClick={() => setSelectedModule(m.id as any)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   selectedModule === m.id
                     ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
                     : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
@@ -128,9 +130,9 @@ export const BcaNotesView: React.FC<BcaNotesViewProps> = ({
 
           {/* Unit Selector */}
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-xs font-bold text-slate-400">Unit:</span>
+            <span className="text-xs font-bold text-slate-400">{t('notesUnit')}</span>
             {[
-              { id: 'all', label: 'All Units' },
+              { id: 'all', label: t('notesAllUnits') },
               { id: 1, label: 'Unit I' },
               { id: 2, label: 'Unit II' },
               { id: 3, label: 'Unit III' },
@@ -139,7 +141,7 @@ export const BcaNotesView: React.FC<BcaNotesViewProps> = ({
               <button
                 key={u.id}
                 onClick={() => setSelectedUnit(u.id as any)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   selectedUnit === u.id
                     ? 'bg-cyan-500 text-slate-950 font-bold'
                     : 'bg-slate-800 text-slate-400 hover:text-white'
@@ -157,7 +159,7 @@ export const BcaNotesView: React.FC<BcaNotesViewProps> = ({
         {allTopics.length === 0 ? (
           <div className="p-12 text-center bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
             <BookOpen className="w-10 h-10 text-slate-600 mx-auto" />
-            <p className="text-slate-400 text-sm">Koi topic match nahi hua. Search query change karke dekhein.</p>
+            <p className="text-slate-400 text-sm">{t('notesEmpty')}</p>
           </div>
         ) : (
           allTopics.map(({ unit, topic }) => {

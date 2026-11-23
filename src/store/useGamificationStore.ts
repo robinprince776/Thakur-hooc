@@ -67,6 +67,20 @@ export interface EarnedCertificate {
 
 export type CertificateRecord = EarnedCertificate;
 
+export interface PortfolioProject {
+  id: string;
+  title: string;
+  tagline: string;
+  domain: string;
+  difficulty: string;
+  skills: string[];
+  problemStatement: string;
+  architectureOverview: string;
+  securityHighlights: string[];
+  weeksCount: number;
+  createdAt: string;
+}
+
 export interface GamificationState {
   // XP & Levels
   xp: number;
@@ -107,6 +121,9 @@ export interface GamificationState {
   examHistory: ExamAttempt[];
   certificates: EarnedCertificate[];
 
+  // Portfolio Capstone Projects
+  portfolioProjects: PortfolioProject[];
+
   // Actions
   addXp: (amount: number, source: string, activityId?: string) => { added: boolean; newLevel?: number };
   unlockBadge: (badgeId: string) => boolean;
@@ -116,6 +133,8 @@ export interface GamificationState {
   updateUserProfile: (profile: Partial<{ userName: string; userAvatar: string; userTitle: string; bio: string; showcasedBadgeIds: string[] }>) => void;
   completeSkillNode: (nodeId: string, xpReward: number) => void;
   recordExamResult: (attempt: Omit<ExamAttempt, 'id' | 'timestamp'>) => { certificate?: EarnedCertificate };
+  addPortfolioProject: (project: Omit<PortfolioProject, 'id' | 'createdAt'>) => PortfolioProject;
+  removePortfolioProject: (id: string) => void;
   resetDailyMissionsIfNewDay: () => void;
 }
 
@@ -241,6 +260,60 @@ export const INITIAL_BADGES: Badge[] = [
     icon: '⚡',
     unlockedAt: null,
     category: 'mastery'
+  },
+  {
+    id: 'crisis_manager',
+    name: 'Crisis Manager',
+    description: 'Contained the live Ransomware Incident Response simulation rapidly with zero data loss.',
+    rarity: 'Epic',
+    icon: '🚨',
+    unlockedAt: null,
+    category: 'cyber'
+  },
+  {
+    id: 'hardware_sentinel',
+    name: 'Hardware Sentinel',
+    description: 'Built a safe breadboard circuit and mastered GPIO, RFID, and firmware hex inspection.',
+    rarity: 'Rare',
+    icon: '🔌',
+    unlockedAt: null,
+    category: 'cyber'
+  },
+  {
+    id: 'opsec_ghost',
+    name: 'OpSec Architect',
+    description: 'Generated Web Crypto keys, scrubbed EXIF metadata, and completed personal threat modeling.',
+    rarity: 'Rare',
+    icon: '🕵️',
+    unlockedAt: null,
+    category: 'cyber'
+  },
+  {
+    id: 'tech_leader',
+    name: 'Engineering Leader',
+    description: 'Mastered STAR behavioral interviews, ADR docs, and salary negotiation drills.',
+    rarity: 'Epic',
+    icon: '🎤',
+    unlockedAt: null,
+    category: 'mastery'
+  },
+  {
+    id: 'capstone_architect',
+    name: 'Capstone Architect',
+    description: 'Generated a 4-week AI Capstone roadmap and added it to your verified portfolio.',
+    rarity: 'Epic',
+    icon: '🏗️',
+    unlockedAt: null,
+    category: 'mastery'
+  },
+  {
+    id: 'war_room_commander',
+    name: 'War Room Commander',
+    description: 'Completed a 60-second Red vs Blue Team live network simulation with high defense score.',
+    rarity: 'Epic',
+    icon: '🛡️',
+    unlockedAt: null,
+    category: 'cyber'
   }
 ];
 
@@ -332,7 +405,13 @@ export const useGamificationStore = create<GamificationState>((set, get) => {
       };
     },
 
-    badges: persisted?.badges ?? INITIAL_BADGES,
+    badges: (() => {
+      const saved: Badge[] = Array.isArray(persisted?.badges) ? persisted.badges : [];
+      if (saved.length === 0) return INITIAL_BADGES;
+      const savedIds = new Set(saved.map((b) => b.id));
+      const missing = INITIAL_BADGES.filter((b) => !savedIds.has(b.id));
+      return [...saved, ...missing];
+    })(),
 
     streak: persisted?.streak ?? 7,
     lastActiveDate: persisted?.lastActiveDate ?? new Date().toISOString().slice(0, 10),
@@ -375,6 +454,8 @@ export const useGamificationStore = create<GamificationState>((set, get) => {
         qrHash: 'e7f12a9c381d4b6890'
       }
     ],
+
+    portfolioProjects: Array.isArray(persisted?.portfolioProjects) ? persisted.portfolioProjects : [],
 
     addXp: (amount, source, activityId) => {
       const state = get();
@@ -556,6 +637,32 @@ export const useGamificationStore = create<GamificationState>((set, get) => {
       } catch (e) {}
 
       return { certificate: cert };
+    },
+
+    addPortfolioProject: (project) => {
+      const state = get();
+      const newProject: PortfolioProject = {
+        ...project,
+        id: `proj-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        createdAt: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      };
+      const updated = [newProject, ...state.portfolioProjects];
+      set({ portfolioProjects: updated });
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...get(), portfolioProjects: updated }));
+      } catch (e) {}
+      get().addXp(150, `Added Capstone to Portfolio: ${newProject.title}`, `capstone_proj_${newProject.title.toLowerCase().slice(0, 24)}`);
+      get().unlockBadge('capstone_architect');
+      return newProject;
+    },
+
+    removePortfolioProject: (id) => {
+      const state = get();
+      const updated = state.portfolioProjects.filter((p) => p.id !== id);
+      set({ portfolioProjects: updated });
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...get(), portfolioProjects: updated }));
+      } catch (e) {}
     },
 
     resetDailyMissionsIfNewDay: () => {

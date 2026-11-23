@@ -24,6 +24,7 @@ import {
 import { OmnitrixLogo } from './OmnitrixLogo';
 import { CurrentAppType } from './AppSwitcherModal';
 import { useGamificationStore } from '../store/useGamificationStore';
+import { useTranslation } from '../store/useLanguageStore';
 import { TopSearchBar } from './TopSearchBar';
 import { AppSettingsMenu } from './AppSettingsMenu';
 
@@ -55,6 +56,7 @@ interface NavbarProps {
   onForceUpdateApp?: () => void;
   onOpenProfile?: () => void;
   onOpenSettings?: () => void;
+  onOpenDataVault?: () => void;
   onClearSearches?: () => void;
   recentSearchesCount?: number;
   onSyncSoundSetting?: (enabled: boolean) => void;
@@ -76,6 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onForceUpdateApp,
   onOpenProfile,
   onOpenSettings,
+  onOpenDataVault,
   onClearSearches,
   recentSearchesCount = 0,
   onSyncSoundSetting,
@@ -84,14 +87,15 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { userProfile } = useGamificationStore();
+  const { t, language, toggleLanguage } = useTranslation();
 
   const navItems = [
-    { id: 'home' as ActiveTab, label: 'Overview', icon: Home },
-    { id: 'notes' as ActiveTab, label: 'Notes', icon: BookOpen },
-    { id: 'solvers' as ActiveTab, label: 'Solvers', icon: Cpu },
-    { id: 'code-runner' as ActiveTab, label: 'Code', icon: Terminal },
-    { id: 'practice' as ActiveTab, label: 'Practice', icon: Layers },
-    { id: 'bookmarks' as ActiveTab, label: 'Saved', icon: Bookmark, badge: bookmarkCount },
+    { id: 'home' as ActiveTab, label: t('navOverview'), icon: Home },
+    { id: 'notes' as ActiveTab, label: t('navNotes'), icon: BookOpen },
+    { id: 'solvers' as ActiveTab, label: t('navSolvers'), icon: Cpu },
+    { id: 'code-runner' as ActiveTab, label: t('navCode'), icon: Terminal },
+    { id: 'practice' as ActiveTab, label: t('navPractice'), icon: Layers },
+    { id: 'bookmarks' as ActiveTab, label: t('navSaved'), icon: Bookmark, badge: bookmarkCount },
   ];
 
   const handleUpdateClick = async () => {
@@ -174,18 +178,34 @@ export const Navbar: React.FC<NavbarProps> = ({
             }
             onOpenFullSearch={onOpenSearch}
             onOpenNavigator={onOpenNavigator}
-            placeholder="Search apps, tools, C code..."
+            placeholder={t('searchPlaceholder')}
             className="flex-1 min-w-[120px] max-w-sm"
           />
 
-          {/* Right Actions: Profile, All Apps, App Settings Menu */}
+          {/* Right Actions: Language Toggle, Profile, All Apps, App Settings Menu */}
           <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              aria-label={language === 'en' ? 'Switch language to Hinglish' : 'Switch language to English'}
+              title={language === 'en' ? 'Switch to Hinglish (A/अ)' : 'Switch to English (A/अ)'}
+              className={`h-10 px-2.5 rounded-xl border text-xs font-bold transition-colors cursor-pointer inline-flex items-center justify-center gap-1 whitespace-nowrap shrink-0 ${
+                language === 'hi'
+                  ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-600 dark:text-emerald-300'
+                  : 'bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 border-slate-300/70 dark:border-slate-700 text-slate-800 dark:text-slate-200'
+              }`}
+            >
+              <span className={language === 'en' ? 'text-cyan-600 dark:text-cyan-400' : 'opacity-60'}>A</span>
+              <span className="opacity-40">/</span>
+              <span className={language === 'hi' ? 'text-emerald-600 dark:text-emerald-300' : 'opacity-60'}>अ</span>
+            </button>
+
             {onOpenProfile && (
               <button
                 type="button"
                 onClick={onOpenProfile}
                 className="hidden sm:inline-flex items-center gap-1.5 h-10 px-2.5 rounded-xl border border-amber-500/30 bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0"
-                title="Profile Dashboard (XP, Badges & Missions)"
+                title="Profile Dashboard (XP, Badges & Portfolio)"
               >
                 <span>{userProfile.avatar}</span>
                 <span className="hidden xl:inline font-bold text-amber-600 dark:text-amber-400 tabular-nums">
@@ -198,10 +218,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               type="button"
               onClick={onOpenAppSwitcher}
               className="hidden sm:inline-flex items-center gap-1.5 h-10 px-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-cyan-600/20 cursor-pointer whitespace-nowrap shrink-0"
-              title="Open 70+ Apps Suite Switcher"
+              title="Open 90+ Apps Suite Switcher"
             >
               <Grid className="w-3.5 h-3.5 shrink-0" />
-              <span className="hidden md:inline">Apps</span>
+              <span className="hidden md:inline">{t('navApps')}</span>
             </button>
 
             {/* App Settings Menu */}
@@ -209,6 +229,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               isDark={isDark}
               onToggleTheme={toggleTheme}
               onOpenVaultSettings={onOpenSettings}
+              onOpenDataVault={onOpenDataVault}
               onToggleStealth={onToggleStealth}
               onOpenProfile={onOpenProfile}
               onClearSearches={onClearSearches}
@@ -238,7 +259,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="space-y-1">
             {[
               ...navItems,
-              { id: 'cheat-sheet' as ActiveTab, label: 'Cheat Sheet', icon: FileText },
+              { id: 'cheat-sheet' as ActiveTab, label: t('navCheatSheet'), icon: FileText },
             ].map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -281,7 +302,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <div className="flex items-center gap-2.5">
                 <Grid className="w-4 h-4" />
-                <span>Open All 70+ Apps</span>
+                <span>{t('openAllApps')}</span>
               </div>
               <span className="text-[10px] bg-cyan-700/60 px-2 py-0.5 rounded font-mono">Suite</span>
             </button>

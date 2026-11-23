@@ -50,6 +50,7 @@ interface HomePageProps {
 }
 
 import { useGhostStore, GhostModuleId } from '../store/useGhostStore';
+import { useTranslation } from '../store/useLanguageStore';
 
 export const HomePage: React.FC<HomePageProps> = ({
   onNavigate,
@@ -61,7 +62,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   onOpenAppSwitcher,
   onOpenRoadmap
 }) => {
-  const [activeHubFilter, setActiveHubFilter] = useState<'all' | 'academic' | 'cyber' | 'labs' | 'dev' | 'tools' | 'ghost'>('all');
+  const { t } = useTranslation();
+  const [activeHubFilter, setActiveHubFilter] = useState<'all' | 'academic' | 'cyber' | 'labs' | 'dev' | 'tools' | 'ghost' | 'endgame'>('all');
   const ghostXp = useGhostStore((s) => s.xp);
   const ghostRank = useGhostStore((s) => s.rankTitle);
   const ghostCompletedCount = useGhostStore((s) => s.completedModules.length);
@@ -110,62 +112,67 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         <div className="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
           <div className="max-w-3xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/40 text-xs font-mono font-bold text-cyan-300">
+            <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-cyan-300">
               <OmnitrixLogo size="xs" glow={false} />
-              <span>Zero-to-Hero University · 70+ Modules Architecture</span>
+              <span>{t('heroBadge')}</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-              Master Computer Science &amp; Cyber Defense{' '}
+              {t('heroTitle')}{' '}
               <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                Priority-Ordered Learning
+                {t('heroHighlight')}
               </span>
             </h1>
 
             <p className="text-sm sm:text-base text-slate-300 max-w-2xl font-normal leading-relaxed">
-              Step-by-step curriculum organized into 6 specialized hubs. Follow your personalized roadmap from beginner basics to advanced quantum, cybersecurity intelligence, and defensive SOC simulators.
+              {t('heroSubtitle')}
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
+                type="button"
                 onClick={() => onOpenRoadmap ? onOpenRoadmap() : launchApp('roadmap' as any, '#roadmap')}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-cyan-500/25 transition-all hover:gap-3 cursor-pointer active:scale-95"
+                className="inline-flex items-center gap-2 h-10 px-5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-cyan-500/25 transition-all cursor-pointer whitespace-nowrap"
               >
-                <Compass className="w-4 h-4" />
-                <span>Open My Roadmap</span>
-                <ArrowRight className="w-4 h-4" />
+                <Compass className="w-4 h-4 shrink-0" />
+                <span>{t('btnOpenRoadmap')}</span>
+                <ArrowRight className="w-4 h-4 shrink-0" />
               </button>
 
               <button
-                onClick={() => launchGhostModule('command')}
-                className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-[#00FF41]/15 hover:bg-[#00FF41]/25 text-[#00FF41] border border-[#00FF41]/40 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+                type="button"
+                onClick={() => launchApp('capstone', '#capstone')}
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-200 border border-indigo-400/40 font-bold text-xs sm:text-sm transition-colors cursor-pointer whitespace-nowrap"
               >
-                <Shield className="w-4 h-4" />
-                <span>Ghost Protocol (Hub 6)</span>
+                <Sparkles className="w-4 h-4 text-indigo-300 shrink-0" />
+                <span>{t('btnCapstone')}</span>
               </button>
 
               <button
+                type="button"
+                onClick={() => launchApp('warroom', '#warroom')}
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-200 border border-rose-400/40 font-bold text-xs sm:text-sm transition-colors cursor-pointer whitespace-nowrap"
+              >
+                <Shield className="w-4 h-4 text-rose-300 shrink-0" />
+                <span>{t('btnWarRoom')}</span>
+              </button>
+
+              <button
+                type="button"
                 onClick={() => launchApp('exam', '#exam')}
-                className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/10 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/10 font-bold text-xs sm:text-sm transition-colors cursor-pointer whitespace-nowrap"
               >
-                <Trophy className="w-4 h-4 text-amber-400" />
-                <span>BCA Exam Suite</span>
+                <Trophy className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>{t('btnStartExam')}</span>
               </button>
 
               <button
+                type="button"
                 onClick={() => launchApp('arena', '#arena')}
-                className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 font-bold text-xs sm:text-sm transition-colors cursor-pointer whitespace-nowrap"
               >
-                <Swords className="w-4 h-4 text-cyan-300" />
-                <span>The Arena (75+ Challenges)</span>
-              </button>
-
-              <button
-                onClick={() => launchApp('technagar', '#technagar')}
-                className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-white/10 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
-              >
-                <BookOpen className="w-4 h-4 text-purple-400" />
-                <span>TechNagar Story Mode</span>
+                <Swords className="w-4 h-4 text-cyan-300 shrink-0" />
+                <span>{t('btnArena')}</span>
               </button>
             </div>
           </div>
@@ -174,10 +181,10 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="flex flex-col items-center justify-center p-6 rounded-3xl bg-slate-950/80 border border-cyan-500/30 shadow-2xl backdrop-blur-md shrink-0 text-center space-y-2">
             <OmnitrixLogo size="xl" glow={true} animated={true} />
             <div className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest pt-2">
-              70+ Interactive Modules
+              90+ Interactive Modules
             </div>
             <div className="text-[11px] text-slate-400 font-mono">
-              60 FPS Zero-Lag Architecture
+              60 FPS Zero-Lag · Offline Vault
             </div>
           </div>
         </div>
@@ -186,18 +193,20 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* 🧭 SECTION NAVIGATION TABS (Desktop & Mobile) */}
       <div className="sticky top-14 z-30 py-2 bg-slate-950/90 backdrop-blur-md border-y border-white/10 flex items-center gap-2 overflow-x-auto no-scrollbar">
         {[
-          { id: 'all', label: '🌟 All 6 Hubs' },
-          { id: 'academic', label: '🎓 1. Academic & Basics' },
-          { id: 'cyber', label: '🛡️ 2. Cybersecurity Hub' },
-          { id: 'labs', label: '🧪 3. Advanced Tech Labs' },
-          { id: 'dev', label: '🛠️ 4. Dev & Cloud Hub' },
-          { id: 'tools', label: '🧘 5. Standalone Tools' },
-          { id: 'ghost', label: '🕵️ 6. Ghost Protocol OS' },
+          { id: 'all', label: t('hubAll') },
+          { id: 'endgame', label: t('hubEndgame') },
+          { id: 'academic', label: t('hubAcademic') },
+          { id: 'cyber', label: t('hubCyber') },
+          { id: 'labs', label: t('hubLabs') },
+          { id: 'dev', label: t('hubDev') },
+          { id: 'tools', label: t('hubTools') },
+          { id: 'ghost', label: t('hubGhost') },
         ].map((tab) => (
           <button
             key={tab.id}
+            type="button"
             onClick={() => setActiveHubFilter(tab.id as any)}
-            className={`shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap ${
+            className={`shrink-0 h-9 px-3.5 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap ${
               activeHubFilter === tab.id
                 ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
                 : 'bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800'
@@ -207,6 +216,68 @@ export const HomePage: React.FC<HomePageProps> = ({
           </button>
         ))}
       </div>
+
+      {/* 🚀 FEATURED HUB: CAPSTONE PROJECTS & THE WAR ROOM */}
+      {(activeHubFilter === 'all' || activeHubFilter === 'endgame') && (
+        <section className="space-y-4 animate-fade-in">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <div className="text-xs font-mono font-bold text-cyan-400">
+                Portfolio &amp; Real-Time Simulation · {t('networkingLabel')}
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight mt-0.5">
+                Capstone Projects &amp; The War Room
+              </h2>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div
+              onClick={() => launchApp('capstone', '#capstone')}
+              className="p-6 rounded-3xl bg-slate-900/80 border border-cyan-500/35 hover:border-cyan-400/70 transition-colors cursor-pointer flex flex-col justify-between gap-4"
+            >
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/35 text-cyan-300 flex items-center justify-center">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <span className="text-xs font-mono text-cyan-400">#capstone · 4-Week AI Roadmap</span>
+                </div>
+                <h3 className="text-lg font-bold text-white">{t('capstoneTitle')}</h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  {t('capstoneSubtitle')}
+                </p>
+              </div>
+              <div className="flex items-center justify-between pt-3 border-t border-slate-800 text-xs font-semibold text-cyan-300">
+                <span>Architecture · Security · Save to Profile</span>
+                <ArrowRight className="w-4 h-4" />
+              </div>
+            </div>
+
+            <div
+              onClick={() => launchApp('warroom', '#warroom')}
+              className="p-6 rounded-3xl bg-slate-900/80 border border-rose-500/35 hover:border-rose-400/70 transition-colors cursor-pointer flex flex-col justify-between gap-4"
+            >
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/35 text-rose-300 flex items-center justify-center">
+                    <Shield className="w-5 h-5" />
+                  </div>
+                  <span className="text-xs font-mono text-rose-300">#warroom · 60s Tabletop SOC</span>
+                </div>
+                <h3 className="text-lg font-bold text-white">{t('warRoomTitle')}</h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  {t('warRoomSubtitle')}
+                </p>
+              </div>
+              <div className="flex items-center justify-between pt-3 border-t border-slate-800 text-xs font-semibold text-rose-300">
+                <span>Interactive SVG Map · Red vs Blue Team</span>
+                <ArrowRight className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 🎓 HUB 1: ACADEMIC & BASICS HUB (START HERE) */}
       {(activeHubFilter === 'all' || activeHubFilter === 'academic') && (

@@ -60,6 +60,7 @@ const OS_HUBS: HubCategory[] = [
     badge: 'HUB 6',
     color: 'from-[#00FF41] to-[#00E5FF]',
     apps: [
+      { id: 'warroom', name: 'The War Room (Red vs Blue)', desc: '60s real-time SVG network defense & audit sim', tag: '60s SOC' },
       { id: 'ghost', name: 'GHOST PROTOCOL Intelligence OS', desc: '14 defensive cyber labs, SOC triage & GHOST AI mentor', tag: '14 Labs' },
       { id: 'arena', name: 'The Arena — Challenge Hub', desc: '75+ coding, CTF, SQL & system design challenges', tag: '75+ Labs' }
     ]
@@ -184,6 +185,7 @@ const OS_HUBS: HubCategory[] = [
     icon: Briefcase,
     color: 'from-teal-500 to-cyan-600',
     apps: [
+      { id: 'capstone', name: 'AI Capstone Project Generator', desc: '4-week architecture roadmap & portfolio saver', tag: 'AI Build' },
       { id: 'bounty', name: 'Freelance & Bounty Empire', desc: 'HackerOne/Upwork playbooks, pricing & PDF invoices', tag: 'Income' },
       { id: 'aiflow', name: 'AI Automation & Agent Lab', desc: 'Visual workflows, agent personas & 12 blueprints', tag: 'Agents' },
       { id: 'placement', name: 'Placement Prep Hub', desc: 'TCS, Infosys aptitude & HR rounds', tag: 'Campus' },

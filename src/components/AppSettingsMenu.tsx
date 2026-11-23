@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Check,
   ChevronDown,
+  HardDrive,
   Lock,
   Monitor,
   Moon,
@@ -23,6 +24,7 @@ export interface AppSettingsMenuProps {
   isDark: boolean;
   onToggleTheme: () => void;
   onOpenVaultSettings?: () => void;
+  onOpenDataVault?: () => void;
   onToggleStealth?: () => void;
   onOpenProfile?: () => void;
   onClearSearches?: () => void;
@@ -36,6 +38,7 @@ export const AppSettingsMenu: React.FC<AppSettingsMenuProps> = ({
   isDark,
   onToggleTheme,
   onOpenVaultSettings,
+  onOpenDataVault,
   onToggleStealth,
   onOpenProfile,
   onClearSearches,
@@ -315,6 +318,28 @@ export const AppSettingsMenu: React.FC<AppSettingsMenuProps> = ({
 
           {/* Security & Data Actions */}
           <div className="p-2.5 border-t border-slate-200 dark:border-slate-800 space-y-1">
+            {(onOpenDataVault || onOpenVaultSettings) && (
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setIsOpen(false);
+                  if (onOpenDataVault) {
+                    onOpenDataVault();
+                  } else if (onOpenVaultSettings) {
+                    onOpenVaultSettings();
+                  }
+                }}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/70 transition-colors cursor-pointer text-left"
+              >
+                <div className="flex items-center gap-2.5">
+                  <HardDrive className="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
+                  <span className="text-xs font-semibold">Data Vault (Backup &amp; Restore)</span>
+                </div>
+                <span className="text-[11px] font-mono text-emerald-500 dark:text-emerald-400">.ghost</span>
+              </button>
+            )}
+
             {onOpenVaultSettings && (
               <button
                 type="button"

@@ -271,6 +271,15 @@ const AiAutomationLabApp = React.lazy(() =>
 const FreelanceBountyApp = React.lazy(() =>
   import('./bounty/FreelanceBountyApp').then((m) => ({ default: m.FreelanceBountyApp }))
 );
+const CapstoneGeneratorApp = React.lazy(() =>
+  import('./capstone/CapstoneGeneratorApp').then((m) => ({ default: m.CapstoneGeneratorApp }))
+);
+const WarRoomApp = React.lazy(() =>
+  import('./warroom/WarRoomApp').then((m) => ({ default: m.WarRoomApp }))
+);
+const LandingPage = React.lazy(() =>
+  import('./landing/LandingPage').then((m) => ({ default: m.LandingPage }))
+);
 
 // OS Architecture Components
 import { useOsStore } from './store/useOsStore';
@@ -415,7 +424,37 @@ export default function App() {
     compactMode,
     setTheme: setOsTheme,
   } = useOsStore();
-  const [showSplash, setShowSplash] = useState<boolean>(() => splashEnabled);
+  const [showLanding, setShowLanding] = useState<boolean>(() => {
+    try {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      if (path === '/landing' || path === '/landing/' || hash === '#landing') {
+        return true;
+      }
+      const alreadyLaunched = sessionStorage.getItem('techmaster_app_launched') === '1';
+      if ((path === '/' || path === '') && !hash && !alreadyLaunched) {
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  });
+  const [showSplash, setShowSplash] = useState<boolean>(() => {
+    try {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      const alreadyLaunched = sessionStorage.getItem('techmaster_app_launched') === '1';
+      const startsOnLanding =
+        path === '/landing' ||
+        path === '/landing/' ||
+        hash === '#landing' ||
+        ((path === '/' || path === '') && !hash && !alreadyLaunched);
+      return splashEnabled && !startsOnLanding;
+    } catch {
+      return splashEnabled;
+    }
+  });
   const [activeTab, setActiveTab] = useState<ActiveTab>(() => defaultStartTab || 'home');
   const [updateAvailable, setUpdateAvailable] = useState<boolean>(false);
   const [isDark, setIsDark] = useState<boolean>(() => {
@@ -523,6 +562,8 @@ export default function App() {
       if (h === '#arena' || h.startsWith('#arena/')) return 'arena';
       if (h === '#aiflow' || h === '#automation' || h === '#agents') return 'aiflow';
       if (h === '#bounty' || h === '#freelance' || h === '#empire') return 'bounty';
+      if (h === '#capstone' || h === '#capstones') return 'capstone';
+      if (h === '#warroom' || h === '#war-room') return 'warroom';
       return 'bca';
     } catch {
       return 'bca';
@@ -593,14 +634,28 @@ export default function App() {
     return DEFAULT_VAULT_SETTINGS;
   });
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [settingsInitialTab, setSettingsInitialTab] = useState<'vault' | 'data'>('vault');
   const [isAppSwitcherOpen, setIsAppSwitcherOpen] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
-  // Sync URL hash with 13-App Suite
+  const openSettingsTab = (tab: 'vault' | 'data') => {
+    setSettingsInitialTab(tab);
+    setIsSettingsModalOpen(true);
+  };
+
+  // Sync URL hash & pathname (/landing) with App Suite
   useEffect(() => {
     const handleHash = () => {
+      const p = window.location.pathname.toLowerCase();
       const h = window.location.hash.toLowerCase();
+      if (p === '/landing' || p === '/landing/' || h === '#landing') {
+        setShowLanding(true);
+        return;
+      }
+      if (h && h !== '#landing') {
+        setShowLanding(false);
+      }
       if (h === '#techmaster' || h === '#tech' || h === '#qna') {
         setCurrentApp('techmaster');
       } else if (h === '#compiler' || h === '#c' || h === '#ccompiler' || h === '#run') {
@@ -789,6 +844,10 @@ export default function App() {
         setCurrentApp('aiflow');
       } else if (h === '#bounty' || h === '#freelance' || h === '#empire') {
         setCurrentApp('bounty');
+      } else if (h === '#capstone' || h === '#capstones') {
+        setCurrentApp('capstone');
+      } else if (h === '#warroom' || h === '#war-room') {
+        setCurrentApp('warroom');
       } else if (h === '#notes' || h === '#pad') {
         setCurrentApp('bca');
         setActiveTab('notes');
@@ -797,8 +856,22 @@ export default function App() {
       }
     };
     handleHash();
+    const handlePopState = () => {
+      const p = window.location.pathname.toLowerCase();
+      const h = window.location.hash.toLowerCase();
+      if (p === '/landing' || p === '/landing/' || h === '#landing') {
+        setShowLanding(true);
+      } else {
+        setShowLanding(false);
+        handleHash();
+      }
+    };
     window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('popstate', handlePopState);
+    };
   }, []);
 
   // Theme Sync
@@ -863,6 +936,22 @@ export default function App() {
     setCurrentApp('bca');
     window.location.hash = '';
   };
+
+  // Launch Main App from Showcase Landing Page (0% lag transition)
+  const handleLaunchApp = useCallback((targetApp?: CurrentAppType) => {
+    try {
+      sessionStorage.setItem('techmaster_app_launched', '1');
+    } catch {}
+    setShowSplash(false);
+    setShowLanding(false);
+    const nextApp: CurrentAppType = targetApp || 'bca';
+    setCurrentApp(nextApp);
+    try {
+      const nextUrl = nextApp === 'bca' ? '/' : `/#${nextApp}`;
+      window.history.pushState({}, '', nextUrl);
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    } catch {}
+  }, []);
 
   // CalcVault Direct Chat Hook
   const {
@@ -984,6 +1073,20 @@ export default function App() {
     } catch {}
   };
 
+  // --- RENDER SHOWCASE LANDING PAGE (/landing or Pre-App Showcase) ---
+  if (showLanding) {
+    return (
+      <AppErrorBoundary
+        appName="TechMaster Showcase"
+        onReset={() => handleLaunchApp('bca')}
+      >
+        <Suspense fallback={<AppLoadingSpinner appName="TechMaster" />}>
+          <LandingPage onLaunchApp={handleLaunchApp} />
+        </Suspense>
+      </AppErrorBoundary>
+    );
+  }
+
   // --- RENDER APP: Zero-to-Hero University Roadmap ---
   if (currentApp === 'roadmap') {
     return (
@@ -997,7 +1100,8 @@ export default function App() {
             onToggleStealth={() => setIsStealthActive((prev) => !prev)}
             onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
             onSelectApp={handleSelectApp}
-            onOpenSettings={() => setIsSettingsModalOpen(true)}
+            onOpenSettings={() => openSettingsTab('vault')}
+            onOpenDataVault={() => openSettingsTab('data')}
             onClearSearches={handleClearSearches}
             recentSearchesCount={recentSearches.length}
             onToggleTheme={toggleTheme}
@@ -2856,6 +2960,46 @@ export default function App() {
     );
   }
 
+  // --- RENDER APP: AI Capstone Project Generator ---
+  if (currentApp === 'capstone') {
+    return (
+      <AppErrorBoundary appName="AI Capstone Project Generator" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="AI Capstone Generator" />}>
+          <CapstoneGeneratorApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
+  // --- RENDER APP: The War Room (Red vs Blue Simulator) ---
+  if (currentApp === 'warroom') {
+    return (
+      <AppErrorBoundary appName="The War Room" onReset={handleReturnToBca}>
+        <Suspense fallback={<AppLoadingSpinner appName="The War Room" />}>
+          <WarRoomApp
+            onBackToBca={handleReturnToBca}
+            onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
+          />
+        </Suspense>
+        <AppSwitcherModal
+          isOpen={isAppSwitcherOpen}
+          onClose={() => setIsAppSwitcherOpen(false)}
+          currentApp={currentApp}
+          onSelectApp={handleSelectApp}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
   // --- RENDER APP 12: CalcVault ---
   if (currentApp === 'calc') {
     return (
@@ -2941,7 +3085,8 @@ export default function App() {
         onSelectApp={handleSelectApp}
         onOpenAppSwitcher={() => setIsAppSwitcherOpen(true)}
         onOpenProfile={() => setIsProfileModalOpen(true)}
-        onOpenSettings={() => setIsSettingsModalOpen(true)}
+        onOpenSettings={() => openSettingsTab('vault')}
+        onOpenDataVault={() => openSettingsTab('data')}
         onClearSearches={handleClearSearches}
         recentSearchesCount={recentSearches.length}
         onSyncSoundSetting={(enabled) => handleUpdateVaultSettings({ ...vaultSettings, soundEnabled: enabled })}
@@ -3172,6 +3317,7 @@ export default function App() {
       {/* Vault & Security Settings Modal */}
       <SettingsModal
         isOpen={isSettingsModalOpen}
+        initialTab={settingsInitialTab}
         onClose={() => setIsSettingsModalOpen(false)}
         settings={vaultSettings}
         onSave={handleUpdateVaultSettings}

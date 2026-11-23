@@ -45,6 +45,26 @@ export interface TechNavigatorItem {
 
 export const NAVIGATOR_ITEMS: TechNavigatorItem[] = [
   {
+    id: 'capstone',
+    title: 'AI Capstone Project Generator — 4-Week Portfolio Builder',
+    category: 'App',
+    description: 'Select your skills and generate a 4-week capstone architecture, implementation sprints, security checklist, and save directly to your portfolio.',
+    icon: Sparkles,
+    appTarget: 'capstone',
+    hashTarget: '#capstone',
+    keywords: ['capstone', 'project', 'portfolio', '4 week', 'roadmap', 'gemini', 'architecture', 'resume']
+  },
+  {
+    id: 'warroom',
+    title: 'The War Room — Red vs Blue Team Simulator',
+    category: 'App',
+    description: '60-second real-time Red vs Blue cyber defense simulator on an interactive SVG enterprise network map.',
+    icon: ShieldAlert,
+    appTarget: 'warroom',
+    hashTarget: '#warroom',
+    keywords: ['warroom', 'war room', 'red team', 'blue team', 'soc', 'firewall', 'patch', 'incident response', 'svg network']
+  },
+  {
     id: 'arena',
     title: 'The Arena — Problem Solving & CTF Hub',
     category: 'App',

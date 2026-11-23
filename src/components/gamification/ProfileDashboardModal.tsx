@@ -18,7 +18,9 @@ import {
   ChevronRight,
   Shield,
   Download,
-  ExternalLink
+  ExternalLink,
+  FolderKanban,
+  Trash2
 } from 'lucide-react';
 import {
   useGamificationStore,
@@ -60,11 +62,13 @@ export const ProfileDashboardModal: React.FC<ProfileDashboardModalProps> = ({
     showcasedBadgeIds,
     examHistory,
     certificates,
+    portfolioProjects,
+    removePortfolioProject,
     updateUserProfile,
     xpHistory
   } = useGamificationStore();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'badges' | 'missions' | 'certs' | 'edit'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'badges' | 'missions' | 'certs' | 'portfolio' | 'edit'>('overview');
   const [badgeFilter, setBadgeFilter] = useState<'All' | BadgeRarity>('All');
 
   // Edit form state
@@ -132,11 +136,12 @@ export const ProfileDashboardModal: React.FC<ProfileDashboardModalProps> = ({
         {/* Navigation Tabs */}
         <div className="bg-black/40 border-b border-slate-800 px-6 flex items-center gap-2 overflow-x-auto font-mono text-xs shrink-0 py-2">
           {[
-            { id: 'overview', label: '📊 Overview & Stats' },
-            { id: 'badges', label: `🏆 Badges (${unlockedBadges.length}/${totalBadges})` },
-            { id: 'missions', label: '🎯 Daily Missions' },
-            { id: 'certs', label: `📜 Certificates (${certificates.length})` },
-            { id: 'edit', label: '⚙️ Customize Profile' }
+            { id: 'overview', label: 'Overview & Stats' },
+            { id: 'portfolio', label: `Portfolio (${portfolioProjects.length})` },
+            { id: 'badges', label: `Badges (${unlockedBadges.length}/${totalBadges})` },
+            { id: 'missions', label: 'Daily Missions' },
+            { id: 'certs', label: `Certificates (${certificates.length})` },
+            { id: 'edit', label: 'Customize Profile' }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -492,6 +497,79 @@ export const ProfileDashboardModal: React.FC<ProfileDashboardModalProps> = ({
                       <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-800/80">
                         <span>Score: {cert.score}%</span>
                         <span>Issued: {cert.issueDate}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 4B: PORTFOLIO CAPSTONE PROJECTS */}
+          {activeTab === 'portfolio' && (
+            <div className="space-y-4">
+              <div className="border-b border-slate-800 pb-3 flex items-center justify-between gap-3">
+                <div>
+                  <h4 className="font-bold text-sm text-white">Verified Capstone Portfolio</h4>
+                  <p className="text-xs text-slate-400">
+                    4-week engineering capstone blueprints generated from your mastered skills.
+                  </p>
+                </div>
+                <a
+                  href="#capstone"
+                  onClick={onClose}
+                  className="px-3.5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition-colors whitespace-nowrap shrink-0"
+                >
+                  + New Capstone
+                </a>
+              </div>
+
+              {portfolioProjects.length === 0 ? (
+                <div className="text-center py-12 text-slate-500 space-y-2">
+                  <FolderKanban className="w-10 h-10 mx-auto text-slate-600" />
+                  <p className="text-xs text-slate-300">No capstone projects saved yet.</p>
+                  <p className="text-[11px] text-slate-500">
+                    Open AI Capstone Project Generator (#capstone) to build and add your first portfolio project.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {portfolioProjects.map((proj) => (
+                    <div
+                      key={proj.id}
+                      className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between gap-3"
+                    >
+                      <div className="space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <div className="text-[11px] font-mono text-cyan-400">
+                              {proj.domain} · {proj.difficulty} · {proj.weeksCount} Weeks
+                            </div>
+                            <h5 className="font-bold text-sm text-white mt-0.5">{proj.title}</h5>
+                            <p className="text-xs text-slate-400 mt-0.5">{proj.tagline}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removePortfolioProject(proj.id)}
+                            aria-label="Remove project"
+                            className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">
+                          {proj.architectureOverview}
+                        </p>
+
+                        <div className="text-[11px] font-mono text-slate-400 pt-1">
+                          Stack: {proj.skills.join(' · ')}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-800 text-[11px] text-slate-500 font-mono">
+                        <span>Saved {proj.createdAt}</span>
+                        <span>{proj.securityHighlights.length} Security Controls</span>
                       </div>
                     </div>
                   ))}

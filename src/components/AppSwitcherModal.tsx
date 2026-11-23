@@ -159,7 +159,10 @@ export type CurrentAppType =
   // ⚔️ The Arena, AI Automation Lab & Freelance/Bounty Empire
   | 'arena'
   | 'aiflow'
-  | 'bounty';
+  | 'bounty'
+  // 🚀 AI Capstone Project Generator & War Room Simulator
+  | 'capstone'
+  | 'warroom';
 
 interface AppSwitcherModalProps {
   isOpen: boolean;
@@ -1238,6 +1241,38 @@ const ALL_APPS: AppItem[] = [
     icon: (
       <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-md">
         <GitBranch className="w-5 h-5 text-emerald-200" />
+      </div>
+    )
+  },
+  {
+    id: 'capstone',
+    category: 'Career',
+    title: 'AI Capstone Project Generator',
+    subtitle: '4-Week Portfolio Roadmap & Architecture Builder',
+    tagline: 'Gemini 4-Week Blueprint · OWASP Hardening · Add to Portfolio',
+    description: 'Select your mastered skills to generate a complete 4-week capstone architecture, implementation sprints, security checklist, and save it directly to your Profile portfolio.',
+    badge: 'AI Portfolio',
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    hash: '#capstone',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-md">
+        <Sparkles className="w-5 h-5 text-cyan-100" />
+      </div>
+    )
+  },
+  {
+    id: 'warroom',
+    category: 'Security',
+    title: 'The War Room (Red vs Blue)',
+    subtitle: '60-Second Live Network Defense Simulator',
+    tagline: 'Interactive SVG Network · Blue Team SOC · Red Team Audit',
+    description: 'Real-time 60-second Red vs Blue tabletop simulator on an interactive 6-node SVG enterprise network. Deploy firewall rules, patches, and MFA before node integrity drops.',
+    badge: 'Live SOC',
+    badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    hash: '#warroom',
+    icon: (
+      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-500 to-cyan-600 flex items-center justify-center text-white shadow-md">
+        <Shield className="w-5 h-5 text-white" />
       </div>
     )
   }

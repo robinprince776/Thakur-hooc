@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useOsStore } from '../store/useOsStore';
 import { useGamificationStore } from '../store/useGamificationStore';
+import { useTranslation } from '../store/useLanguageStore';
 import { OmnitrixLogo } from './OmnitrixLogo';
 import { TopSearchBar } from './TopSearchBar';
 import { AppSettingsMenu } from './AppSettingsMenu';
@@ -21,6 +22,7 @@ interface OsTopBarProps {
   onOpenProfile?: () => void;
   onSelectApp?: (app: CurrentAppType) => void;
   onOpenSettings?: () => void;
+  onOpenDataVault?: () => void;
   onClearSearches?: () => void;
   recentSearchesCount?: number;
   onToggleTheme?: () => void;
@@ -36,6 +38,7 @@ export const OsTopBar: React.FC<OsTopBarProps> = ({
   onOpenProfile,
   onSelectApp,
   onOpenSettings,
+  onOpenDataVault,
   onClearSearches,
   recentSearchesCount = 0,
   onToggleTheme,
@@ -43,6 +46,7 @@ export const OsTopBar: React.FC<OsTopBarProps> = ({
 }) => {
   const { theme, toggleTheme: toggleOsTheme, dailyStreak, userName } = useOsStore();
   const { userProfile } = useGamificationStore();
+  const { t, language, toggleLanguage } = useTranslation();
   const isDark = typeof isDarkProp === 'boolean' ? isDarkProp : theme === 'dark';
 
   const handleToggleTheme = () => {
@@ -100,18 +104,34 @@ export const OsTopBar: React.FC<OsTopBarProps> = ({
         <TopSearchBar
           onSelectApp={handleSelectApp}
           onOpenNavigator={onOpenNavigator}
-          placeholder="Search 70+ Apps, Topics, Labs..."
+          placeholder={t('osSearchPlaceholder')}
           className="flex-1 max-w-md min-w-[140px]"
         />
 
         {/* RIGHT: Actions & App Settings Menu */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            aria-label={language === 'en' ? 'Switch language to Hinglish' : 'Switch language to English'}
+            title={language === 'en' ? 'Switch to Hinglish (A/अ)' : 'Switch to English (A/अ)'}
+            className={`h-10 px-2.5 rounded-xl border text-xs font-bold transition-colors cursor-pointer inline-flex items-center justify-center gap-1 whitespace-nowrap shrink-0 ${
+              language === 'hi'
+                ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-600 dark:text-emerald-300'
+                : 'bg-slate-100 dark:bg-slate-900/80 hover:bg-slate-200 dark:hover:bg-slate-800 border-slate-300/70 dark:border-white/10 text-slate-700 dark:text-slate-200'
+            }`}
+          >
+            <span className={language === 'en' ? 'text-cyan-600 dark:text-cyan-400' : 'opacity-60'}>A</span>
+            <span className="opacity-40">/</span>
+            <span className={language === 'hi' ? 'text-emerald-600 dark:text-emerald-300' : 'opacity-60'}>अ</span>
+          </button>
+
           {onOpenProfile && (
             <button
               type="button"
               onClick={onOpenProfile}
               className="hidden sm:flex items-center gap-1.5 h-10 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-amber-500/30 cursor-pointer transition-colors text-xs font-semibold whitespace-nowrap shrink-0"
-              title="Open Profile Dashboard (XP, Badges & Missions)"
+              title="Open Profile Dashboard (XP, Badges & Portfolio)"
             >
               <span className="text-sm">{userProfile.avatar}</span>
               <span className="hidden md:inline text-[11px] text-amber-600 dark:text-amber-400 font-bold tabular-nums">
@@ -127,7 +147,7 @@ export const OsTopBar: React.FC<OsTopBarProps> = ({
             title="App Hubs Grid"
           >
             <Grid className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-            <span className="hidden md:inline text-xs">Hubs</span>
+            <span className="hidden md:inline text-xs">{t('navHubs')}</span>
           </button>
 
           <button
@@ -144,6 +164,7 @@ export const OsTopBar: React.FC<OsTopBarProps> = ({
             isDark={isDark}
             onToggleTheme={handleToggleTheme}
             onOpenVaultSettings={onOpenSettings}
+            onOpenDataVault={onOpenDataVault}
             onToggleStealth={onToggleStealth}
             onOpenProfile={onOpenProfile}
             onClearSearches={onClearSearches}
